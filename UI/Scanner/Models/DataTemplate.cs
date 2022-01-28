@@ -12,10 +12,10 @@ namespace Scanner.Models
         /// <summary>
         /// Уникальное имя шаблона
         /// </summary>
-        public string DocumentType;
+        public string DocumentType { get; set; }
         /// <summary>
         /// Шаблон метаданных
         /// </summary>
-        public Dictionary<string, bool> TemplateMetadata;
+        public Dictionary<string, bool> TemplateMetadata { get; set; }
     }
 }
