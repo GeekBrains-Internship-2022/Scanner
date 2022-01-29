@@ -1,35 +1,49 @@
 ﻿using System.IO;
+using Microsoft.Extensions.Logging;
 
 namespace Scanner.Service
 {
     public class ObserverService
     {
         private readonly string _Path;
+        private readonly ILogger<ObserverService> _Logger;
 
-        public ObserverService(string path) => _Path = path;
+        public delegate void ObserverHandler(string message);
+        public event ObserverHandler Notify;
 
-        void Start()
+        public ObserverService(string path, ILogger<ObserverService> logger)
         {
-            using var watcher = new FileSystemWatcher(_Path)
-            {
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = "*.pdf",
-                IncludeSubdirectories = true,
-                EnableRaisingEvents = true,
-            };
-
-            watcher.Created += OnCreated;
-            watcher.Error += OnError;
+            _Path = path;
+            _Logger = logger;
         }
 
-        private void OnError(object sender, ErrorEventArgs e)
+        public void Start()
         {
-            throw new System.NotImplementedException();
+            var watcher = new FileSystemWatcher()
+            {
+                Path = _Path,
+                NotifyFilter = NotifyFilters.FileName,
+                Filter = "*.pdf",
+                IncludeSubdirectories = true,
+                EnableRaisingEvents = true
+            };
+            
+            watcher.Created += OnCreated;
+            watcher.Renamed += OnRenamed;
+            watcher.Changed += OnChanged;
+            watcher.Deleted += OnDeleted;
+            watcher.Error += OnError;
         }
 
         private void OnCreated(object sender, FileSystemEventArgs e)
         {
-            throw new System.NotImplementedException();
+            _Logger.LogInformation($"Created: {e.FullPath}");
+            Notify?.Invoke(e.FullPath);
         }
+
+        private void OnRenamed(object sender, RenamedEventArgs e) => _Logger.LogInformation($"Renamed: {e.OldName} -> {e.Name}");
+        private void OnChanged(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Changed: {e.FullPath}");
+        private void OnDeleted(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Deleted: {e.FullPath}");
+        private void OnError(object sender, ErrorEventArgs e) => _Logger.LogError(e.GetException().Message);
     }
 }

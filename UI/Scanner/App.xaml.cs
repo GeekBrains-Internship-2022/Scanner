@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Scanner.Service;
+
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Scanner
@@ -26,6 +24,8 @@ namespace Scanner
 
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
+            services.AddSingleton<ObserverService>();       //  Сервис мониторинга каталога
+
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
             //services.AddSingleton<ProgramData>();
