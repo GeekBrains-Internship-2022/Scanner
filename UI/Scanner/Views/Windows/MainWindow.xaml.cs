@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using Scanner.Service;
+
+using Serilog;
+
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Scanner
 {
@@ -23,6 +19,29 @@ namespace Scanner
         public MainWindow()
         {
             InitializeComponent();
+            
+            MethodForTest();
+        }
+
+        private static void MethodForTest()
+        {
+            var logger = App.Services.GetRequiredService<ILogger>();
+            var configuration = App.Services.GetRequiredService<IConfiguration>();
+
+            var path = configuration["ObserverPath"];
+
+            var observer = new ObserverService(logger);
+            var task = new Task(() =>
+            {
+                observer.Start(path);
+            });
+            observer.Notify += OnNotify;
+            task.Start();
+
+            void OnNotify(string message)
+            {
+                Debug.WriteLine(message);
+            }
         }
     }
 }
