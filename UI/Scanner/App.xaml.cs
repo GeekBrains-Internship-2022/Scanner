@@ -5,6 +5,8 @@ using Scanner.Service;
 
 using System;
 using System.Windows;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Scanner
 {
@@ -19,8 +21,10 @@ namespace Scanner
 
         public static IHost Hosting => _Hosting
             ??= Host.CreateDefaultBuilder(Environment.GetCommandLineArgs())
-               .ConfigureServices(ConfigureServices)
-               .Build();
+                .ConfigureAppConfiguration(opt => opt.AddJsonFile("appsettings.json"))
+                .ConfigureServices(ConfigureServices)
+                .UseSerilog((host, log) => log.ReadFrom.Configuration(host.Configuration))
+                .Build();
 
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
