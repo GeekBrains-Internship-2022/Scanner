@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Scanner.Service;
+
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Scanner
 {
@@ -21,11 +21,15 @@ namespace Scanner
 
         public static IHost Hosting => _Hosting
             ??= Host.CreateDefaultBuilder(Environment.GetCommandLineArgs())
-               .ConfigureServices(ConfigureServices)
-               .Build();
+                .ConfigureAppConfiguration(opt => opt.AddJsonFile("appsettings.json"))
+                .ConfigureServices(ConfigureServices)
+                .UseSerilog((host, log) => log.ReadFrom.Configuration(host.Configuration))
+                .Build();
 
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
+            services.AddSingleton<ObserverService>();       //  Сервис мониторинга каталога
+
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
             //services.AddSingleton<ProgramData>();
