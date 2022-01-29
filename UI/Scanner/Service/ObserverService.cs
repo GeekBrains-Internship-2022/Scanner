@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Extensions.Logging;
 
 namespace Scanner.Service
@@ -19,7 +20,7 @@ namespace Scanner.Service
 
         public void Start()
         {
-            var watcher = new FileSystemWatcher()
+            using var watcher = new FileSystemWatcher()
             {
                 Path = _Path,
                 NotifyFilter = NotifyFilters.FileName,
@@ -33,6 +34,7 @@ namespace Scanner.Service
             watcher.Changed += OnChanged;
             watcher.Deleted += OnDeleted;
             watcher.Error += OnError;
+            watcher.Disposed += OnDisposed;
         }
 
         private void OnCreated(object sender, FileSystemEventArgs e)
@@ -45,5 +47,6 @@ namespace Scanner.Service
         private void OnChanged(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Changed: {e.FullPath}");
         private void OnDeleted(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Deleted: {e.FullPath}");
         private void OnError(object sender, ErrorEventArgs e) => _Logger.LogError(e.GetException().Message);
+        private void OnDisposed(object sender, EventArgs e) => _Logger.LogInformation("Observer Service is Disposed");
     }
 }
