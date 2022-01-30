@@ -7,6 +7,8 @@ using System;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Scanner.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Scanner
 {
@@ -30,6 +32,8 @@ namespace Scanner
         {
             services.AddSingleton<ObserverService>();       //  Сервис мониторинга каталога
 
+            services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(host.Configuration.GetConnectionString("Default")));
+
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
             //services.AddSingleton<ProgramData>();
@@ -41,6 +45,12 @@ namespace Scanner
             //services.AddSingleton<IStore<Message>, MessagesStoreInDB>();
             //services.AddSingleton<IStore<Sender>, SenderStoreInDB>();
             //services.AddTransient<MailSenderDBInitializer>();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            Services.GetRequiredService<ScannerDbInitializer>().Initialize();
+            base.OnStartup(e);
         }
 
     }
