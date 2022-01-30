@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Scanner.Models.Base;
 
 namespace Scanner.Models
 {
-    public class DocumentMetadata
+    public class DocumentMetadata: Entity
     {
         public string Name { get; set; }
 

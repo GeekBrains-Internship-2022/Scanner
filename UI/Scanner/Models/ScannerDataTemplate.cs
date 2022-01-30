@@ -3,7 +3,6 @@ using Scanner.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Scanner.Models
 {
