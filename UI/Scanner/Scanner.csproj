@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Stores\InDB\" />
     <Folder Include="Infrastructure\Converters\" />
     <Folder Include="Controls\" />
   </ItemGroup>
