@@ -7,18 +7,8 @@ namespace Scanner.Data
     {
         public DbSet<ScannerDataTemplate> DataTemplates { get; set; }
 
-        public DbSet<Document> Documents { get; set; }
-
         public DbSet<FileData> FileDatas { get; set; }
 
         public ScannerDB(DbContextOptions<ScannerDB> opt) : base(opt) { }
-
-        //protected override void OnModelCreating(ModelBuilder db)
-        //{
-        //    db.Entity<SchedulerTask>()
-        //       .HasMany(t => t.Recipients)
-        //       .WithOne("Task")
-        //       .OnDelete(DeleteBehavior.Cascade);
-        //}
     }
 }
