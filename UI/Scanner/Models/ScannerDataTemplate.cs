@@ -8,7 +8,7 @@ using System.Text;
 namespace Scanner.Models
 {
     [Index(nameof(DocumentType), IsUnique = true)]
-    public class DataTemplate: Entity
+    public class ScannerDataTemplate: Entity
     {
         /// <summary>
         /// Уникальное имя шаблона
@@ -18,6 +18,6 @@ namespace Scanner.Models
         /// <summary>
         /// Шаблон метаданных
         /// </summary>
-        public Dictionary<string, bool> TemplateMetadata { get; set; }
+        public ICollection<TemplateMetadata> TemplateMetadata { get; set; }
     }
 }

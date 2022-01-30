@@ -20,6 +20,6 @@ namespace Scanner.Models
         /// <summary>
         /// Перечисление метаданных документа
         /// </summary>
-        public Dictionary<string, IEnumerable<string>> Metadata { get; set; }
+        public ICollection<DocumentMetadata> Metadata { get; set; }        
     }
 }

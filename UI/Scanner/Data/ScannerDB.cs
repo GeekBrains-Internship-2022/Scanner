@@ -5,7 +5,7 @@ namespace Scanner.Data
 {
     class ScannerDB : DbContext
     {
-        public DbSet<DataTemplate> DataTemplates { get; set; }
+        public DbSet<ScannerDataTemplate> DataTemplates { get; set; }
 
         public DbSet<Document> Documents { get; set; }
 
