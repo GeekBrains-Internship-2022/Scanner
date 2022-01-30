@@ -1,4 +1,4 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.Logging;
 
 using System;
 using System.IO;
@@ -14,7 +14,7 @@ namespace Scanner.Service
         public delegate void ObserverHandler(string message);
         public event ObserverHandler Notify;
 
-        public ObserverService(ILogger logger, CancellationToken token = default)
+        public ObserverService(ILogger<ObserverService> logger, CancellationToken token = default)
         {
             _Logger = logger;
             _Token = token;
@@ -22,7 +22,7 @@ namespace Scanner.Service
 
         public void Start(string path)
         {
-            if (!File.Exists(path))
+            if (!Directory.Exists(path))                 //  Пока нет ui, потом удалить
                 Directory.CreateDirectory(path);
 
             using var watcher = new FileSystemWatcher()
@@ -33,8 +33,8 @@ namespace Scanner.Service
                 IncludeSubdirectories = true,
                 EnableRaisingEvents = true
             };
-            
-            _Logger.Information($"Observer is created\nObserved path: {watcher.Path}");
+
+            _Logger.LogInformation($"Observer is created\nObserved path: {watcher.Path}");
 
             watcher.Created += OnCreated;
             watcher.Renamed += OnRenamed;
@@ -50,14 +50,22 @@ namespace Scanner.Service
 
         private void OnCreated(object sender, FileSystemEventArgs e)
         {
-            _Logger.Information($"Created: \"{e.FullPath}\"");
-            Notify?.Invoke(e.FullPath);
+            if (!File.Exists(e.FullPath))
+            {
+                //throw new FileNotFoundException(e.FullPath);
+                return;
+            }
+
+            var path = Path.GetFullPath(e.FullPath);
+
+            _Logger.LogInformation($"Created: \"{path}\"");
+            Notify?.Invoke(path);
         }
 
-        private void OnRenamed(object sender, RenamedEventArgs e) => _Logger.Information($"Renamed: \"{e.OldName}\" -> \"{e.Name}\"");
-        private void OnChanged(object sender, FileSystemEventArgs e) => _Logger.Information($"Changed: \"{e.FullPath}\"");
-        private void OnDeleted(object sender, FileSystemEventArgs e) => _Logger.Information($"Deleted: \"{e.FullPath}\"");
-        private void OnError(object sender, ErrorEventArgs e) => _Logger.Error(e.GetException().Message);
-        private void OnDisposed(object sender, EventArgs e) => _Logger.Information("Observer Service is Disposed");
+        private void OnRenamed(object sender, RenamedEventArgs e) => _Logger.LogInformation($"Renamed: \"{e.OldName}\" -> \"{e.Name}\"");
+        private void OnChanged(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Changed: \"{e.FullPath}\"");
+        private void OnDeleted(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Deleted: \"{e.FullPath}\"");
+        private void OnError(object sender, ErrorEventArgs e) => _Logger.LogError(e.GetException().Message);
+        private void OnDisposed(object sender, EventArgs e) => _Logger.LogInformation("Observer Service is Disposed");
     }
 }

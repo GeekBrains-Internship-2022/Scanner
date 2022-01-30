@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Scanner.Service;
-
-using Serilog;
 
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ namespace Scanner
 
         private static void MethodForTest()
         {
-            var logger = App.Services.GetRequiredService<ILogger>();
+            var logger = App.Services.GetRequiredService<ILogger<ObserverService>>();
             var configuration = App.Services.GetRequiredService<IConfiguration>();
 
             var path = configuration["ObserverPath"];
