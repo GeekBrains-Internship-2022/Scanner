@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
+using Scanner.Models;
 using Scanner.Service;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,29 +20,57 @@ namespace Scanner
         public MainWindow()
         {
             InitializeComponent();
-            
+
             MethodForTest();
         }
 
+        #region For test without ui
+
+        private static readonly IConfiguration __Configuration = App.Services.GetRequiredService<IConfiguration>();
+
         private static void MethodForTest()
         {
-            var logger = App.Services.GetRequiredService<ILogger<ObserverService>>();
-            var configuration = App.Services.GetRequiredService<IConfiguration>();
+            //ObserverTest();
+            RabbitTest();
+        }
 
-            var path = configuration["ObserverPath"];
+        private static void RabbitTest()
+        {
+            var rabbit = App.Services.GetRequiredService<RabbitMqService>();
 
-            var observer = new ObserverService(logger);
-            var task = new Task(() =>
+            var uri = new Uri(__Configuration["RabbitMQ:Uri"]);
+            var login = __Configuration["RabbitMQ:Login"];
+            var password = __Configuration["RabbitMQ:Password"];
+
+            var client = rabbit.GetClient(uri, login, password);
+
+            var doc = new Document
             {
-                observer.Start(path);
-            });
+                DocumentType = "Test Document",
+                IndexingDate = DateTime.Now,
+                Metadata = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"one", new[] {"1", "2", "3"}},
+                    {"two", new[] {"4", "5", "6"}},
+                    {"three", new[] {"7", "8", "9"}}
+                }
+            };
+
+            client.SendData(doc);
+        }
+
+        private static void ObserverTest()
+        {
+            var observer = App.Services.GetRequiredService<ObserverService>();
+            var path = __Configuration["ObserverPath"];
+            var task = new Task(() => observer.Start(path));
+
             observer.Notify += OnNotify;
             task.Start();
 
-            void OnNotify(string message)
-            {
-                Debug.WriteLine(message);
-            }
+            void OnNotify(string message) => Debug.WriteLine(message);
         }
+
+        #endregion
     }
 }

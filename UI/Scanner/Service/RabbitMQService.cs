@@ -43,8 +43,7 @@ namespace Scanner.Service
                     durable: true,
                     exclusive: false,
                     autoDelete: false);
-
-
+                
                 var doc = JsonSerializer.Serialize(document);
                 var body = Encoding.UTF8.GetBytes(doc);
 

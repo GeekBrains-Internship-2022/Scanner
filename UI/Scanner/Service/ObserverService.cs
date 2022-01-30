@@ -22,7 +22,7 @@ namespace Scanner.Service
 
         public void Start(string path)
         {
-            if (!Directory.Exists(path))                 //  Пока нет ui, потом удалить
+            if (!Directory.Exists(path))                 //  TODO: Пока нет ui, потом удалить
                 Directory.CreateDirectory(path);
 
             using var watcher = new FileSystemWatcher()
@@ -43,9 +43,7 @@ namespace Scanner.Service
             watcher.Disposed += OnDisposed;
             watcher.Error += OnError;
 
-            while (!_Token.IsCancellationRequested)     //  Костыль, чтобы сервис не выгружался
-            {
-            }
+            while (!_Token.IsCancellationRequested) { }     //  Костыль, чтобы сервис не выгружался
         }
 
         private void OnCreated(object sender, FileSystemEventArgs e)
