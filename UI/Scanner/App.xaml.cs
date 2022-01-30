@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using Scanner.Data;
 using Microsoft.EntityFrameworkCore;
+using Scanner.interfaces;
+using Scanner.Models;
+using Scanner.Data.Stores.InDB;
 
 namespace Scanner
 {
@@ -33,6 +36,8 @@ namespace Scanner
             services.AddSingleton<ObserverService>();       //  Сервис мониторинга каталога
 
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(host.Configuration.GetConnectionString("Default")));
+            services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
+            services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();
 
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
