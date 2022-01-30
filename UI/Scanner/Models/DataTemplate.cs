@@ -2,6 +2,7 @@
 using Scanner.Models.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Scanner.Models
@@ -12,6 +13,7 @@ namespace Scanner.Models
         /// <summary>
         /// Уникальное имя шаблона
         /// </summary>
+        [Required,MaxLength(25)]
         public string DocumentType { get; set; }
         /// <summary>
         /// Шаблон метаданных
