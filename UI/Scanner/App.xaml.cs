@@ -29,6 +29,7 @@ namespace Scanner
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
             services.AddSingleton<ObserverService>();       //  Сервис мониторинга каталога
+            services.AddSingleton<RabbitMqService>();       //  Сервис кролика
 
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
