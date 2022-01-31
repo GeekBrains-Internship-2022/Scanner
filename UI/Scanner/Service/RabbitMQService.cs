@@ -9,16 +9,16 @@ using Scanner.interfaces;
 
 namespace Scanner.Service
 {
-    public class RabbitMqService : IRabbitService
+    public class RabbitMqService : IDataBusService
     {
-        public IRabbitClient GetClient(Uri uri, string userName, string password) => new RabbitClient(uri, userName, password);
+        public IDataBusClient GetClient(Uri uri, string userName, string password) => new RabbitMqClient(uri, userName, password);
     }
 
-    internal class RabbitClient : IRabbitClient
+    internal class RabbitMqClient : IDataBusClient
     {
         private readonly ConnectionFactory _Factory;
 
-        public RabbitClient(Uri uri, string userName, string password)
+        public RabbitMqClient(Uri uri, string userName, string password)
         {
             _Factory = new ConnectionFactory
             {

@@ -6,6 +6,7 @@ using Scanner.Service;
 using System;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
+using Scanner.interfaces;
 using Serilog;
 
 namespace Scanner
@@ -16,7 +17,7 @@ namespace Scanner
     public partial class App : Application
     {
         private static IHost _Hosting;
-        
+
         public static IServiceProvider Services => Hosting.Services;
 
         public static IHost Hosting => _Hosting
@@ -28,8 +29,8 @@ namespace Scanner
 
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            services.AddSingleton<ObserverService>();       //  Сервис мониторинга каталога
-            services.AddSingleton<RabbitMqService>();       //  Сервис кролика
+            services.AddSingleton<ObserverService>();                   //  Сервис мониторинга каталога
+            services.AddSingleton<IDataBusService, RabbitMqService>();  //  Сервис кролика
 
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
