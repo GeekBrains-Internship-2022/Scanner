@@ -31,6 +31,7 @@ namespace Scanner
         {
             services.AddSingleton<ObserverService>();                   //  Сервис мониторинга каталога
             services.AddSingleton<IDataBusService, RabbitMqService>();  //  Сервис кролика
+            services.AddSingleton<IFileService, FileService>();         //  Сервис файлов
 
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();

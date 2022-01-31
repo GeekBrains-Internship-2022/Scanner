@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using Scanner.interfaces;
 
 namespace Scanner
 {
@@ -31,7 +32,8 @@ namespace Scanner
         private static void MethodForTest()
         {
             //ObserverTest();
-            RabbitTest();
+            //RabbitTest();
+            FileServiceTest();
         }
 
         private static void RabbitTest()
@@ -69,6 +71,15 @@ namespace Scanner
             task.Start();
 
             void OnNotify(string message) => Debug.WriteLine(message);
+        }
+
+        private static void FileServiceTest()
+        {
+            var filePath = @"D:\111\111.pdf";
+            var fileDestination = @"D:\";
+            var fileService = App.Services.GetRequiredService<IFileService>();
+            var fileData = fileService.CreateFileData(@"D:\111", "Pasport");
+            fileService.Move(filePath, fileDestination + $"\\{fileData.Guid}.pdf");
         }
 
         #endregion
