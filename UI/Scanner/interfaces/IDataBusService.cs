@@ -1,6 +1,7 @@
-﻿using System;
-using Scanner.Models;
+﻿using Scanner.Models;
 using Scanner.Service;
+
+using System;
 
 namespace Scanner.interfaces
 {
@@ -11,6 +12,6 @@ namespace Scanner.interfaces
 
     public interface IDataBusClient
     {
-        void SendData(Document document);
+        void SendData(Document document, string queue);
     }
 }

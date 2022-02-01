@@ -41,6 +41,7 @@ namespace Scanner
             var rabbit = App.Services.GetRequiredService<RabbitMqService>();
 
             var uri = new Uri(__Configuration["RabbitMQ:Uri"]);
+            var queue = __Configuration["RabbitMQ:Queue"];
             var login = __Configuration["RabbitMQ:Login"];
             var password = __Configuration["RabbitMQ:Password"];
 
@@ -58,7 +59,7 @@ namespace Scanner
                 }
             };
 
-            client.SendData(doc);
+            client.SendData(doc, queue);
         }
 
         private static void ObserverTest()
