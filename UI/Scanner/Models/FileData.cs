@@ -1,8 +1,7 @@
 ﻿using Scanner.Models.Base;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Scanner.Models
 {
@@ -13,7 +12,7 @@ namespace Scanner.Models
         /// Уникальный идентификатор файла в БД
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Guid { get; set; }
+        public Guid Guid { get; } = Guid.NewGuid();
         /// <summary>
         /// Путь к файлу
         /// </summary>

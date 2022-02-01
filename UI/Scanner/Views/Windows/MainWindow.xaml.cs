@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using Scanner.interfaces;
 
 namespace Scanner
 {
@@ -31,7 +32,8 @@ namespace Scanner
         private static void MethodForTest()
         {
             //ObserverTest();
-            RabbitTest();
+            //RabbitTest();
+            FileServiceTest();
         }
 
         private static void RabbitTest()
@@ -39,6 +41,7 @@ namespace Scanner
             var rabbit = App.Services.GetRequiredService<RabbitMqService>();
 
             var uri = new Uri(__Configuration["RabbitMQ:Uri"]);
+            var queue = __Configuration["RabbitMQ:Queue"];
             var login = __Configuration["RabbitMQ:Login"];
             var password = __Configuration["RabbitMQ:Password"];
 
@@ -56,7 +59,7 @@ namespace Scanner
                 }
             };
 
-            client.SendData(doc);
+            client.SendData(doc, queue);
         }
 
         private static void ObserverTest()
@@ -69,6 +72,15 @@ namespace Scanner
             task.Start();
 
             void OnNotify(string message) => Debug.WriteLine(message);
+        }
+
+        private static void FileServiceTest()
+        {
+            var filePath = @"D:\111\111.pdf";
+            var fileDestination = @"D:\";
+            var fileService = App.Services.GetRequiredService<IFileService>();
+            var fileData = fileService.CreateFileData(@"D:\111", "Pasport");
+            fileService.Move(filePath, fileDestination + $"\\{fileData.Guid}.pdf");
         }
 
         #endregion

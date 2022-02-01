@@ -14,7 +14,7 @@ namespace Scanner.Models
         /// <summary>
         /// Дата индексирования документа
         /// </summary>
-        public DateTime IndexingDate { get; set; }
+        public DateTime IndexingDate { get; set; }// = DateTime.Now;
         /// <summary>
         /// Перечисление метаданных документа
         /// </summary>
