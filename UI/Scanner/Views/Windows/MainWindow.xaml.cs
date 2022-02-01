@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Scanner.interfaces;
+using Scanner.interfaces.RabbitMQ;
 using Scanner.Models;
 using Scanner.Service;
 
@@ -9,9 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using Scanner.interfaces;
 
-namespace Scanner
+namespace Scanner.Views.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -32,20 +33,13 @@ namespace Scanner
         private static void MethodForTest()
         {
             //ObserverTest();
-            //RabbitTest();
-            FileServiceTest();
+            RabbitTest();
+            //FileServiceTest();
         }
 
         private static void RabbitTest()
         {
-            var rabbit = App.Services.GetRequiredService<RabbitMqService>();
-
-            var uri = new Uri(__Configuration["RabbitMQ:Uri"]);
-            var queue = __Configuration["RabbitMQ:Queue"];
-            var login = __Configuration["RabbitMQ:Login"];
-            var password = __Configuration["RabbitMQ:Password"];
-
-            var client = rabbit.GetClient(uri, login, password);
+            var rabbit = App.Services.GetRequiredService<IRabbitMQService>();
 
             var doc = new Document
             {
@@ -59,7 +53,7 @@ namespace Scanner
                 }
             };
 
-            client.SendData(doc, queue);
+            rabbit.Publish(doc);
         }
 
         private static void ObserverTest()

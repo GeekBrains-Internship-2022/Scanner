@@ -6,7 +6,11 @@ using Scanner.Service;
 using System;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using Scanner.interfaces;
+using Scanner.interfaces.RabbitMQ;
+using Scanner.Service.RabbitMQ;
 using Serilog;
 
 namespace Scanner
@@ -30,8 +34,33 @@ namespace Scanner
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
             services.AddSingleton<ObserverService>();                   //  Сервис мониторинга каталога
-            services.AddSingleton<IDataBusService, RabbitMqService>();  //  Сервис кролика
             services.AddSingleton<IFileService, FileService>();         //  Сервис файлов
+
+            #region Сервис кролика
+
+            services.AddSingleton<IRabbitMQService>(sp =>
+            {
+                var connection = sp.GetRequiredService<IRabbitMQConnection>();
+                var logger = sp.GetRequiredService<ILogger<RabbitMQService>>();
+                var queueName = host.Configuration["RabbitMQ:Queue"];
+
+                return new RabbitMQService(connection, logger, queueName);
+            });
+
+            services.AddSingleton<IRabbitMQConnection>(sp =>
+            {
+                var logger = sp.GetRequiredService<ILogger<RabbitMQConnection>>();
+                var factory = new ConnectionFactory
+                {
+                    Uri = new Uri(host.Configuration["RabbitMQ:Uri"]),
+                    UserName = host.Configuration["RabbitMQ:Login"],
+                    Password = host.Configuration["RabbitMQ:Password"]
+                };
+
+                return new RabbitMQConnection(factory, logger);
+            });
+
+            #endregion 
 
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();

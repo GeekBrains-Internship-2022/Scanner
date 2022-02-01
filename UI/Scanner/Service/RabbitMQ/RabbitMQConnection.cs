@@ -3,14 +3,14 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-using Scanner.interfaces;
+using Scanner.interfaces.RabbitMQ;
 
 using System;
 using System.IO;
 
-namespace Scanner.Service
+namespace Scanner.Service.RabbitMQ
 {
-    public class RabbitMQConnection : IRabbitMQPersistentConnection
+    public class RabbitMQConnection : IRabbitMQConnection
     {
         private readonly IConnectionFactory _ConnectionFactory;
         private readonly ILogger<RabbitMQConnection> _Logger;
