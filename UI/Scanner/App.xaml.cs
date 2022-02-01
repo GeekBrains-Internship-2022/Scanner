@@ -12,7 +12,6 @@ using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Service.RabbitMQ;
 using Serilog;
-using ILogger = Serilog.ILogger;
 
 namespace Scanner
 {
