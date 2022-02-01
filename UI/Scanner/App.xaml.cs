@@ -12,6 +12,11 @@ using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Service.RabbitMQ;
 using Serilog;
+using Scanner.Data;
+using Microsoft.EntityFrameworkCore;
+using Scanner.interfaces;
+using Scanner.Models;
+using Scanner.Data.Stores.InDB;
 
 namespace Scanner
 {
@@ -26,7 +31,9 @@ namespace Scanner
 
         public static IHost Hosting => _Hosting
             ??= Host.CreateDefaultBuilder(Environment.GetCommandLineArgs())
-                .ConfigureAppConfiguration(opt => opt.AddJsonFile("appsettings.json"))
+                .ConfigureHostConfiguration(cfg => cfg
+                   .AddJsonFile("appconfig.json", true, true))
+                .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appconfig.json", true, true))
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog((host, log) => log.ReadFrom.Configuration(host.Configuration))
                 .Build();
@@ -69,6 +76,12 @@ namespace Scanner
             });
 
             #endregion 
+            
+            var path = host.Configuration.GetConnectionString("Default");
+            services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
+            services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
+            services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();
+            services.AddTransient<ScannerDbInitializer>();
 
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
@@ -81,6 +94,12 @@ namespace Scanner
             //services.AddSingleton<IStore<Message>, MessagesStoreInDB>();
             //services.AddSingleton<IStore<Sender>, SenderStoreInDB>();
             //services.AddTransient<MailSenderDBInitializer>();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            Services.GetRequiredService<ScannerDbInitializer>().Initialize();
+            base.OnStartup(e);
         }
 
     }

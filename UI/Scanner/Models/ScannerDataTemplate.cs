@@ -2,20 +2,21 @@
 using Scanner.Models.Base;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace Scanner.Models
 {
     [Index(nameof(DocumentType), IsUnique = true)]
-    public class DataTemplate: Entity
+    public class ScannerDataTemplate: Entity
     {
         /// <summary>
         /// Уникальное имя шаблона
         /// </summary>
+        [Required,MaxLength(25)]
         public string DocumentType { get; set; }
         /// <summary>
         /// Шаблон метаданных
         /// </summary>
-        public Dictionary<string, bool> TemplateMetadata { get; set; }
+        public ICollection<TemplateMetadata> TemplateMetadata { get; set; }
     }
 }
