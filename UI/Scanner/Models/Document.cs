@@ -1,7 +1,7 @@
 ﻿using Scanner.Models.Base;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace Scanner.Models
 {
@@ -10,6 +10,7 @@ namespace Scanner.Models
         /// <summary>
         /// Тип документа
         /// </summary>
+        [Required,MaxLength(25)]
         public string DocumentType { get; set; }
         /// <summary>
         /// Дата индексирования документа
@@ -18,6 +19,6 @@ namespace Scanner.Models
         /// <summary>
         /// Перечисление метаданных документа
         /// </summary>
-        public Dictionary<string, IEnumerable<string>> Metadata { get; set; }
+        public ICollection<DocumentMetadata> Metadata { get; set; }        
     }
 }
