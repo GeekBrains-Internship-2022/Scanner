@@ -12,6 +12,7 @@ using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Service.RabbitMQ;
 using Serilog;
+using ILogger = Serilog.ILogger;
 
 namespace Scanner
 {
@@ -34,7 +35,15 @@ namespace Scanner
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
             services.AddSingleton<ObserverService>();                   //  Сервис мониторинга каталога
-            services.AddSingleton<IFileService, FileService>();         //  Сервис файлов
+
+            //  Сервис файлов
+            services.AddSingleton<IFileService, FileService>(sp =>
+            {
+                var logger = sp.GetRequiredService<ILogger<IFileService>>();
+                var destPath = host.Configuration["FileService:DestinationPath"];
+
+                return new FileService(logger, destPath);
+            });
 
             #region Сервис кролика
 

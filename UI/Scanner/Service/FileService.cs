@@ -53,11 +53,19 @@ namespace Scanner.Service
 
     public class FileService : IFileService
     {
-        private readonly ILogger<FileService> _Logger;
+        private readonly ILogger<IFileService> _Logger;
+        private readonly string _DestPath;
+        private readonly string _FileExtension = ".pdf";
 
-        public FileService(ILogger<FileService> logger) => _Logger = logger;
-        
-        public void Move(string sourceFileName, string destFileName)
+        public FileService(ILogger<IFileService> logger, string destPath)
+        {
+            _Logger = logger;
+            if (string.IsNullOrEmpty(destPath))
+                destPath = ".\\scanfiles";
+            _DestPath = Path.GetFullPath(destPath);
+        }
+
+        public void Move(string sourceFileName, string fileName)
         {
             if (!File.Exists(sourceFileName))
             {
@@ -65,9 +73,14 @@ namespace Scanner.Service
                 throw new FileNotFoundException();
             }
 
+            var path = Path.Combine(_DestPath, fileName + _FileExtension);
+
             try
             {
-                File.Move(sourceFileName, destFileName);
+                if (!Directory.Exists(_DestPath))
+                    Directory.CreateDirectory(_DestPath);   //  TODO: пока нет UI, потом удалить
+
+                File.Move(sourceFileName, path);
             }
             catch (IOException e)
             {
@@ -86,7 +99,7 @@ namespace Scanner.Service
             var data = new FileDataBuilder();
 
             return data.Path(path)
-                .Document(new Document {DocumentType = documentType})
+                .Document(new Document { DocumentType = documentType })
                 .Build();
         }
     }
