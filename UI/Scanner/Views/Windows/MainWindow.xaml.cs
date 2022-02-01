@@ -7,8 +7,8 @@ using Scanner.Models;
 using Scanner.Service;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -33,24 +33,25 @@ namespace Scanner.Views.Windows
         private static void MethodForTest()
         {
             //ObserverTest();
+            //FileServiceTest();
             //RabbitTest();
-            FileServiceTest();
         }
 
         private static void RabbitTest()
         {
             var rabbit = App.Services.GetRequiredService<IRabbitMQService>();
-
             var doc = new Document
             {
                 DocumentType = "Test Document",
                 IndexingDate = DateTime.Now,
-                Metadata = new Dictionary<string, IEnumerable<string>>
-                {
-                    {"one", new[] {"1", "2", "3"}},
-                    {"two", new[] {"4", "5", "6"}},
-                    {"three", new[] {"7", "8", "9"}}
-                }
+                Metadata = Enumerable
+                    .Range(1, 5)
+                    .Select(i => new DocumentMetadata
+                    {
+                        Id = i,
+                        Data = $"Data-{i}",
+                        Name = $"Name-{i}"
+                    }).ToArray()
             };
 
             rabbit.Publish(doc);
@@ -72,7 +73,7 @@ namespace Scanner.Views.Windows
         {
             var filePath = @"D:\111\111.pdf";
             var fileService = App.Services.GetRequiredService<IFileService>();
-            var fileData = fileService.CreateFileData(@"D:\111", "Pasport");
+            var fileData = fileService.CreateFileData(filePath, "Pasport");
 
             fileService.Move(filePath, fileName: fileData.Guid.ToString());
         }
