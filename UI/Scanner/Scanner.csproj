@@ -38,10 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Views\Windows\Letter2.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
