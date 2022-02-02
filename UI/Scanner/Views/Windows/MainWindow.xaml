@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scanner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1328">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -24,11 +24,78 @@
                         <ColumnDefinition Width="5*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <TreeView Name="trvFiles" Grid.Column="0" Grid.Row="1"></TreeView>
-                    <StackPanel Grid.Row="1" Grid.Column="2">
-                        <ComboBox Name="cmbDocumentType"/>
-                        <TextBlock Name="tbDocumentName" Height="20"/>
-
+                    <TreeView Name="trvFiles" Grid.Column="0" Grid.Row="1">
+                        <TreeViewItem Header="Паспорт" IsExpanded="True">
+                            <ListBoxItem Content="1.pdf"/>
+                            <ListBoxItem Content="2.pdf"/>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Договор">
+                            <ListBox BorderBrush="Transparent">
+                                <ListBoxItem Content="3.pdf"/>
+                                <ListBoxItem Content="4.pdf"/>
+                            </ListBox>
+                        </TreeViewItem>
+                    </TreeView>
+                    <!--<Image Grid.Row="1" Grid.Column="1" Source="/Views/Windows/Letter2.png" />-->
+                    <DocumentViewer Grid.Row="1" Grid.Column="1"></DocumentViewer>
+                    <StackPanel Grid.Row="1" Grid.Column="2">                        
+                        <TextBox Name="tbxDocumentName" Height="20" Text="Тип документа"/>
+                        <ListBox>
+                            <ListBoxItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Поле 1" Grid.Column="0"/>
+                                    <TextBlock Text="Поле 1" Grid.Column="1"/>
+                                    <CheckBox Content="Обязательное" Grid.Column="2"/>
+                                </Grid>                                
+                            </ListBoxItem>
+                            <ListBoxItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Поле 2" Grid.Column="0"/>
+                                    <TextBlock Text="Поле 2" Grid.Column="1"/>
+                                    <CheckBox Content="Обязательное" Grid.Column="2"/>
+                                </Grid>
+                            </ListBoxItem>
+                            <ListBoxItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Поле 3" Grid.Column="0"/>
+                                    <TextBlock Text="Поле 3" Grid.Column="1"/>
+                                    <CheckBox Content="Обязательное" Grid.Column="2"/>
+                                </Grid>
+                            </ListBoxItem>
+                            <ListBoxItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Поле 4" Grid.Column="0"/>
+                                    <TextBlock Text="Поле 4" Grid.Column="1"/>
+                                    <CheckBox Content="Обязательное" Grid.Column="2"/>
+                                </Grid>
+                            </ListBoxItem>
+                        </ListBox>
+                        <Button Content="Следующий документ"/>
+                        <TextBlock Text="Разные инструкции и напоминания по заполнению полей" MinHeight="100"/>
+                        <DockPanel>
+                            <CheckBox Content="Индексирование документа завершено"/>
+                            <Button Content="Отправить документы на проверку"/>
+                        </DockPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>

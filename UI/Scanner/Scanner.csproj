@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\Windows\Letter2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Infrastructure\Converters\" />
     <Folder Include="Controls\" />
   </ItemGroup>
@@ -31,6 +35,10 @@
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Windows\Letter2.png" />
   </ItemGroup>
 
   <ItemGroup>
