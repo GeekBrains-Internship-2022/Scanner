@@ -1,14 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
+using Scanner.interfaces;
+using Scanner.interfaces.RabbitMQ;
+using Scanner.Models;
 using Scanner.Service;
 
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Scanner
+namespace Scanner.Views.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -18,29 +22,62 @@ namespace Scanner
         public MainWindow()
         {
             InitializeComponent();
-            
+
             MethodForTest();
         }
 
+        #region For test without ui
+
+        private static readonly IConfiguration __Configuration = App.Services.GetRequiredService<IConfiguration>();
+
         private static void MethodForTest()
         {
-            var logger = App.Services.GetRequiredService<ILogger<ObserverService>>();
-            var configuration = App.Services.GetRequiredService<IConfiguration>();
+            //ObserverTest();
+            //FileServiceTest();
+            //RabbitTest();
+        }
 
-            var path = configuration["ObserverPath"];
-
-            var observer = new ObserverService(logger);
-            var task = new Task(() =>
+        private static void RabbitTest()
+        {
+            var rabbit = App.Services.GetRequiredService<IRabbitMQService>();
+            var doc = new Document
             {
-                observer.Start(path);
-            });
+                DocumentType = "Test Document",
+                IndexingDate = DateTime.Now,
+                Metadata = Enumerable
+                    .Range(1, 5)
+                    .Select(i => new DocumentMetadata
+                    {
+                        Id = i,
+                        Data = $"Data-{i}",
+                        Name = $"Name-{i}"
+                    }).ToArray()
+            };
+
+            rabbit.Publish(doc);
+        }
+
+        private static void ObserverTest()
+        {
+            var observer = App.Services.GetRequiredService<ObserverService>();
+            var path = __Configuration["ObserverPath"];
+            var task = new Task(() => observer.Start(path));
+
             observer.Notify += OnNotify;
             task.Start();
 
-            void OnNotify(string message)
-            {
-                Debug.WriteLine(message);
-            }
+            void OnNotify(string message) => Debug.WriteLine(message);
         }
+
+        private static void FileServiceTest()
+        {
+            var filePath = @"D:\111\111.pdf";
+            var fileService = App.Services.GetRequiredService<IFileService>();
+            var fileData = fileService.CreateFileData(filePath, "Pasport");
+
+            fileService.Move(filePath, fileName: fileData.Guid.ToString());
+        }
+
+        #endregion
     }
 }
