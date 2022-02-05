@@ -24,18 +24,27 @@
                         <ColumnDefinition Width="5*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <TreeView Name="trvFiles" Grid.Column="0" Grid.Row="1">
-                        <TreeViewItem Header="Паспорт" IsExpanded="True">
-                            <ListBoxItem Content="1.pdf"/>
-                            <ListBoxItem Content="2.pdf"/>
-                        </TreeViewItem>
-                        <TreeViewItem Header="Договор">
-                            <ListBox BorderBrush="Transparent">
-                                <ListBoxItem Content="3.pdf"/>
-                                <ListBoxItem Content="4.pdf"/>
-                            </ListBox>
-                        </TreeViewItem>
-                    </TreeView>
+                    <DockPanel Grid.Column="0" Grid.Row="1">
+                        <ComboBox DockPanel.Dock="Top">
+                            <ComboBoxItem Content="По имени"/>
+                            <ComboBoxItem Content="Тип"/>
+                            <ComboBoxItem Content="Тип3"/>
+                            <ComboBoxItem Content="Тип4"/>
+                            <ComboBoxItem Content="Тип5"/>
+                        </ComboBox>
+                        <TreeView Name="trvFiles" >
+                            <TreeViewItem Header="Паспорт" IsExpanded="True">
+                                <ListBoxItem Content="1.pdf"/>
+                                <ListBoxItem Content="2.pdf"/>
+                            </TreeViewItem>
+                            <TreeViewItem Header="Договор">
+                                <ListBox BorderBrush="Transparent">
+                                    <ListBoxItem Content="3.pdf"/>
+                                    <ListBoxItem Content="4.pdf"/>
+                                </ListBox>
+                            </TreeViewItem>
+                        </TreeView>
+                    </DockPanel>
                     <!--<Image Grid.Row="1" Grid.Column="1" Source="/Views/Windows/Letter2.png" />-->
                     <DocumentViewer Grid.Row="1" Grid.Column="1"></DocumentViewer>
                     <StackPanel Grid.Row="1" Grid.Column="2">                        
