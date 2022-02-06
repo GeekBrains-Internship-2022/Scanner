@@ -75,15 +75,17 @@
                                 </GroupBox>
                             </ListBoxItem>
                         </ListBox>
-                        <StackPanel Orientation="Horizontal" Margin="4">
-                            <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
-
-                            </ComboBox>
-                            <Button Content="+" Margin="4"/>
-                        </StackPanel>
-                        <DockPanel>
+                        <GroupBox Header="Дополнительные данные">
+                            <StackPanel Orientation="Horizontal" Margin="4">
+                                <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
+                                </ComboBox>
+                                <Button Content="+" Margin="4"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <StackPanel>
                             <Button Content="Сохранить"/>
-                        </DockPanel>
+                            <Button Content="Следующий документ"/>
+                        </StackPanel>
                     </StackPanel>
                     <DocumentViewer></DocumentViewer>
                 </DockPanel>
