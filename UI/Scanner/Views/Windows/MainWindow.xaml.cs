@@ -79,5 +79,16 @@ namespace Scanner.Views.Windows
         }
 
         #endregion
+
+        private void mniSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.Show();
+        }
+
+        private void mniExit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Environment.Exit(0);
+        }
     }
 }
