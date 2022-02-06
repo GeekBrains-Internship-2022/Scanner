@@ -5,233 +5,254 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scanner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1328">
-    <TabControl>
-        <TabItem Name="tbiIndex" Header="Оператор" HorizontalContentAlignment="Stretch">
-            <DockPanel>
-                <DockPanel DockPanel.Dock="Left">
-                    <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
-                        <ComboBoxItem Content="По имени"/>
-                        <ComboBoxItem Content="Тип"/>
-                        <ComboBoxItem Content="Тип3"/>
-                        <ComboBoxItem Content="Тип4"/>
-                        <ComboBoxItem Content="Тип5"/>
-                    </ComboBox>
-                    <TreeView Name="trvFiles" >
-                        <TreeViewItem Header="Паспорт" IsExpanded="True">
-                            <ListBoxItem Content="1.pdf"/>
-                            <ListBoxItem Content="2.pdf"/>
-                        </TreeViewItem>
-                        <TreeViewItem Header="Договор">
-                            <ListBox BorderBrush="Transparent">
-                                <ListBoxItem Content="3.pdf"/>
-                                <ListBoxItem Content="4.pdf"/>
-                            </ListBox>
-                        </TreeViewItem>
-                    </TreeView>
-                </DockPanel>
-                <StackPanel DockPanel.Dock="Right">
-                    <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
-                        <ComboBoxItem Content="Паспорт"/>
-                        <ComboBoxItem Content="Паспорт2"/>
-                        <ComboBoxItem Content="Паспорт3"/>
-                        <ComboBoxItem Content="Паспорт4"/>
-                    </ComboBox>
-                    <ListBox>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
+        Title="MainWindow" Height="475" Width="1328">
+    <Window.Resources>
+        <AlternationConverter x:Key="AlternationConverter"/>
+    </Window.Resources>
+    <StackPanel x:Name="stackPanel" Orientation="Vertical">
+        <TabControl Height="411">
+            <TabItem Name="tbiIndex" Header="Оператор" HorizontalContentAlignment="Stretch">
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Left">
+                        <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
+                            <ComboBoxItem Content="По имени"/>
+                            <ComboBoxItem Content="По типу"/>
+                            <ComboBoxItem Content="По названию"/>
+                            <ComboBoxItem Content="По времени"/>
+                            <ComboBoxItem Content="Тип5"/>
+                        </ComboBox>
+                        <TreeView Name="trvFiles" >
+                            <TreeViewItem Header="Паспорт" IsExpanded="True">
+                                <ListBoxItem Content="1.pdf"/>
+                                <ListBoxItem Content="2.pdf"/>
+                            </TreeViewItem>
+                            <TreeViewItem Header="Договор">
+                                <ListBox BorderBrush="Transparent">
+                                    <ListBoxItem Content="3.pdf"/>
+                                    <ListBoxItem Content="4.pdf"/>
+                                </ListBox>
+                            </TreeViewItem>
+                        </TreeView>
+                    </DockPanel>
+                    <StackPanel DockPanel.Dock="Right">
+                        <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
+                            <ComboBoxItem Content="Паспорт"/>
+                            <ComboBoxItem Content="Паспорт2"/>
+                            <ComboBoxItem Content="Паспорт3"/>
+                            <ComboBoxItem Content="Паспорт4"/>
+                        </ComboBox>
+                        <ListBox>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <GroupBox Header="Название метаданных">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="Метаданные"/>
+                                            <Button Content="-"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBoxItem>
+                                <GroupBox Header="Название метаданных">
+                                    <TextBox Text="Метаданные"/>
+                                </GroupBox>
+                            </ListBoxItem>
+                            <ListBoxItem>
                                 <GroupBox Header="Название метаданных">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox Text="Метаданные"/>
                                         <Button Content="-"/>
                                     </StackPanel>
                                 </GroupBox>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBoxItem>
-                            <GroupBox Header="Название метаданных">
-                                <TextBox Text="Метаданные"/>
-                            </GroupBox>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <GroupBox Header="Название метаданных">
-                                <StackPanel Orientation="Horizontal">
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <GroupBox Header="Название метаданных">
                                     <TextBox Text="Метаданные"/>
-                                    <Button Content="-"/>
-                                </StackPanel>
-                            </GroupBox>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <GroupBox Header="Название метаданных">
-                                <TextBox Text="Метаданные"/>
-                            </GroupBox>
-                        </ListBoxItem>
-                    </ListBox>
-                    <StackPanel Orientation="Horizontal" Margin="4">
-                        <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
+                                </GroupBox>
+                            </ListBoxItem>
+                        </ListBox>
+                        <StackPanel Orientation="Horizontal" Margin="4">
+                            <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
 
-                        </ComboBox>
-                        <Button Content="+" Margin="4"/>
-                    </StackPanel>
-                    <DockPanel>
-                        <Button Content="Сохранить"/>
-                    </DockPanel>
-                </StackPanel>
-                <DocumentViewer></DocumentViewer>
-            </DockPanel>
-        </TabItem>
-        <TabItem Name="tbiAdmin" Header="Администратор" HorizontalContentAlignment="Stretch">
-            <TabControl>
-                <TabItem Header="Рецензирование">
-                    <DockPanel>
-                        <DockPanel DockPanel.Dock="Left">
-                            <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
-                                <ComboBoxItem Content="По имени"/>
-                                <ComboBoxItem Content="Тип"/>
-                                <ComboBoxItem Content="Тип3"/>
-                                <ComboBoxItem Content="Тип4"/>
-                                <ComboBoxItem Content="Тип5"/>
                             </ComboBox>
-                            <TreeView >
-                                <TreeViewItem Header="Паспорт" IsExpanded="True">
-                                    <ListBoxItem Content="1.pdf"/>
-                                    <ListBoxItem Content="2.pdf"/>
-                                </TreeViewItem>
-                                <TreeViewItem Header="Договор">
-                                    <ListBox BorderBrush="Transparent">
-                                        <ListBoxItem Content="3.pdf"/>
-                                        <ListBoxItem Content="4.pdf"/>
-                                    </ListBox>
-                                </TreeViewItem>
-                            </TreeView>
+                            <Button Content="+" Margin="4"/>
+                        </StackPanel>
+                        <DockPanel>
+                            <Button Content="Сохранить"/>
                         </DockPanel>
-                        <DockPanel DockPanel.Dock="Right">
-                            <DockPanel>
-                                <TextBlock Text="Паспорт" DockPanel.Dock="Top"/>
+                    </StackPanel>
+                    <DocumentViewer></DocumentViewer>
+                </DockPanel>
+            </TabItem>
+            <TabItem Name="tbiAdmin" Header="Администратор" HorizontalContentAlignment="Stretch">
+                <TabControl>
+                    <TabItem Header="Рецензирование">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Left">
+                                <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
+                                    <ComboBoxItem Content="По имени"/>
+                                    <ComboBoxItem Content="Тип"/>
+                                    <ComboBoxItem Content="Тип3"/>
+                                    <ComboBoxItem Content="Тип4"/>
+                                    <ComboBoxItem Content="Тип5"/>
+                                </ComboBox>
+                                <TreeView >
+                                    <TreeViewItem Header="Паспорт" IsExpanded="True">
+                                        <ListBoxItem Content="1.pdf"/>
+                                        <ListBoxItem Content="2.pdf"/>
+                                    </TreeViewItem>
+                                    <TreeViewItem Header="Договор">
+                                        <ListBox BorderBrush="Transparent">
+                                            <ListBoxItem Content="3.pdf"/>
+                                            <ListBoxItem Content="4.pdf"/>
+                                        </ListBox>
+                                    </TreeViewItem>
+                                </TreeView>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Right">
+                                <DockPanel>
+                                    <TextBlock Text="Паспорт" DockPanel.Dock="Top"/>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                                        <Button Content="Завершить обработку" Background="LightGreen" Margin="2,0"/>
+                                        <Button Content="Отправить на доработку" Background="Red" Margin="2,0"/>
+                                    </StackPanel>
+                                    <ListBox>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <GroupBox Header="Название метаданных">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBox Text="Метаданные"/>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBoxItem>
+                                            <GroupBox Header="Название метаданных">
+                                                <TextBox Text="Метаданные"/>
+                                            </GroupBox>
+                                        </ListBoxItem>
+                                        <ListBoxItem>
+                                            <GroupBox Header="Название метаданных">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBox Text="Метаданные"/>
+                                                </StackPanel>
+                                            </GroupBox>
+                                        </ListBoxItem>
+                                        <ListBoxItem>
+                                            <GroupBox Header="Название метаданных">
+                                                <TextBox Text="Метаданные"/>
+                                            </GroupBox>
+                                        </ListBoxItem>
+                                    </ListBox>
+
+                                </DockPanel>
+                            </DockPanel>
+                            <DocumentViewer></DocumentViewer>
+                        </DockPanel>
+                    </TabItem>
+                    <TabItem Header="Шаблоны">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Left">
+                                <TextBox Text="Фильтр для поиска шаблона" DockPanel.Dock="Top"/>
                                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
-                                    <Button Content="Завершить обработку" Background="LightGreen" Margin="2,0"/>
-                                    <Button Content="Отправить на доработку" Background="Red" Margin="2,0"/>
+                                    <Button Content="Удалить шаблон" Margin="2"/>
+                                    <Button Content="Создать новый" Margin="2"/>
                                 </StackPanel>
                                 <ListBox>
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <GroupBox Header="Название метаданных">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBox Text="Метаданные"/>
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
                                     <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <TextBox Text="Метаданные"/>
-                                        </GroupBox>
+                                        <TextBlock Text="паспорт"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="Метаданные"/>
-                                            </StackPanel>
-                                        </GroupBox>
+                                        <TextBlock Text="договор"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <TextBox Text="Метаданные"/>
-                                        </GroupBox>
+                                        <TextBlock Text="претензия"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <TextBlock Text="еще что-то"/>
                                     </ListBoxItem>
                                 </ListBox>
-                                
                             </DockPanel>
-                        </DockPanel>
-                        <DocumentViewer></DocumentViewer>
-                    </DockPanel>
-                </TabItem>
-                <TabItem Header="Шаблоны">
-                    <DockPanel>
-                        <DockPanel DockPanel.Dock="Left">
-                            <TextBox Text="Фильтр для поиска шаблона" DockPanel.Dock="Top"/>
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
-                                <Button Content="Удалить шаблон" Margin="2"/>
-                                <Button Content="Создать новый" Margin="2"/>
-                            </StackPanel>
-                            <ListBox>
-                                <ListBoxItem>
-                                    <TextBlock Text="паспорт"/>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <TextBlock Text="договор"/>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <TextBlock Text="претензия"/>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <TextBlock Text="еще что-то"/>
-                                </ListBoxItem>
-                            </ListBox>
-                        </DockPanel>
-                        <Border BorderBrush="Black" BorderThickness="1" >
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal" Margin="4">
-                                    <TextBlock Text="Название шаблона:"/>
-                                    <TextBox Text="Паспорт" Margin="2,0"/>
-                                </StackPanel>
-                                <ListBox Margin="4">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
+                            <Border BorderBrush="Black" BorderThickness="1" >
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal" Margin="4">
+                                        <TextBlock Text="Название шаблона:"/>
+                                        <TextBox Text="Паспорт" Margin="2,0"/>
+                                    </StackPanel>
+                                    <ListBox Margin="4">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <GroupBox Header="Название метаданных">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBox Text="Метаданные"/>
+                                                        <Button Content="-"/>
+                                                        <TextBlock Text="Обязательное поле" Margin="2,0"/>
+                                                        <CheckBox IsChecked="True"/>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBoxItem>
                                             <GroupBox Header="Название метаданных">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox Text="Метаданные"/>
-                                                    <Button Content="-"/>
                                                     <TextBlock Text="Обязательное поле" Margin="2,0"/>
                                                     <CheckBox IsChecked="True"/>
+                                                    <Button Content="-"/>
                                                 </StackPanel>
                                             </GroupBox>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                    <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="Метаданные"/>
-                                                <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                <CheckBox IsChecked="True"/>
-                                                <Button Content="-"/>
-                                            </StackPanel>
-                                        </GroupBox>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="Метаданные"/>
-                                                <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                <CheckBox IsChecked="True"/>
-                                                <Button Content="-"/>
-                                            </StackPanel>
-                                        </GroupBox>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="Метаданные"/>
-                                                <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                <CheckBox IsChecked="True"/>
-                                                <Button Content="-"/>
-                                            </StackPanel>
-                                        </GroupBox>
-                                    </ListBoxItem>
-                                </ListBox>
-                                <StackPanel Orientation="Vertical" Margin="4">
-                                    <TextBlock Text="Имя метаданных:"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox Text="Серия номер паспорта"/>
-                                        <Button Content="+" Margin="2,0"/>
+                                        </ListBoxItem>
+                                        <ListBoxItem>
+                                            <GroupBox Header="Название метаданных">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBox Text="Метаданные"/>
+                                                    <TextBlock Text="Обязательное поле" Margin="2,0"/>
+                                                    <CheckBox IsChecked="True"/>
+                                                    <Button Content="-"/>
+                                                </StackPanel>
+                                            </GroupBox>
+                                        </ListBoxItem>
+                                        <ListBoxItem>
+                                            <GroupBox Header="Название метаданных">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBox Text="Метаданные"/>
+                                                    <TextBlock Text="Обязательное поле" Margin="2,0"/>
+                                                    <CheckBox IsChecked="True"/>
+                                                    <Button Content="-"/>
+                                                </StackPanel>
+                                            </GroupBox>
+                                        </ListBoxItem>
+                                    </ListBox>
+                                    <StackPanel Orientation="Vertical" Margin="4">
+                                        <TextBlock Text="Имя метаданных:"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="Серия номер паспорта"/>
+                                            <Button Content="+" Margin="2,0"/>
+                                        </StackPanel>
                                     </StackPanel>
+                                    <Button Content="Сохранить" HorizontalAlignment="Left" Width="200"/>
                                 </StackPanel>
-                                <Button Content="Сохранить" HorizontalAlignment="Left" Width="200"/>
-                            </StackPanel>
-                        </Border>
-                    </DockPanel>
-                </TabItem>
-            </TabControl>
-        </TabItem>
-    </TabControl>
+                            </Border>
+                        </DockPanel>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+        </TabControl>
+        <StatusBar Height="20">
+            <Ellipse Width="10" Height="10">
+                <Ellipse.Style>
+                    <Style TargetType="Ellipse">
+                        <Setter Property="Fill" Value="Red"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                <Setter Property="Fill" Value="Green"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Ellipse.Style>
+            </Ellipse>
+            <TextBlock Text="Появились новые документы для индексации!!!"/>
+        </StatusBar>
+    </StackPanel>
+
 </Window>
