@@ -25,11 +25,14 @@ namespace Scanner.Views.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _isLoaded = false;
+        string tempfilePath = "..\\..\\..\\Образец.pdf";
+
         public MainWindow()
         {
             InitializeComponent();
 
-            PdfViewTest();
+            PdfView();
         }
 
         #region For test without ui
@@ -84,25 +87,26 @@ namespace Scanner.Views.Windows
             fileService.Move(filePath, fileName: fileData.Guid.ToString());
         }
 
-        private void PdfViewTest()
+        private void PdfView()
         {
-            string tempfilePath = "..\\..\\..\\Образец.pdf";
+            try
+            {
+                moonPdfPanel.OpenFile(tempfilePath);
+                moonPdfPanel.PageRowDisplay = System.Data.MoonPdf.Wpf.PageRowDisplayType.ContinuousPageRows;
+                _isLoaded = true;                
+            }
+            catch (Exception)
+            {
+                _isLoaded = false;
+                throw;
+            }
 
-            moonPdfPanel.OpenFile(tempfilePath);
-            moonPdfPanel.PageRowDisplay = System.Data.MoonPdf.Wpf.PageRowDisplayType.ContinuousPageRows;
-            //System.Drawing.Image imgPage;
-            //DocumentReader documentReader;
-
-            //using (DocumentRenderer documentRenderer = new DocumentRenderer(tempfilePath))
-            //{
-            //    documentReader = new DocumentReader(tempfilePath);
-            //    var pages = documentReader.Pages.ToArray();
-            //    imgPage = documentRenderer.Render(pages[0], pages[0].Size);
-
-            //    Bitmap bitmap = new Bitmap(imgPage);
-            //    BitmapSource bmpResource = getBitMapSourceFromBitmap(bitmap);
-            //    image.Source = bmpResource;
-            //}
+            btnZoomIn.IsEnabled = _isLoaded;
+            btnZoomOut.IsEnabled = _isLoaded;
+            btnDoublePage.IsEnabled = _isLoaded;
+            btnFullHeight.IsEnabled = _isLoaded;
+            btnSinglePage.IsEnabled = _isLoaded;
+            btnZoomReset.IsEnabled = _isLoaded;
         }
 
         #endregion
@@ -117,7 +121,7 @@ namespace Scanner.Views.Windows
         {
             System.Environment.Exit(0);
         }
-
+        #region //Работа c изображением - пока не нужно
         [DllImport("gdi32")]
         static extern int DeleteObject(IntPtr o);
         /// <summary>
@@ -152,6 +156,54 @@ namespace Scanner.Views.Windows
 
             return result;
         }
+        #endregion
 
+        private void btnZoomIn_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.ZoomIn();                
+            }
+        }
+
+        private void btnZoomOut_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.ZoomOut();
+            }
+        }
+
+        private void btnZoomReset_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.Zoom(1.0);
+            }
+        }
+
+        private void btnFullHeight_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.ZoomToHeight();
+            }
+        }
+
+        private void btnSinglePage_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.ViewType = System.Data.MoonPdf.Wpf.ViewType.SinglePage;
+            }
+        }
+
+        private void btnDoublePage_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.ViewType = System.Data.MoonPdf.Wpf.ViewType.Facing;
+            }
+        }
     }
 }

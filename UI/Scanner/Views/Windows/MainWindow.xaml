@@ -108,8 +108,12 @@
                         </StackPanel>
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4">
-                            <Button Content="+" Margin="0,2" Height="30"/>
-                            <Button Content="-" Height="30"/>
+                            <Button x:Name="btnZoomIn" Content="+" Click="btnZoomIn_Click" IsEnabled="False" Margin="0,2" Height="30"/>
+                            <Button x:Name="btnZoomOut" Content="-" Click="btnZoomOut_Click" IsEnabled="False" Margin="0,2" Height="30"/>
+                            <Button x:Name="btnZoomReset" Content="100%" Click="btnZoomReset_Click" IsEnabled="False" Margin="0,2" Height="30"/>
+                            <Button x:Name="btnFullHeight" Content="Полная высота" Click="btnFullHeight_Click" IsEnabled="False" Margin="0,2" Height="30"/>
+                            <Button x:Name="btnSinglePage" Content="Одна страница" Click="btnSinglePage_Click" IsEnabled="False" Margin="0,2" Height="30"/>
+                            <Button x:Name="btnDoublePage" Content="Двестраницы" Click="btnDoublePage_Click" IsEnabled="False" Margin="0,2" Height="30"/>
                         </StackPanel>
                         <!--<Image Name="imgDocument"/>-->
                         <mpp:MoonPdfPanel x:Name="moonPdfPanel" Background="LightGray" ViewType="SinglePage"/>
