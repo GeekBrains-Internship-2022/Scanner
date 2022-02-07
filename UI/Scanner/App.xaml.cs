@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Scanner.interfaces;
 using Scanner.Models;
 using Scanner.Data.Stores.InDB;
+using Scanner.ViewModels;
 
 namespace Scanner
 {
@@ -76,7 +77,8 @@ namespace Scanner
             });
 
             #endregion 
-            
+            services.AddSingleton<MainWindowViewModel>();
+
             var path = host.Configuration.GetConnectionString("Default");
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
             services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
