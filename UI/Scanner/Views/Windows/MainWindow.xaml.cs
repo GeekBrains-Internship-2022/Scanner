@@ -29,14 +29,14 @@ namespace Scanner.Views.Windows
         {
             InitializeComponent();
 
-            PdfViewTest(imgDocument);
+            PdfViewTest();
         }
 
         #region For test without ui
 
         private static readonly IConfiguration __Configuration = App.Services.GetRequiredService<IConfiguration>();
 
-        private static void MethodForTest(System.Windows.Controls.Image image)
+        private static void MethodForTest()
         {
             //ObserverTest();
             //FileServiceTest();
@@ -84,22 +84,25 @@ namespace Scanner.Views.Windows
             fileService.Move(filePath, fileName: fileData.Guid.ToString());
         }
 
-        private static void PdfViewTest(System.Windows.Controls.Image image)
+        private void PdfViewTest()
         {
-            string tempfilePath = "..\\..\\..\\Образец.pdf";            
-            System.Drawing.Image imgPage;
-            DocumentReader documentReader;
+            string tempfilePath = "..\\..\\..\\Образец.pdf";
 
-            using (DocumentRenderer documentRenderer = new DocumentRenderer(tempfilePath))
-            {
-                documentReader = new DocumentReader(tempfilePath);
-                var pages = documentReader.Pages.ToArray();
-                imgPage = documentRenderer.Render(pages[0], pages[0].Size);
+            moonPdfPanel.OpenFile(tempfilePath);
+            moonPdfPanel.PageRowDisplay = System.Data.MoonPdf.Wpf.PageRowDisplayType.ContinuousPageRows;
+            //System.Drawing.Image imgPage;
+            //DocumentReader documentReader;
 
-                Bitmap bitmap = new Bitmap(imgPage);
-                BitmapSource bmpResource = getBitMapSourceFromBitmap(bitmap);
-                image.Source = bmpResource;
-            }
+            //using (DocumentRenderer documentRenderer = new DocumentRenderer(tempfilePath))
+            //{
+            //    documentReader = new DocumentReader(tempfilePath);
+            //    var pages = documentReader.Pages.ToArray();
+            //    imgPage = documentRenderer.Render(pages[0], pages[0].Size);
+
+            //    Bitmap bitmap = new Bitmap(imgPage);
+            //    BitmapSource bmpResource = getBitMapSourceFromBitmap(bitmap);
+            //    image.Source = bmpResource;
+            //}
         }
 
         #endregion

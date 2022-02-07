@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mpp="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
         xmlns:local="clr-namespace:Scanner"
         mc:Ignorable="d"
         Title="MainWindow" Width="1328" Height="480">
@@ -110,7 +111,8 @@
                             <Button Content="+" Margin="0,2" Height="30"/>
                             <Button Content="-" Height="30"/>
                         </StackPanel>
-                        <Image Name="imgDocument"/>
+                        <!--<Image Name="imgDocument"/>-->
+                        <mpp:MoonPdfPanel x:Name="moonPdfPanel" Background="LightGray" ViewType="SinglePage"/>
                     </DockPanel>
                 </DockPanel>
             </TabItem>
