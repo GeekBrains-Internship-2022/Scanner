@@ -105,6 +105,7 @@ namespace Scanner.Views.Windows
             btnZoomOut.IsEnabled = _isLoaded;
             btnDoublePage.IsEnabled = _isLoaded;
             btnFullHeight.IsEnabled = _isLoaded;
+            btnFullWidth.IsEnabled = _isLoaded;
             btnSinglePage.IsEnabled = _isLoaded;
             btnZoomReset.IsEnabled = _isLoaded;
         }
@@ -203,6 +204,14 @@ namespace Scanner.Views.Windows
             if (_isLoaded)
             {
                 moonPdfPanel.ViewType = System.Data.MoonPdf.Wpf.ViewType.Facing;
+            }
+        }
+
+        private void btnFullWidth_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded)
+            {
+                moonPdfPanel.ZoomToWidth();
             }
         }
     }
