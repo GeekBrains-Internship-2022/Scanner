@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mpp="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:local="clr-namespace:Scanner"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         mc:Ignorable="d"
@@ -107,19 +108,57 @@
                                 <Button Content="Следующий документ"/>
                             </StackPanel>
                         </StackPanel>
-                    <DockPanel>
-                        <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4">
-                            <Button x:Name="btnZoomIn" Content="+" Click="btnZoomIn_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                            <Button x:Name="btnZoomOut" Content="-" Click="btnZoomOut_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                            <Button x:Name="btnZoomReset" Content="100%" Click="btnZoomReset_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                            <Button x:Name="btnFullHeight" Content="Растянуть по высоте" Click="btnFullHeight_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                            <Button x:Name="btnFullWidth" Content="Растянуть по ширине" Click="btnFullWidth_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                            <Button x:Name="btnSinglePage" Content="Одна страница" Click="btnSinglePage_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                            <Button x:Name="btnDoublePage" Content="Двестраницы" Click="btnDoublePage_Click" IsEnabled="False" Margin="0,2" Height="30"/>
-                        </StackPanel>
-                        <!--<Image Name="imgDocument"/>-->
+
+                    <Grid>
+                        
                         <mpp:MoonPdfPanel x:Name="moonPdfPanel" Background="LightGray" ViewType="SinglePage"/>
-                    </DockPanel>
+
+                        <!-- #region Buttons -->
+
+                        <StackPanel VerticalAlignment="Top" 
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+
+                            <StackPanel.Resources>
+                                <Style TargetType="Button">
+                                    <Setter Property="Margin" Value="1, 0"/>
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="Width"  Value="25"/>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="Background" Value="#f0f0f0"/>
+                                </Style>
+                            </StackPanel.Resources>
+
+                            <Button x:Name="btnZoomIn" Click="btnZoomIn_Click" ToolTip="Увеличить">
+                                <fa:SvgAwesome Icon="Regular_PlusSquare"/>
+                            </Button>
+                            <Button x:Name="btnZoomOut" Click="btnZoomOut_Click" ToolTip="Уменьшить">
+                                <fa:SvgAwesome Icon="Regular_MinusSquare"/>
+                            </Button>
+                            <Button x:Name="btnZoomReset" Click="btnZoomReset_Click" ToolTip="100%">
+                                <fa:SvgAwesome Icon="Solid_ExpandArrowsAlt"/>
+                            </Button>
+                            <Button x:Name="btnFullHeight" Click="btnFullHeight_Click" ToolTip="Растянуть по высоте">
+                                <fa:SvgAwesome Icon="Solid_ArrowsAltV"/>
+                            </Button>
+                            <Button x:Name="btnFullWidth" Click="btnFullWidth_Click" ToolTip="Растянуть по ширине">
+                                <fa:SvgAwesome Icon="Solid_ArrowsAltH"/>
+                            </Button>
+                            <Button x:Name="btnSinglePage" Click="btnSinglePage_Click" ToolTip="Одна страница">
+                                <fa:SvgAwesome Icon="Regular_FileAlt"/>
+                            </Button>
+                            <Button x:Name="btnDoublePage" Click="btnDoublePage_Click" ToolTip="Две страницы">
+                                <fa:SvgAwesome Icon="Regular_Copy"/>
+                            </Button>
+
+                        </StackPanel>
+
+                        <!-- #endregion -->
+
+                        <!--<Image Name="imgDocument"/>-->
+                    </Grid>
+
                 </DockPanel>
             </TabItem>
             <TabItem Name="tbiAdmin" Header="Администратор" HorizontalContentAlignment="Stretch">
