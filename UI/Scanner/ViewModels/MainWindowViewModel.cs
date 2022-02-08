@@ -9,5 +9,13 @@ namespace Scanner.ViewModels
 {
     class MainWindowViewModel: ViewModel
     {
+        private string _title = "Сканировщик";
+
+        public string Title { get => _title; set => Set(ref _title, value); }
+
+        public MainWindowViewModel()
+        {
+
+        }
     }
 }
