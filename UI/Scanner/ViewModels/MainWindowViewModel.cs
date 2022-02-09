@@ -14,6 +14,7 @@ namespace Scanner.ViewModels
 
         public IList<ScanDocument> ScaningDocuments { get; } = new ObservableCollection<ScanDocument>(); //Список отсканированных файлов
         public IList<DocumetnFilter> DocumetnFilters { get; } = new ObservableCollection<DocumetnFilter>(); //Список фильтров
+        public ScanDocument SelectDocument;
 
         public string Title { get => _title; set => Set(ref _title, value); }
 
@@ -32,6 +33,7 @@ namespace Scanner.ViewModels
             ScaningDocuments.Remove(document);
         }
 
+        //Класс отсканированного документа
         public class ScanDocument
         {
             public string FilePath { get; set; }
@@ -43,6 +45,7 @@ namespace Scanner.ViewModels
             public string Name { get; set; }
         }
 
+        //Класс фильтра
         public class DocumetnFilter
         {
             public string FilterName { get; set; }
