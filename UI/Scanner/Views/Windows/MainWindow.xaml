@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Width="1328" Height="480">
     <Window.Resources>
-        <AlternationConverter x:Key="AlternationConverter"/>
+        <!--<AlternationConverter x:Key="AlternationConverter"/>-->
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -39,13 +39,8 @@
                         <TextBlock Text="Появились новые документы для индексации!!!"/>
                     </StatusBar>    
                     <DockPanel DockPanel.Dock="Left">
-                            <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
-                                <ComboBoxItem Content="По имени"/>
-                                <ComboBoxItem Content="По типу"/>
-                                <ComboBoxItem Content="По названию"/>
-                                <ComboBoxItem Content="По времени"/>
-                                <ComboBoxItem Content="Тип5"/>
-                            </ComboBox>
+                        <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding DocumetnFilters}" DisplayMemberPath="FilterName">                                
+                        </ComboBox>
                             <TreeView Name="trvFiles" >
                                 <TreeViewItem Header="Паспорт" IsExpanded="True">
                                     <ListBoxItem Content="1.pdf"/>
