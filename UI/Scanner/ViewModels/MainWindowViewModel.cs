@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Scanner.interfaces;
+using Scanner.Service;
 using Scanner.ViewModels.Base;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,9 @@ namespace Scanner.ViewModels
     class MainWindowViewModel: ViewModel
     {
         private static readonly IConfiguration __Configuration = App.Services.GetRequiredService<IConfiguration>();
+        private readonly IFileService fileService;
+        private readonly ObserverService observerService;
+        private readonly string path = __Configuration["ObserverPath"];
         private List<string> _types = new List<string>();
         //private List<string[]> _filesList = new List<string[]>();
         private string _title = "Сканировщик";
@@ -23,13 +28,23 @@ namespace Scanner.ViewModels
 
         public string Title { get => _title; set => Set(ref _title, value); }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IFileService fileService, ObserverService observerService)
         {
             ScaningDocuments = GetScanDocuments();
 
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По имени" });
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По типу" });
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По времени" });
+            this.fileService = fileService;
+            this.observerService = observerService;
+            this.observerService.Notify += ObserverService_Notify;
+            //this.observerService.Start(path);
+        }
+
+        private void ObserverService_Notify(string message)
+        {
+            var documenttype = message.Substring((path + "\\").Length);
+            //fileService.CreateFileData(message, documenttype);
         }
 
         private void DeleteScanDocument(ScanDocument document)
@@ -58,36 +73,39 @@ namespace Scanner.ViewModels
                 Console.WriteLine(e.Message);
             }
 
-            foreach (var dir in subDirs)
+            if (subDirs != null)
             {
-                List<string[]> _filesList = new List<string[]>();
-                try
+                foreach (var dir in subDirs)
                 {
-                    _filesList.Add(System.IO.Directory.GetFiles(dir));
-                    var s = dir.Substring((path + "\\").Length);    //получаем тип из названия папки
-                    _types.Add(s);
-
-                    foreach (var files in _filesList.ToArray())
+                    List<string[]> _filesList = new List<string[]>();
+                    try
                     {
-                        foreach (var file in files)
+                        _filesList.Add(System.IO.Directory.GetFiles(dir));
+                        var s = dir.Substring((path + "\\").Length);    //получаем тип из названия папки
+                        _types.Add(s);
+
+                        foreach (var files in _filesList.ToArray())
                         {
-                            System.IO.FileInfo fileInfo = new System.IO.FileInfo(file);
-                            documents.Add(new ScanDocument { Date = fileInfo.CreationTime.ToShortTimeString(), FilePath = file, Name = fileInfo.Name, Type = s });
+                            foreach (var file in files)
+                            {
+                                System.IO.FileInfo fileInfo = new System.IO.FileInfo(file);
+                                documents.Add(new ScanDocument { Date = fileInfo.CreationTime.ToShortTimeString(), FilePath = file, Name = fileInfo.Name, Type = s });
+                            }
                         }
                     }
-                }
 
-                catch (UnauthorizedAccessException e)
-                {
+                    catch (UnauthorizedAccessException e)
+                    {
 
-                    Console.WriteLine(e.Message);
-                }
+                        Console.WriteLine(e.Message);
+                    }
 
-                catch (System.IO.DirectoryNotFoundException e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }            
+                    catch (System.IO.DirectoryNotFoundException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }     
+            }        
 
             return documents;
         }
