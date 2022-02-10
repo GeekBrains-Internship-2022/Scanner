@@ -48,7 +48,7 @@ namespace Scanner.Service
             while (!_Token.IsCancellationRequested) { }     //  Костыль, чтобы сервис не выгружался
         }
 
-        public Task StartAsync(string path) => Task.Run(() => { Start(path); });
+        public async Task StartAsync(string path) => await Task.Run(() => { Start(path); });
 
         private void OnCreated(object sender, FileSystemEventArgs e)
         {
