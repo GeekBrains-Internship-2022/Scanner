@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Scanner.interfaces;
+using Scanner.Models;
 using Scanner.Service;
 using Scanner.ViewModels.Base;
 using System;
@@ -17,6 +18,7 @@ namespace Scanner.ViewModels
         private static readonly IConfiguration __Configuration = App.Services.GetRequiredService<IConfiguration>();
         private readonly IFileService fileService;
         private readonly ObserverService observerService;
+        private readonly IStore<FileData> storeFD;
         private readonly string path = __Configuration["ObserverPath"];
         private List<string> _types = new List<string>();
         //private List<string[]> _filesList = new List<string[]>();
@@ -28,7 +30,7 @@ namespace Scanner.ViewModels
 
         public string Title { get => _title; set => Set(ref _title, value); }
 
-        public MainWindowViewModel(IFileService fileService, ObserverService observerService)
+        public MainWindowViewModel(IFileService fileService, ObserverService observerService, IStore<FileData> _storeFD)
         {
             ScaningDocuments = GetScanDocuments();
 
@@ -37,6 +39,7 @@ namespace Scanner.ViewModels
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По времени" });
             this.fileService = fileService;
             this.observerService = observerService;
+            storeFD = _storeFD;
             this.observerService.Notify += ObserverService_Notify;
             //this.observerService.Start(path);
         }
@@ -44,6 +47,7 @@ namespace Scanner.ViewModels
         private void ObserverService_Notify(string message)
         {
             var documenttype = message.Substring((path + "\\").Length);
+            storeFD.Add(fileService.CreateFileData(message, documenttype));
             //fileService.CreateFileData(message, documenttype);
         }
 
