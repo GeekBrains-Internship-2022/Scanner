@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Documents\Паспорт\" />
     <Folder Include="Infrastructure\Converters\" />
     <Folder Include="Controls\" />
   </ItemGroup>
@@ -44,7 +45,7 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\Образец.pdf">
+    <None Update="Documents\Договор\Образец.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
