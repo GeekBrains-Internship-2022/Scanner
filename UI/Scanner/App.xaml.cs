@@ -14,7 +14,6 @@ using Scanner.Service.RabbitMQ;
 using Serilog;
 using Scanner.Data;
 using Microsoft.EntityFrameworkCore;
-using Scanner.interfaces;
 using Scanner.Models;
 using Scanner.Data.Stores.InDB;
 using Scanner.ViewModels;

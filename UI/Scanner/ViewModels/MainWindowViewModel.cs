@@ -7,9 +7,11 @@ using Scanner.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Scanner.ViewModels
 {
@@ -24,7 +26,7 @@ namespace Scanner.ViewModels
         //private List<string[]> _filesList = new List<string[]>();
         private string _title = "Сканировщик";
 
-        public IList<ScanDocument> ScaningDocuments { get; } = new ObservableCollection<ScanDocument>(); //Список отсканированных файлов
+        public ObservableCollection<ScanDocument> ScaningDocuments { get; } = new ObservableCollection<ScanDocument>(); //Список отсканированных файлов
         public IList<DocumetnFilter> DocumetnFilters { get; } = new ObservableCollection<DocumetnFilter>(); //Список фильтров
         public ScanDocument SelectDocument;
 
@@ -41,13 +43,33 @@ namespace Scanner.ViewModels
             this.observerService = observerService;
             storeFD = _storeFD;
             this.observerService.Notify += ObserverService_Notify;
-            //this.observerService.Start(path);
+            startwtfservice();
         }
 
+        private async void startwtfservice()
+        {
+            await this.observerService.StartAsync(path);
+        }
+        private delegate void ObserverService_NotifyD(string a);
         private void ObserverService_Notify(string message)
         {
+            Application.Current.Dispatcher.Invoke(new ObserverService_NotifyD(InvokeObserverService_Notify), new object[] { message });
+
+        }
+
+        private void InvokeObserverService_Notify(string message)
+        {
             var documenttype = message.Substring((path + "\\").Length);
-            storeFD.Add(fileService.CreateFileData(message, documenttype));
+            System.IO.FileInfo fileInfo = new System.IO.FileInfo(message);
+            ScaningDocuments.Add(new ScanDocument { Date = fileInfo.CreationTime.ToShortTimeString(), FilePath = message, Name = fileInfo.Name, Type = documenttype });
+            var _fildata = fileService.CreateFileData(message, documenttype);
+            //var id = storeFD.Add(new FileData { 
+                
+            //    FilePath=message,
+            //    Document=new Document { DocumentType = "паспорт" },
+            
+            //});
+            //Debug.WriteLine("id: {0}",id);
             //fileService.CreateFileData(message, documenttype);
         }
 
