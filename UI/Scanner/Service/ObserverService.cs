@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Scanner.Service
 {
@@ -46,6 +48,8 @@ namespace Scanner.Service
             while (!_Token.IsCancellationRequested) { }     //  Костыль, чтобы сервис не выгружался
         }
 
+        public Task StartAsync(string path) => Task.Run(() => { Start(path); });
+
         private void OnCreated(object sender, FileSystemEventArgs e)
         {
             if (!File.Exists(e.FullPath))
@@ -64,6 +68,6 @@ namespace Scanner.Service
         private void OnChanged(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Changed: \"{e.FullPath}\"");
         private void OnDeleted(object sender, FileSystemEventArgs e) => _Logger.LogInformation($"Deleted: \"{e.FullPath}\"");
         private void OnError(object sender, ErrorEventArgs e) => _Logger.LogError(e.GetException().Message);
-        private void OnDisposed(object sender, EventArgs e) => _Logger.LogInformation("Observer Service is Disposed");
+        private void OnDisposed(object sender, EventArgs e) => Debug.WriteLine("Observer Service is Disposed");
     }
 }
