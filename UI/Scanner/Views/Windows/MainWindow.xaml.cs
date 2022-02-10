@@ -30,9 +30,9 @@ namespace Scanner.Views.Windows
 
         public MainWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
 
-            PdfView();
+            //PdfView();
         }
 
         #region For test without ui
