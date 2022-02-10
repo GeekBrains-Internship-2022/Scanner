@@ -40,20 +40,9 @@
                     </StatusBar>    
                     <DockPanel DockPanel.Dock="Left">
                         <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding DocumetnFilters}" DisplayMemberPath="FilterName">                                
-                        </ComboBox>
-                            <TreeView Name="trvFiles" >
-                                <TreeViewItem Header="Паспорт" IsExpanded="True">
-                                    <ListBoxItem Content="1.pdf"/>
-                                    <ListBoxItem Content="2.pdf"/>
-                                </TreeViewItem>
-                                <TreeViewItem Header="Договор">
-                                    <ListBox BorderBrush="Transparent">
-                                        <ListBoxItem Content="3.pdf"/>
-                                        <ListBoxItem Content="4.pdf"/>
-                                    </ListBox>
-                                </TreeViewItem>
-                            </TreeView>
-                        </DockPanel>
+                        </ComboBox>                        
+                        <ListBox ItemsSource="{Binding ScaningDocuments}" DisplayMemberPath="Name"/>
+                    </DockPanel>
                     <StackPanel DockPanel.Dock="Right">
                             <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
                                 <ComboBoxItem Content="Паспорт"/>
