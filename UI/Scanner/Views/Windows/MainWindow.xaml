@@ -5,22 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mpp="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:Scanner"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         mc:Ignorable="d"
         Title="MainWindow" Width="1328" Height="480">
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding GetFilesCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+
     <Window.Resources>
         <AlternationConverter x:Key="AlternationConverter"/>
     </Window.Resources>
+
     <DockPanel>
+        
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Меню">
-                <MenuItem Name="mniSettings" Header="Настройки" Click="mniSettings_Click"/>
+                <MenuItem Header="Настройки" Command="{Binding OpenSettingsCommand}"/>
                 <Separator/>
-                <MenuItem Name="mniExit" Header="Выход" Click="mniExit_Click"/>
+                <MenuItem Header="Выход" Command="{Binding CloseAppCommand}"/>
             </MenuItem>
         </Menu>
+
         <TabControl>
+            
             <TabItem Name="tbiIndex" Header="Оператор" HorizontalContentAlignment="Stretch">
                 <DockPanel>
                     <StatusBar DockPanel.Dock="Bottom">
@@ -46,18 +58,9 @@
                                 <ComboBoxItem Content="По времени"/>
                                 <ComboBoxItem Content="Тип5"/>
                             </ComboBox>
-                            <TreeView Name="trvFiles" >
-                                <TreeViewItem Header="Паспорт" IsExpanded="True">
-                                    <ListBoxItem Content="1.pdf"/>
-                                    <ListBoxItem Content="2.pdf"/>
-                                </TreeViewItem>
-                                <TreeViewItem Header="Договор">
-                                    <ListBox BorderBrush="Transparent">
-                                        <ListBoxItem Content="3.pdf"/>
-                                        <ListBoxItem Content="4.pdf"/>
-                                    </ListBox>
-                                </TreeViewItem>
-                            </TreeView>
+                            <ListBox ItemsSource="{Binding Documents}"
+                                     DisplayMemberPath="Name"
+                                     SelectedItem="{Binding SelectedDocument}"/>
                         </DockPanel>
                     <StackPanel DockPanel.Dock="Right">
                             <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
@@ -111,7 +114,7 @@
 
                     <Grid>
                         
-                        <mpp:MoonPdfPanel x:Name="moonPdfPanel" Background="LightGray" ViewType="SinglePage"/>
+                        <mpp:MoonPdfPanel x:Name="moonPdfPanel" Background="LightGray" ViewType="SinglePage" x:FieldModifier="public"/>
 
                         <!-- #region Buttons -->
 
@@ -130,25 +133,25 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <Button x:Name="btnZoomIn" Click="btnZoomIn_Click" ToolTip="Увеличить">
+                            <Button Command="{Binding }" ToolTip="Увеличить">
                                 <fa:SvgAwesome Icon="Regular_PlusSquare"/>
                             </Button>
-                            <Button x:Name="btnZoomOut" Click="btnZoomOut_Click" ToolTip="Уменьшить">
+                            <Button Command="{Binding }" ToolTip="Уменьшить">
                                 <fa:SvgAwesome Icon="Regular_MinusSquare"/>
                             </Button>
-                            <Button x:Name="btnZoomReset" Click="btnZoomReset_Click" ToolTip="100%">
+                            <Button Command="{Binding }" ToolTip="100%">
                                 <fa:SvgAwesome Icon="Solid_ExpandArrowsAlt"/>
                             </Button>
-                            <Button x:Name="btnFullHeight" Click="btnFullHeight_Click" ToolTip="Растянуть по высоте">
+                            <Button Command="{Binding }" ToolTip="Растянуть по высоте">
                                 <fa:SvgAwesome Icon="Solid_ArrowsAltV"/>
                             </Button>
-                            <Button x:Name="btnFullWidth" Click="btnFullWidth_Click" ToolTip="Растянуть по ширине">
+                            <Button Command="{Binding }" ToolTip="Растянуть по ширине">
                                 <fa:SvgAwesome Icon="Solid_ArrowsAltH"/>
                             </Button>
-                            <Button x:Name="btnSinglePage" Click="btnSinglePage_Click" ToolTip="Одна страница">
+                            <Button Command="{Binding }" ToolTip="Одна страница">
                                 <fa:SvgAwesome Icon="Regular_FileAlt"/>
                             </Button>
-                            <Button x:Name="btnDoublePage" Click="btnDoublePage_Click" ToolTip="Две страницы">
+                            <Button Command="{Binding }" ToolTip="Две страницы">
                                 <fa:SvgAwesome Icon="Regular_Copy"/>
                             </Button>
 
@@ -161,6 +164,7 @@
 
                 </DockPanel>
             </TabItem>
+            
             <TabItem Name="tbiAdmin" Header="Администратор" HorizontalContentAlignment="Stretch">
                 <TabControl>
                     <TabItem Header="Рецензирование">
