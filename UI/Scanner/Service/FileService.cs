@@ -8,49 +8,6 @@ using System.IO;
 
 namespace Scanner.Service
 {
-    public class FileDataBuilder : IFileDataBuilder
-    {
-        private readonly FileData _Data = new();
-
-        public IFileDataBuilder Path(string path)
-        {
-            _Data.FilePath = path;
-            return this;
-        }
-
-        public IFileDataBuilder Name(string name)
-        {
-            _Data.DocumentName = name;
-            return this;
-        }
-
-        public IFileDataBuilder Description(string description)
-        {
-            _Data.Description = description;
-            return this;
-        }
-
-        public IFileDataBuilder Time(DateTime time)
-        {
-            _Data.DateAdded = time;
-            return this;
-        }
-
-        public IFileDataBuilder IsIndexed(bool isIndexed)
-        {
-            _Data.Indexed = isIndexed;
-            return this;
-        }
-
-        public IFileDataBuilder Document(Document document)
-        {
-            _Data.Document = document;
-            return this;
-        }
-
-        public FileData Build() => _Data;
-    }
-
     public class FileService : IFileService
     {
         private readonly ILogger<IFileService> _Logger;
@@ -94,13 +51,7 @@ namespace Scanner.Service
             }
         }
 
-        public FileData CreateFileData(string path, string documentType)
-        {
-            var data = new FileDataBuilder();
-
-            return data.Path(path)
-                .Document(new Document { DocumentType = documentType })
-                .Build();
-        }
+        public FileData CreateFileData(string path, string documentType) => new FileData
+            {FilePath = path, Document = new Document {DocumentType = documentType}};
     }
 }
