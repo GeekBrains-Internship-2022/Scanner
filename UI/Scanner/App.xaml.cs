@@ -44,13 +44,7 @@ namespace Scanner
             services.AddSingleton<IObserverService, ObserverService>();                   //  Сервис мониторинга каталога
 
             //  Сервис файлов
-            services.AddSingleton<IFileService, FileService>(sp =>
-            {
-                var logger = sp.GetRequiredService<ILogger<IFileService>>();
-                var destPath = host.Configuration["FileService:DestinationPath"];
-
-                return new FileService(logger, destPath);
-            });
+            services.AddSingleton<IFileService, FileService>();
 
             #region Сервис кролика
 

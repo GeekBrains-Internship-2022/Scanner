@@ -5,21 +5,20 @@ using Scanner.Models;
 
 using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Scanner.Service
 {
     public class FileService : IFileService
     {
         private readonly ILogger<IFileService> _Logger;
-        private readonly string _DestPath;
+        private readonly IConfiguration _Configuration;
         private readonly string _FileExtension = ".pdf";
 
-        public FileService(ILogger<IFileService> logger, string destPath)
+        public FileService(ILogger<IFileService> logger, IConfiguration configuration)
         {
             _Logger = logger;
-            if (string.IsNullOrEmpty(destPath))
-                destPath = ".\\scanfiles";
-            _DestPath = Path.GetFullPath(destPath);
+            _Configuration = configuration;
         }
 
         public void Move(string sourceFileName, string fileName)
@@ -30,14 +29,16 @@ namespace Scanner.Service
                 throw new FileNotFoundException();
             }
 
-            var path = Path.Combine(_DestPath, fileName + _FileExtension);
+            var storage = _Configuration["Directories:StorageDirectory"];
+            var newFileName = Path.Combine(storage, fileName + _FileExtension);
+            //var path = Path.Combine(_DestPath, fileName + _FileExtension);
 
             try
             {
-                if (!Directory.Exists(_DestPath))
-                    Directory.CreateDirectory(_DestPath);   //  TODO: пока нет UI, потом удалить
+                if (!Directory.Exists(storage))
+                    Directory.CreateDirectory(storage);   //  TODO: пока нет UI, потом удалить
 
-                File.Move(sourceFileName, path);
+                File.Move(sourceFileName, newFileName);
             }
             catch (IOException e)
             {
