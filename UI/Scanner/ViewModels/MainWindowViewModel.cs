@@ -39,6 +39,7 @@ namespace Scanner.ViewModels
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По имени" });
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По типу" });
             DocumetnFilters.Add(new DocumetnFilter { FilterName = "По времени" });
+
             this.fileService = fileService;
             this.observerService = observerService;
             storeFD = _storeFD;
@@ -50,6 +51,7 @@ namespace Scanner.ViewModels
         {
             await this.observerService.StartAsync(path);
         }
+
         private delegate void ObserverService_NotifyD(string a);
         private void ObserverService_Notify(string message)
         {
@@ -58,9 +60,13 @@ namespace Scanner.ViewModels
         }
 
         private void InvokeObserverService_Notify(string message)
-        {
-            var documenttype = message.Substring((path + "\\").Length);
+        {            
             System.IO.FileInfo fileInfo = new System.IO.FileInfo(message);
+
+            // Достаем название папки (типа)
+            var documenttype = message.Substring((path + "\\").Length);
+            documenttype = documenttype.Remove(documenttype.Length - ("\\" + fileInfo.Name).Length);
+
             ScaningDocuments.Add(new ScanDocument { Date = fileInfo.CreationTime.ToShortTimeString(), FilePath = message, Name = fileInfo.Name, Type = documenttype });
             var _fildata = fileService.CreateFileData(message, documenttype);
             //var id = storeFD.Add(new FileData { 
@@ -88,7 +94,7 @@ namespace Scanner.ViewModels
 
             try
             {
-                subDirs = System.IO.Directory.GetDirectories(path);
+                subDirs = System.IO.Directory.GetDirectories(path); // получаем список подпапок
             }
             catch (UnauthorizedAccessException e)
             {
@@ -106,7 +112,7 @@ namespace Scanner.ViewModels
                     List<string[]> _filesList = new List<string[]>();
                     try
                     {
-                        _filesList.Add(System.IO.Directory.GetFiles(dir));
+                        _filesList.Add(System.IO.Directory.GetFiles(dir, "*.pdf")); // получаем список файлов в подпапке
                         var s = dir.Substring((path + "\\").Length);    //получаем тип из названия папки
                         _types.Add(s);
 
@@ -119,20 +125,17 @@ namespace Scanner.ViewModels
                             }
                         }
                     }
-
                     catch (UnauthorizedAccessException e)
                     {
 
-                        Console.WriteLine(e.Message);
+                        Debug.WriteLine(e.Message);
                     }
-
                     catch (System.IO.DirectoryNotFoundException e)
                     {
-                        Console.WriteLine(e.Message);
+                        Debug.WriteLine(e.Message);
                     }
                 }     
-            }        
-
+            }
             return documents;
         }
 

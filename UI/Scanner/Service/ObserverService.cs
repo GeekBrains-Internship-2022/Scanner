@@ -60,8 +60,11 @@ namespace Scanner.Service
 
             var path = Path.GetFullPath(e.FullPath);
 
-            _Logger.LogInformation($"Created: \"{path}\"");
-            Notify?.Invoke(path);
+            /*_Logger.LogInformation($"Created: \"{path}\"");
+            Notify?.Invoke(path);*/
+
+            _Logger.LogInformation($"Created: \"{e.FullPath}\"");
+            Notify?.Invoke(e.FullPath);
         }
 
         private void OnRenamed(object sender, RenamedEventArgs e) => _Logger.LogInformation($"Renamed: \"{e.OldName}\" -> \"{e.Name}\"");
