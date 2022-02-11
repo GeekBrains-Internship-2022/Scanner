@@ -41,7 +41,7 @@ namespace Scanner
 
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            services.AddSingleton<ObserverService>();                   //  Сервис мониторинга каталога
+            services.AddSingleton<IObserverService, ObserverService>();                   //  Сервис мониторинга каталога
 
             //  Сервис файлов
             services.AddSingleton<IFileService, FileService>(sp =>
