@@ -32,12 +32,12 @@ namespace Scanner.Service
 
         private void Start()
         {
-            if (string.IsNullOrEmpty(_Configuration["ObserverPath"]))
+            if (string.IsNullOrEmpty(_Configuration["Directories:ObserverPath"]))
             {
                 _Logger.LogError("Key not found for ObserverPath");
                 throw new NullReferenceException("Key not found for ObserverPath");
             }
-            var path = _Configuration["ObserverPath"];
+            var path = _Configuration["Directories:ObserverPath"];
 
             if (!Directory.Exists(path))                 //  TODO: Пока нет ui, потом удалить
                 Directory.CreateDirectory(path);
@@ -103,9 +103,6 @@ namespace Scanner.Service
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            if (!File.Exists(e.FullPath))
-                return;
-
             var path = Path.GetFullPath(e.FullPath);
 
             _Logger.LogInformation($"Deleted: \"{e.FullPath}\"");
