@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
@@ -38,6 +37,30 @@ namespace Scanner.ViewModels
         {
             get => _SelectedDocument;
             set => Set(ref _SelectedDocument, value);
+        }
+
+        #endregion
+
+        #region Status : string - статус
+
+        private string _Status = "Готов";
+
+        public string Status
+        {
+            get => _Status;
+            set => Set(ref _Status, value);
+        }
+
+        #endregion
+
+        #region SelectedSorting : string - выбранная сортировка
+
+        private string _SelectedSorting;
+
+        public string SelectedSorting
+        {
+            get => _SelectedSorting;
+            set => Set(ref _SelectedSorting, value);
         }
 
         #endregion
@@ -88,6 +111,7 @@ namespace Scanner.ViewModels
             Application.Current.Dispatcher.Invoke(() => { Documents.Add(GetDocumentByPath(message)); });
 
             //  Лампочка
+            Status = "Появились новые документы для индексации!!!";
         }
 
         private void OnDeletedNotify(string message)
@@ -178,23 +202,7 @@ namespace Scanner.ViewModels
         private bool CanCloseAppCommandExecute(object p) => true;
 
         #endregion
-
-        #region OpenPdfCommand - команда открыть pdf файл
-
-        private ICommand _OpenPdfCommand;
-
-        public ICommand OpenPdfCommand => _OpenPdfCommand
-            ??= new LambdaCommand(OnOpenPdfCommandExecuted, CanOpenPdfCommandExecute);
-
-        private void OnOpenPdfCommandExecuted(object p)
-        {
-
-        }
-
-        private bool CanOpenPdfCommandExecute(object p) => true;
-
-        #endregion
-
+        
         #endregion
     }
 }

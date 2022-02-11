@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Scanner.ViewModels;
 
 namespace Scanner.Views.Windows
 {
@@ -25,7 +26,6 @@ namespace Scanner.Views.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _isLoaded = false;
 
         public MainWindow()
         {
@@ -85,30 +85,7 @@ namespace Scanner.Views.Windows
         //    fileService.Move(filePath, fileName: fileData.Guid.ToString());
         //}
 
-        private void PdfView()
-        {
-            string tempfilePath = "..\\..\\..\\Образец.pdf";
-
-            try
-            {
-                moonPdfPanel.OpenFile(tempfilePath);
-                moonPdfPanel.PageRowDisplay = System.Data.MoonPdf.Wpf.PageRowDisplayType.ContinuousPageRows;
-                _isLoaded = true;
-            }
-            catch (Exception)
-            {
-                _isLoaded = false;
-                throw;
-            }
-
-            //btnZoomIn.IsEnabled = _isLoaded;
-            //btnZoomOut.IsEnabled = _isLoaded;
-            //btnDoublePage.IsEnabled = _isLoaded;
-            //btnFullHeight.IsEnabled = _isLoaded;
-            //btnFullWidth.IsEnabled = _isLoaded;
-            //btnSinglePage.IsEnabled = _isLoaded;
-            //btnZoomReset.IsEnabled = _isLoaded;
-        }
+        
 
         #endregion
 
@@ -122,6 +99,7 @@ namespace Scanner.Views.Windows
         //{
         //    System.Environment.Exit(0);
         //}
+
         //#region //Работа c изображением - пока не нужно
         //[DllImport("gdi32")]
         //static extern int DeleteObject(IntPtr o);
