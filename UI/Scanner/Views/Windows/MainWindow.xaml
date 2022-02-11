@@ -40,8 +40,14 @@
                     </StatusBar>    
                     <DockPanel DockPanel.Dock="Left">
                         <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding DocumetnFilters}" DisplayMemberPath="FilterName">                                
-                        </ComboBox>                        
-                        <ListBox ItemsSource="{Binding ScaningDocuments}" DisplayMemberPath="Name"/>
+                        </ComboBox>
+                        <ListBox ItemsSource="{Binding ScaningDocuments}" SelectedItem="{Binding SelectDocument}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Name}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </DockPanel>
                     <StackPanel DockPanel.Dock="Right">
                             <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">

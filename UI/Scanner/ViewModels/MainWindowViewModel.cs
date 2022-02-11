@@ -23,8 +23,9 @@ namespace Scanner.ViewModels
         private readonly IFileService fileService;
         private readonly ObserverService observerService;
         private readonly IStore<FileData> storeFD;
-        private readonly string path = __Configuration["ObserverPath"];
-        private List<string> _types = new List<string>();
+        private readonly string path = __Configuration["ObserverPath"]; // горячая папака
+        private List<string> _types = new List<string>();   // типы документов
+        public ScanDocument _selectDocument;    // выбранный документ
 
         //private object _status;
 
@@ -32,8 +33,18 @@ namespace Scanner.ViewModels
         private string _title = "Сканировщик";
 
         public ObservableCollection<ScanDocument> ScaningDocuments { get; } = new ObservableCollection<ScanDocument>(); //Список отсканированных файлов
-        public IList<DocumetnFilter> DocumetnFilters { get; } = new ObservableCollection<DocumetnFilter>(); //Список фильтров
-        public ScanDocument SelectDocument;
+        public IList<DocumetnFilter> DocumetnFilters { get; } = new ObservableCollection<DocumetnFilter>(); //Список фильтров        
+
+        // Выбор элемента в ListBox
+        public ScanDocument SelectDocument
+        {
+            get { return _selectDocument; }
+            set
+            {
+                _selectDocument = value;
+                OnPropertyChanged("SelectDocument");
+            }
+        }
 
         //public object Status { get => this._status; set { this._status = value; OnPropertyChanged(); } }
 
