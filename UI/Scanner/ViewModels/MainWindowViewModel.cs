@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Scanner.Infrastructure.Commands;
 using Scanner.interfaces;
+using Scanner.interfaces.RabbitMQ;
 using Scanner.Models;
 using Scanner.ViewModels.Base;
 using Scanner.Views.Windows;
@@ -23,6 +26,7 @@ namespace Scanner.ViewModels
 
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
+        private readonly IRabbitMQService _RabbitMQService;
 
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();
 
@@ -38,12 +42,14 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration, IObserverService observer, IFileService fileService)
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration,
+            IObserverService observer, IFileService fileService, IRabbitMQService rabbitMQService)
         {
             _Logger = logger;
             _Configuration = configuration;
             _Observer = observer;
             _FileService = fileService;
+            _RabbitMQService = rabbitMQService;
 
             ObserverInitialize();
         }
@@ -80,7 +86,6 @@ namespace Scanner.ViewModels
                 throw new DuplicateNameException(message);
 
             Application.Current.Dispatcher.Invoke(() => { Documents.Add(GetDocumentByPath(message)); });
-            //Documents.Add(GetDocumentByPath(message));
 
             //  Лампочка
         }
@@ -183,7 +188,7 @@ namespace Scanner.ViewModels
 
         private void OnOpenPdfCommandExecuted(object p)
         {
-            
+
         }
 
         private bool CanOpenPdfCommandExecute(object p) => true;
