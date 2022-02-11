@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Scanner.Infrastructure.Commands.Base;
 using Scanner.interfaces;
 using Scanner.Models;
 using Scanner.Service;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Scanner.ViewModels
 {
@@ -23,12 +25,17 @@ namespace Scanner.ViewModels
         private readonly IStore<FileData> storeFD;
         private readonly string path = __Configuration["ObserverPath"];
         private List<string> _types = new List<string>();
+
+        //private object _status;
+
         //private List<string[]> _filesList = new List<string[]>();
         private string _title = "Сканировщик";
 
         public ObservableCollection<ScanDocument> ScaningDocuments { get; } = new ObservableCollection<ScanDocument>(); //Список отсканированных файлов
         public IList<DocumetnFilter> DocumetnFilters { get; } = new ObservableCollection<DocumetnFilter>(); //Список фильтров
         public ScanDocument SelectDocument;
+
+        //public object Status { get => this._status; set { this._status = value; OnPropertyChanged(); } }
 
         public string Title { get => _title; set => Set(ref _title, value); }
 
@@ -44,7 +51,7 @@ namespace Scanner.ViewModels
             this.observerService = observerService;
             storeFD = _storeFD;
             this.observerService.Notify += ObserverService_Notify;
-            startwtfservice();
+            startwtfservice();            
         }
 
         private async void startwtfservice()
@@ -138,6 +145,17 @@ namespace Scanner.ViewModels
             }
             return documents;
         }
+
+        //public ICommand SelectItemClick
+        //{
+        //    get
+        //    {
+        //        return new DelegateCommand((obj) =>
+        //        {
+        //            MessageBox.Show("");
+        //        }, (obj) => true);                
+        //    }
+        //}
 
         //Класс отсканированного документа
         public class ScanDocument

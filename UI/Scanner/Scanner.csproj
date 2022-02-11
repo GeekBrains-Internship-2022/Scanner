@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="interfaces\ICommand.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Views\Windows\Letter2.png" />
   </ItemGroup>
 
