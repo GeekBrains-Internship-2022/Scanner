@@ -52,56 +52,8 @@
 
                         <TextBlock Text="{Binding Status}"/>
                     </StatusBar>
-                    
-                    <StackPanel DockPanel.Dock="Right">
-                        <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
-                            <ComboBoxItem Content="Паспорт"/>
-                            <ComboBoxItem Content="Паспорт2"/>
-                            <ComboBoxItem Content="Паспорт3"/>
-                            <ComboBoxItem Content="Паспорт4"/>
-                        </ComboBox>
-                        <ListBox>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <GroupBox Header="Название метаданных">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBox Text="Метаданные"/>
-                                            <Button Content="-"/>
-                                        </StackPanel>
-                                    </GroupBox>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            <ListBoxItem>
-                                <GroupBox Header="Название метаданных">
-                                    <TextBox Text="Метаданные"/>
-                                </GroupBox>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <GroupBox Header="Название метаданных">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox Text="Метаданные"/>
-                                        <Button Content="-"/>
-                                    </StackPanel>
-                                </GroupBox>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <GroupBox Header="Название метаданных">
-                                    <TextBox Text="Метаданные"/>
-                                </GroupBox>
-                            </ListBoxItem>
-                        </ListBox>
-                        <GroupBox Header="Дополнительные данные">
-                            <StackPanel Orientation="Horizontal" Margin="4">
-                                <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
-                                </ComboBox>
-                                <Button Content="+" Margin="4"/>
-                            </StackPanel>
-                        </GroupBox>
-                        <StackPanel>
-                            <Button Content="Сохранить"/>
-                            <Button Content="Следующий документ"/>
-                        </StackPanel>
-                    </StackPanel>
+
+                    <ctrl:OperatorControlPanel  DockPanel.Dock="Right"/>
 
                     <Grid>
 

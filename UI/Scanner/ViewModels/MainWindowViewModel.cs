@@ -30,6 +30,18 @@ namespace Scanner.ViewModels
 
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();
 
+        #region IsConnected : bool - индикатор подключения
+
+        private bool _IsConnected = true;
+
+        public bool IsConnected
+        {
+            get => _IsConnected;
+            set => Set(ref _IsConnected, value);
+        }
+
+        #endregion
+
         #region SelectedDocument : ScanDocument - выбранный документ
 
         private ScanDocument _SelectedDocument;
