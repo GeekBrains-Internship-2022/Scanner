@@ -1,189 +1,209 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Scanner.Infrastructure.Commands.Base;
-using Scanner.interfaces;
-using Scanner.Models;
-using Scanner.Service;
-using Scanner.ViewModels.Base;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Data;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+using Scanner.Infrastructure.Commands;
+using Scanner.interfaces;
+using Scanner.interfaces.RabbitMQ;
+using Scanner.Models;
+using Scanner.ViewModels.Base;
+using Scanner.Views.Windows;
+
+
 namespace Scanner.ViewModels
 {
-    class MainWindowViewModel: ViewModel
+    class MainWindowViewModel : ViewModel
     {
-        private static readonly IConfiguration __Configuration = App.Services.GetRequiredService<IConfiguration>();
-        private readonly IFileService fileService;
-        private readonly ObserverService observerService;
-        private readonly IStore<FileData> storeFD;
-        private readonly string path = __Configuration["ObserverPath"]; // горячая папака
-        private List<string> _types = new List<string>();   // типы документов
-        public ScanDocument _selectDocument;    // выбранный документ
+        private readonly ILogger<MainWindowViewModel> _Logger;
+        private readonly IConfiguration _Configuration;
 
-        //private object _status;
+        private readonly IObserverService _Observer;
+        private readonly IFileService _FileService;
+        private readonly IRabbitMQService _RabbitMQService;
 
-        //private List<string[]> _filesList = new List<string[]>();
-        private string _title = "Сканировщик";
+        public ObservableCollection<ScanDocument> Documents { get; set; } = new();
 
-        public ObservableCollection<ScanDocument> ScaningDocuments { get; } = new ObservableCollection<ScanDocument>(); //Список отсканированных файлов
-        public IList<DocumetnFilter> DocumetnFilters { get; } = new ObservableCollection<DocumetnFilter>(); //Список фильтров        
+        #region SelectedDocument : ScanDocument - выбранный документ
 
-        // Выбор элемента в ListBox
-        public ScanDocument SelectDocument
+        private ScanDocument _SelectedDocument;
+
+        public ScanDocument SelectedDocument
         {
-            get { return _selectDocument; }
-            set
+            get => _SelectedDocument;
+            set => Set(ref _SelectedDocument, value);
+        }
+
+        #endregion
+
+        #region Status : string - статус
+
+        private string _Status = "Готов";
+
+        public string Status
+        {
+            get => _Status;
+            set => Set(ref _Status, value);
+        }
+
+        #endregion
+
+        #region SelectedSorting : string - выбранная сортировка
+
+        private string _SelectedSorting;
+
+        public string SelectedSorting
+        {
+            get => _SelectedSorting;
+            set => Set(ref _SelectedSorting, value);
+        }
+
+        #endregion
+
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration,
+            IObserverService observer, IFileService fileService, IRabbitMQService rabbitMQService)
+        {
+            _Logger = logger;
+            _Configuration = configuration;
+            _Observer = observer;
+            _FileService = fileService;
+            _RabbitMQService = rabbitMQService;
+
+            ObserverInitialize();
+        }
+
+        #region Observer
+
+        private async void ObserverInitialize()
+        {
+            _Observer.NotifyOnCreated += OnCreatedNotify;
+            _Observer.NotifyOnDeleted += OnDeletedNotify;
+            _Observer.NotifyOnRenamed += OnRenamedNotify;
+
+            await _Observer.StartAsync();
+        }
+
+        private void OnRenamedNotify(string oldPath, string currentPath)
+        {
+            var document = Documents.FirstOrDefault(d => d.Path == oldPath);
+
+            if (document is null)
+                return;
+
+            var fileName = new FileInfo(currentPath).Name;
+
+            document.Name = fileName;
+            document.Path = currentPath;
+        }
+
+        private void OnCreatedNotify(string message)
+        {
+            var document = Documents.FirstOrDefault(d => d.Path == message);
+
+            if (Documents.Contains(document))
+                throw new DuplicateNameException(message);
+
+            Application.Current.Dispatcher.Invoke(() => { Documents.Add(GetDocumentByPath(message)); });
+
+            //  Лампочка
+            Status = "Появились новые документы для индексации!!!";
+        }
+
+        private void OnDeletedNotify(string message)
+        {
+            var document = Documents.FirstOrDefault(d => d.Path == message);
+
+            if (document is null)
+                return;
+
+            Application.Current.Dispatcher.Invoke(() => { Documents.Remove(document); });
+        }
+
+        #endregion
+
+        private void GetFiles()
+        {
+            var path = _Configuration["Directories:ObserverPath"];
+
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            if (!Path.IsPathFullyQualified(path))
+                path = Path.GetFullPath(path);
+
+            var directories = Directory.GetDirectories(path);
+            var files = new List<string>();
+            foreach (var dir in directories)
+                files.AddRange(Directory.GetFiles(dir));
+
+            foreach (var file in files)
+                Documents.Add(GetDocumentByPath(file));
+        }
+
+        private ScanDocument GetDocumentByPath(string file)
+        {
+            var fileInfo = new FileInfo(file);
+
+            return new ScanDocument
             {
-                _selectDocument = value;
-                OnPropertyChanged("SelectDocument");
-            }
+                Name = fileInfo.Name,
+                Date = fileInfo.CreationTime,
+                Path = file,
+                Type = fileInfo.DirectoryName.Split('\\')[^1]
+            };
         }
 
-        //public object Status { get => this._status; set { this._status = value; OnPropertyChanged(); } }
+        #region Команды
 
-        public string Title { get => _title; set => Set(ref _title, value); }
+        #region GetFilesCommand - Команда на получение списка файлов
 
-        public MainWindowViewModel(IFileService fileService, ObserverService observerService, IStore<FileData> _storeFD)
+        private ICommand _GetFilesCommand;
+
+        public ICommand GetFilesCommand => _GetFilesCommand
+            ??= new LambdaCommand(OnGetFilesCommandExecuted, CanGetFilesCommandExecute);
+
+        private void OnGetFilesCommandExecuted(object p) => GetFiles();
+
+        private bool CanGetFilesCommandExecute(object p) => true;
+
+        #endregion
+
+        #region OpenSettingsCommand - команда открыть настройки 
+
+        private ICommand _OpenSettingsCommand;
+
+        public ICommand OpenSettingsCommand => _OpenSettingsCommand
+            ??= new LambdaCommand(OnOpenSettingsCommandExecuted, CanOpenSettingsCommandExecute);
+
+        private void OnOpenSettingsCommandExecuted(object p)
         {
-            ScaningDocuments = GetScanDocuments();
-
-            DocumetnFilters.Add(new DocumetnFilter { FilterName = "По имени" });
-            DocumetnFilters.Add(new DocumetnFilter { FilterName = "По типу" });
-            DocumetnFilters.Add(new DocumetnFilter { FilterName = "По времени" });
-
-            this.fileService = fileService;
-            this.observerService = observerService;
-            storeFD = _storeFD;
-            this.observerService.Notify += ObserverService_Notify;
-            startwtfservice();            
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
         }
 
-        private async void startwtfservice()
-        {
-            await this.observerService.StartAsync(path);
-        }
+        private bool CanOpenSettingsCommandExecute(object p) => true;
 
-        private delegate void ObserverService_NotifyD(string a);
-        private void ObserverService_Notify(string message)
-        {
-            Application.Current.Dispatcher.Invoke(new ObserverService_NotifyD(InvokeObserverService_Notify), new object[] { message });
+        #endregion
 
-        }
+        #region CloseAppCommand - команда закрыть приложение
 
-        private void InvokeObserverService_Notify(string message)
-        {            
-            System.IO.FileInfo fileInfo = new System.IO.FileInfo(message);
+        private ICommand _CloseAppCommand;
 
-            // Достаем название папки (типа)
-            var documenttype = message.Substring((path + "\\").Length);
-            documenttype = documenttype.Remove(documenttype.Length - ("\\" + fileInfo.Name).Length);
+        public ICommand CloseAppCommand => _CloseAppCommand
+            ??= new LambdaCommand(OnCloseAppCommandExecuted, CanCloseAppCommandExecute);
 
-            ScaningDocuments.Add(new ScanDocument { Date = fileInfo.CreationTime.ToShortTimeString(), FilePath = message, Name = fileInfo.Name, Type = documenttype });
-            var _fildata = fileService.CreateFileData(message, documenttype);
-            //var id = storeFD.Add(new FileData { 
-                
-            //    FilePath=message,
-            //    Document=new Document { DocumentType = "паспорт" },
-            
-            //});
-            //Debug.WriteLine("id: {0}",id);
-            //fileService.CreateFileData(message, documenttype);
-        }
+        private void OnCloseAppCommandExecuted(object p) => Application.Current.Shutdown();
 
-        private void DeleteScanDocument(ScanDocument document)
-        {
-            ScaningDocuments.Remove(document);
-        }
+        private bool CanCloseAppCommandExecute(object p) => true;
 
-        private ObservableCollection<ScanDocument> GetScanDocuments()
-        {
-            var path = __Configuration["ObserverPath"];
-
-            ObservableCollection<ScanDocument> documents = new ObservableCollection<ScanDocument>();
-
-            string[] subDirs = null;            
-
-            try
-            {
-                subDirs = System.IO.Directory.GetDirectories(path); // получаем список подпапок
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            catch (System.IO.DirectoryNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            if (subDirs != null)
-            {
-                foreach (var dir in subDirs)
-                {
-                    List<string[]> _filesList = new List<string[]>();
-                    try
-                    {
-                        _filesList.Add(System.IO.Directory.GetFiles(dir, "*.pdf")); // получаем список файлов в подпапке
-                        var s = dir.Substring((path + "\\").Length);    //получаем тип из названия папки
-                        _types.Add(s);
-
-                        foreach (var files in _filesList.ToArray())
-                        {
-                            foreach (var file in files)
-                            {
-                                System.IO.FileInfo fileInfo = new System.IO.FileInfo(file);
-                                documents.Add(new ScanDocument { Date = fileInfo.CreationTime.ToShortTimeString(), FilePath = file, Name = fileInfo.Name, Type = s });
-                            }
-                        }
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-
-                        Debug.WriteLine(e.Message);
-                    }
-                    catch (System.IO.DirectoryNotFoundException e)
-                    {
-                        Debug.WriteLine(e.Message);
-                    }
-                }     
-            }
-            return documents;
-        }
-
-        //public ICommand SelectItemClick
-        //{
-        //    get
-        //    {
-        //        return new DelegateCommand((obj) =>
-        //        {
-        //            MessageBox.Show("");
-        //        }, (obj) => true);                
-        //    }
-        //}
-
-        //Класс отсканированного документа
-        public class ScanDocument
-        {
-            public string FilePath { get; set; }
-
-            public string Date { get; set; }
-
-            public string Type { get; set; }
-
-            public string Name { get; set; }
-        }
-
-        //Класс фильтра
-        public class DocumetnFilter
-        {
-            public string FilterName { get; set; }
-        }
+        #endregion
+        
+        #endregion
     }
 }

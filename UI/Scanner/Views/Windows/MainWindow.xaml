@@ -5,22 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mpp="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:ctrl="clr-namespace:Scanner.Controls"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:Scanner"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         mc:Ignorable="d"
         Title="MainWindow" Width="1328" Height="480">
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding GetFilesCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+
     <Window.Resources>
         <!--<AlternationConverter x:Key="AlternationConverter"/>-->
     </Window.Resources>
+
     <DockPanel>
+
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Меню">
-                <MenuItem Name="mniSettings" Header="Настройки" Click="mniSettings_Click"/>
+                <MenuItem Header="Настройки" Command="{Binding OpenSettingsCommand}"/>
                 <Separator/>
-                <MenuItem Name="mniExit" Header="Выход" Click="mniExit_Click"/>
+                <MenuItem Header="Выход" Command="{Binding CloseAppCommand}"/>
             </MenuItem>
         </Menu>
+
         <TabControl>
+
             <TabItem Name="tbiIndex" Header="Оператор" HorizontalContentAlignment="Stretch">
                 <DockPanel>
                     <StatusBar DockPanel.Dock="Bottom">
@@ -36,113 +49,63 @@
                                 </Style>
                             </Ellipse.Style>
                         </Ellipse>
-                        <TextBlock Text="Появились новые документы для индексации!!!"/>
-                    </StatusBar>    
-                    <DockPanel DockPanel.Dock="Left">
-                        <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding DocumetnFilters}" DisplayMemberPath="FilterName">                                
+
+                        <TextBlock Text="{Binding Status}"/>
+                    </StatusBar>
+                    
+                    <StackPanel DockPanel.Dock="Right">
+                        <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
+                            <ComboBoxItem Content="Паспорт"/>
+                            <ComboBoxItem Content="Паспорт2"/>
+                            <ComboBoxItem Content="Паспорт3"/>
+                            <ComboBoxItem Content="Паспорт4"/>
                         </ComboBox>
-                        <ListBox ItemsSource="{Binding ScaningDocuments}" SelectedItem="{Binding SelectDocument}">
+                        <ListBox>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Path=Name}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
-                    <StackPanel DockPanel.Dock="Right">
-                            <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
-                                <ComboBoxItem Content="Паспорт"/>
-                                <ComboBoxItem Content="Паспорт2"/>
-                                <ComboBoxItem Content="Паспорт3"/>
-                                <ComboBoxItem Content="Паспорт4"/>
-                            </ComboBox>
-                            <ListBox>
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <GroupBox Header="Название метаданных">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="Метаданные"/>
-                                                <Button Content="-"/>
-                                            </StackPanel>
-                                        </GroupBox>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBoxItem>
-                                    <GroupBox Header="Название метаданных">
-                                        <TextBox Text="Метаданные"/>
-                                    </GroupBox>
-                                </ListBoxItem>
-                                <ListBoxItem>
                                     <GroupBox Header="Название метаданных">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox Text="Метаданные"/>
                                             <Button Content="-"/>
                                         </StackPanel>
                                     </GroupBox>
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <GroupBox Header="Название метаданных">
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBoxItem>
+                                <GroupBox Header="Название метаданных">
+                                    <TextBox Text="Метаданные"/>
+                                </GroupBox>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <GroupBox Header="Название метаданных">
+                                    <StackPanel Orientation="Horizontal">
                                         <TextBox Text="Метаданные"/>
-                                    </GroupBox>
-                                </ListBoxItem>
-                            </ListBox>
-                            <GroupBox Header="Дополнительные данные">
-                                <StackPanel Orientation="Horizontal" Margin="4">
-                                    <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
-                                    </ComboBox>
-                                    <Button Content="+" Margin="4"/>
-                                </StackPanel>
-                            </GroupBox>
-                            <StackPanel>
-                                <Button Content="Сохранить"/>
-                                <Button Content="Следующий документ"/>
+                                        <Button Content="-"/>
+                                    </StackPanel>
+                                </GroupBox>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <GroupBox Header="Название метаданных">
+                                    <TextBox Text="Метаданные"/>
+                                </GroupBox>
+                            </ListBoxItem>
+                        </ListBox>
+                        <GroupBox Header="Дополнительные данные">
+                            <StackPanel Orientation="Horizontal" Margin="4">
+                                <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
+                                </ComboBox>
+                                <Button Content="+" Margin="4"/>
                             </StackPanel>
+                        </GroupBox>
+                        <StackPanel>
+                            <Button Content="Сохранить"/>
+                            <Button Content="Следующий документ"/>
                         </StackPanel>
+                    </StackPanel>
 
                     <Grid>
-                        
-                        <mpp:MoonPdfPanel x:Name="moonPdfPanel" Background="LightGray" ViewType="SinglePage"/>
 
-                        <!-- #region Buttons -->
-
-                        <StackPanel VerticalAlignment="Top" 
-                                    HorizontalAlignment="Center"
-                                    Orientation="Horizontal">
-
-                            <StackPanel.Resources>
-                                <Style TargetType="Button">
-                                    <Setter Property="Margin" Value="1, 0"/>
-                                    <Setter Property="Height" Value="25"/>
-                                    <Setter Property="Width"  Value="25"/>
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="Background" Value="#f0f0f0"/>
-                                </Style>
-                            </StackPanel.Resources>
-
-                            <Button x:Name="btnZoomIn" Click="btnZoomIn_Click" ToolTip="Увеличить">
-                                <fa:SvgAwesome Icon="Regular_PlusSquare"/>
-                            </Button>
-                            <Button x:Name="btnZoomOut" Click="btnZoomOut_Click" ToolTip="Уменьшить">
-                                <fa:SvgAwesome Icon="Regular_MinusSquare"/>
-                            </Button>
-                            <Button x:Name="btnZoomReset" Click="btnZoomReset_Click" ToolTip="100%">
-                                <fa:SvgAwesome Icon="Solid_ExpandArrowsAlt"/>
-                            </Button>
-                            <Button x:Name="btnFullHeight" Click="btnFullHeight_Click" ToolTip="Растянуть по высоте">
-                                <fa:SvgAwesome Icon="Solid_ArrowsAltV"/>
-                            </Button>
-                            <Button x:Name="btnFullWidth" Click="btnFullWidth_Click" ToolTip="Растянуть по ширине">
-                                <fa:SvgAwesome Icon="Solid_ArrowsAltH"/>
-                            </Button>
-                            <Button x:Name="btnSinglePage" Click="btnSinglePage_Click" ToolTip="Одна страница">
-                                <fa:SvgAwesome Icon="Regular_FileAlt"/>
-                            </Button>
-                            <Button x:Name="btnDoublePage" Click="btnDoublePage_Click" ToolTip="Две страницы">
-                                <fa:SvgAwesome Icon="Regular_Copy"/>
-                            </Button>
-
-                        </StackPanel>
+                        <ctrl:PdfViewer ItemSource="{Binding Documents}"/>
 
                         <!-- #endregion -->
 
@@ -151,6 +114,7 @@
 
                 </DockPanel>
             </TabItem>
+
             <TabItem Name="tbiAdmin" Header="Администратор" HorizontalContentAlignment="Stretch">
                 <TabControl>
                     <TabItem Header="Рецензирование">

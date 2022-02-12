@@ -7,21 +7,31 @@ using Scanner.interfaces.RabbitMQ;
 
 using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Scanner.Service.RabbitMQ
 {
     public class RabbitMQConnection : IRabbitMQConnection
     {
-        private readonly IConnectionFactory _ConnectionFactory;
+        private readonly IConfiguration _Configuration;
         private readonly ILogger<RabbitMQConnection> _Logger;
+        private readonly IConnectionFactory _ConnectionFactory;
         private IConnection _Connection;
         private bool _Disposed;
 
         private readonly object _Lock = new();
 
-        public RabbitMQConnection(IConnectionFactory connectionFactory, ILogger<RabbitMQConnection> logger)
+        public RabbitMQConnection(IConfiguration configuration, ILogger<RabbitMQConnection> logger)
         {
-            _ConnectionFactory = connectionFactory;
+            _Configuration = configuration;
+
+            _ConnectionFactory = new ConnectionFactory
+            {
+                Uri = new Uri(_Configuration["RabbitMQ:Uri"]),
+                UserName = _Configuration["RabbitMQ:Login"],
+                Password = _Configuration["RabbitMQ:Password"]
+            };
+
             _Logger = logger;
         }
 
@@ -56,6 +66,8 @@ namespace Scanner.Service.RabbitMQ
         public bool TryConnect()
         {
             _Logger.LogInformation("RabbitMQ Client is trying to connect");
+
+
 
             lock (_Lock)
             {
