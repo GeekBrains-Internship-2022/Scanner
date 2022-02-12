@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
+using Scanner.Infrastructure;
 using Scanner.interfaces;
 using Scanner.Models;
 

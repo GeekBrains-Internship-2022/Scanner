@@ -19,7 +19,7 @@
     </behaviors:Interaction.Triggers>
 
     <Window.Resources>
-        <AlternationConverter x:Key="AlternationConverter"/>
+        <!--<AlternationConverter x:Key="AlternationConverter"/>-->
     </Window.Resources>
 
     <DockPanel>
@@ -49,6 +49,7 @@
                                 </Style>
                             </Ellipse.Style>
                         </Ellipse>
+
                         <TextBlock Text="{Binding Status}"/>
                     </StatusBar>
                     

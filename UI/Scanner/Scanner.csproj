@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="interfaces\ICommand.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Views\Windows\Letter2.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Documents\Паспорт\" />
     <Folder Include="Infrastructure\Converters\" />
   </ItemGroup>
 
@@ -44,7 +49,7 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Образец.pdf">
+    <None Update="Documents\Договор\Образец.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

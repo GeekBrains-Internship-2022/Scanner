@@ -29,7 +29,7 @@ namespace Scanner.Views.Windows
 
         public MainWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
 
             //PdfView();
         }

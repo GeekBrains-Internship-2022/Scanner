@@ -16,6 +16,7 @@ using Scanner.Models;
 using Scanner.ViewModels.Base;
 using Scanner.Views.Windows;
 
+
 namespace Scanner.ViewModels
 {
     class MainWindowViewModel : ViewModel
