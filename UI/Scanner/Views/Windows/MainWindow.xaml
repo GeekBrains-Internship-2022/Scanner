@@ -70,68 +70,50 @@
             <TabItem Name="tbiAdmin" Header="Администратор" HorizontalContentAlignment="Stretch">
                 <TabControl>
                     <TabItem Header="Рецензирование">
-                        <DockPanel>
-                            <DockPanel DockPanel.Dock="Left">
-                                <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
-                                    <ComboBoxItem Content="По имени"/>
-                                    <ComboBoxItem Content="Тип"/>
-                                    <ComboBoxItem Content="Тип3"/>
-                                    <ComboBoxItem Content="Тип4"/>
-                                    <ComboBoxItem Content="Тип5"/>
-                                </ComboBox>
-                                <TreeView >
-                                    <TreeViewItem Header="Паспорт" IsExpanded="True">
-                                        <ListBoxItem Content="1.pdf"/>
-                                        <ListBoxItem Content="2.pdf"/>
-                                    </TreeViewItem>
-                                    <TreeViewItem Header="Договор">
-                                        <ListBox BorderBrush="Transparent">
-                                            <ListBoxItem Content="3.pdf"/>
-                                            <ListBoxItem Content="4.pdf"/>
-                                        </ListBox>
-                                    </TreeViewItem>
-                                </TreeView>
-                            </DockPanel>
-                            <DockPanel DockPanel.Dock="Right">
-                                <DockPanel>
-                                    <TextBlock Text="Паспорт" DockPanel.Dock="Top"/>
-                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
-                                        <Button Content="Завершить обработку" Background="LightGreen" Margin="2,0"/>
-                                        <Button Content="Отправить на доработку" Background="Red" Margin="2,0"/>
-                                    </StackPanel>
-                                    <ListBox>
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <GroupBox Header="Название метаданных">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBox Text="Метаданные"/>
-                                                    </StackPanel>
-                                                </GroupBox>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                        <ListBoxItem>
-                                            <GroupBox Header="Название метаданных">
-                                                <TextBox Text="Метаданные"/>
-                                            </GroupBox>
-                                        </ListBoxItem>
-                                        <ListBoxItem>
+                        <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+                            <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                <!--<ComboBox ItemsSource="" DockPanel.Dock="Top"/>-->
+                                <TextBlock Text="Паспорт" DockPanel.Dock="Top"/>
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                                    <Button Content="Завершить обработку" Background="LightGreen" Margin="2,0"/>
+                                    <Button Content="Отправить на доработку" Background="Red" Margin="2,0"/>
+                                </StackPanel>
+                                <ListBox>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
                                             <GroupBox Header="Название метаданных">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox Text="Метаданные"/>
                                                 </StackPanel>
                                             </GroupBox>
-                                        </ListBoxItem>
-                                        <ListBoxItem>
-                                            <GroupBox Header="Название метаданных">
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBoxItem>
+                                        <GroupBox Header="Название метаданных">
+                                            <TextBox Text="Метаданные"/>
+                                        </GroupBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <GroupBox Header="Название метаданных">
+                                            <StackPanel Orientation="Horizontal">
                                                 <TextBox Text="Метаданные"/>
-                                            </GroupBox>
-                                        </ListBoxItem>
-                                    </ListBox>
+                                            </StackPanel>
+                                        </GroupBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <GroupBox Header="Название метаданных">
+                                            <TextBox Text="Метаданные"/>
+                                        </GroupBox>
+                                    </ListBoxItem>
+                                </ListBox>
 
-                                </DockPanel>
                             </DockPanel>
-                            <DocumentViewer></DocumentViewer>
-                        </DockPanel>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                                <ctrl:PdfViewer ItemSource="{Binding Documents}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+                            </Grid>
+                        </DockPanel>                        
                     </TabItem>
                     <TabItem Header="Шаблоны">
                         <DockPanel>
