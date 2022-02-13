@@ -18,8 +18,9 @@
                     <DataTemplate>
                         <GroupBox Header="{Binding Path=Name}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding Path=Required}"/>
+                                <TextBox Text="{Binding Path=Name}"/>
                                 <Button Content="-"/>
+                                <CheckBox IsChecked="{Binding Path=Required}"/>
                             </StackPanel>
                         </GroupBox>
                     </DataTemplate>
