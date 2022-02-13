@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Scanner.ViewModels.Models
 {
-    internal class Metadata : OnPropertyChangedClass
+    public class Metadata : OnPropertyChangedClass
     {
         private string _name;
         private bool _required;

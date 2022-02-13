@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Scanner.Models;
 
 namespace Scanner.Controls
 {
@@ -20,9 +10,44 @@ namespace Scanner.Controls
     /// </summary>
     public partial class OperatorControlPanel : UserControl
     {
-        public OperatorControlPanel()
+        #region ItemSource : ObservableCollection<Template> - Шаблоны
+
+        ///<summary>Шаблоны</summary>
+        public static readonly DependencyProperty ItemSourceProperty =
+            DependencyProperty.Register(
+                nameof(ItemSource),
+                typeof(ObservableCollection<Template>),
+                typeof(OperatorControlPanel),
+                new PropertyMetadata(default(ObservableCollection<Template>)));
+
+        ///<summary>Шаблоны</summary>
+        public ObservableCollection<Template> ItemSource
         {
-            InitializeComponent();
+            get => (ObservableCollection<Template>) GetValue(ItemSourceProperty);
+            set => SetValue(ItemSourceProperty, value);
         }
+
+        #endregion
+
+        #region SelectedTemplate : Template - Выбранный шаблон
+
+        ///<summary>Выбранный шаблон</summary>
+        public static readonly DependencyProperty SelectedTemplateProperty =
+            DependencyProperty.Register(
+                nameof(SelectedTemplate),
+                typeof(Template),
+                typeof(OperatorControlPanel),
+                new PropertyMetadata(default(Template)));
+
+        ///<summary>Выбранный шаблон</summary>
+        public Template SelectedTemplate
+        {
+            get => (Template) GetValue(SelectedTemplateProperty);
+            set => SetValue(SelectedTemplateProperty, value);
+        }
+
+        #endregion
+
+        public OperatorControlPanel() => InitializeComponent();
     }
 }

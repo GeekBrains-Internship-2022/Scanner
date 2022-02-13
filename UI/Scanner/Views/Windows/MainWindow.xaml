@@ -53,7 +53,9 @@
                         <TextBlock Text="{Binding Status}"/>
                     </StatusBar>
 
-                    <ctrl:OperatorControlPanel DockPanel.Dock="Right"/>
+                    <ctrl:OperatorControlPanel DockPanel.Dock="Right"
+                                               ItemSource="{Binding Templates}"
+                                               SelectedTemplate="{Binding SelectedTemplate}"/>
 
                     <Grid>
 

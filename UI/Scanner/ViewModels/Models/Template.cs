@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Scanner.Models
 {
-    internal class Template : OnPropertyChangedClass
+    public class Template : OnPropertyChangedClass
     {
         private string _name;        
         private ObservableCollection<Metadata> _metadata;
