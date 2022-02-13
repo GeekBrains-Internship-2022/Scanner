@@ -8,15 +8,17 @@
         <StackPanel>
             <ComboBox Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт"
                       ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
+                      SelectedItem="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
                       SelectedIndex="0"
                       DisplayMemberPath="Name"/>
-            <ListBox ItemsSource="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
-                     SelectedItem="0">
+            <ListBox ItemsSource="{Binding SelectedTemplate.Metadata, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
+                     SelectedIndex="0"
+                     Height="200">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <GroupBox Header="{Binding Path=Metadata}">
+                        <GroupBox Header="{Binding Path=Name}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding Path=Metadata}"/>
+                                <TextBox Text="{Binding Path=Required}"/>
                                 <Button Content="-"/>
                             </StackPanel>
                         </GroupBox>
