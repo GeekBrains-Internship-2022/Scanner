@@ -44,7 +44,7 @@ namespace Scanner.ViewModels
             set => Set(ref _IsConnected, value);
         }
 
-        #endregion
+        #endregion        
 
         #region SelectedDocument : ScanDocument - выбранный документ
 
@@ -55,6 +55,16 @@ namespace Scanner.ViewModels
             get => _SelectedDocument;
             set => Set(ref _SelectedDocument, value);
         }
+        #endregion
+
+        #region SelectedTemplate : Template - выбранный шаблон
+        private Template _SelectedTemplate;
+        public Template SelectedTemplate
+        {
+            get => _SelectedTemplate;
+            set => Set(ref _SelectedTemplate, value);
+        }
+        
 
         #endregion
 

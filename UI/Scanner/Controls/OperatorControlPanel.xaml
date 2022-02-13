@@ -11,7 +11,7 @@
                       ItemsSource="{Binding Templates}"
                       SelectedIndex="0"
                       DisplayMemberPath="Name"/>
-            <ListBox ItemsSource="{Binding Templates}"
+            <ListBox ItemsSource="{Binding SelectedTemplate}"
                      SelectedItem="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
