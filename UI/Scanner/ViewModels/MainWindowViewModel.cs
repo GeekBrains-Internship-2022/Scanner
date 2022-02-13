@@ -102,33 +102,7 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-            /*Templates =  new ObservableCollection<Template>
-            {
-                new Template()
-                {
-                    Name = "Паспорт",
-                    Metadata =  new ObservableCollection<Metadata>
-                    {
-                        new Metadata
-                        {
-                            Name ="Номер",
-                            Required = true,                            
-                        }
-                    }
-                },
-                new Template()
-                {
-                    Name = "Свидетельство",
-                    Metadata =  new ObservableCollection<Metadata>
-                    {
-                        new Metadata
-                        {
-                            Name ="Номер",
-                            Required = true,                            
-                        }
-                    }
-                },
-            };*/
+            
 
             ObserverInitialize();
         }
@@ -258,6 +232,8 @@ namespace Scanner.ViewModels
         private bool CanCloseAppCommandExecute(object p) => true;
 
         #endregion
+
+
         
         #endregion
     }

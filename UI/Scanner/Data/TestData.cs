@@ -13,6 +13,10 @@ namespace Scanner.Data
     {
         public ObservableCollection<Template> Templates { get; set; }
 
+        public ObservableCollection<Document> Documents { get; set; }
+
+        public ObservableCollection<FileData> Files { get; set; }
+
         public TestData()
         {
             Templates = new ObservableCollection<Template>
@@ -82,6 +86,10 @@ namespace Scanner.Data
                     }
                 },
             };
+            
+            Documents = new ObservableCollection<Document>();
+
+            Files = new ObservableCollection<FileData>();
         }
     }
 }
