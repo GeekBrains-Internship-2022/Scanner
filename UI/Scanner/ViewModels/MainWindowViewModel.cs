@@ -14,6 +14,7 @@ using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Models;
 using Scanner.ViewModels.Base;
+using Scanner.ViewModels.Models;
 using Scanner.Views.Windows;
 
 
@@ -29,6 +30,9 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
 
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();
+        public ObservableCollection<Template> Templates { get; set; } = new();
+
+        public ObservableCollection<Metadata> Metadatas { get; set; } = new();
 
         #region IsConnected : bool - индикатор подключения
 
@@ -86,6 +90,36 @@ namespace Scanner.ViewModels
             _Observer = observer;
             _FileService = fileService;
             _RabbitMQService = rabbitMQService;
+
+            //Templates.Add(new Template { Name = "Паспорт", Metadata = Metadatas.Add(new ObservableCollection<TemplateMetadata> { Id = 1, Name = "Номер", Required = true }) });
+
+            Templates =  new ObservableCollection<Template>
+            {
+                new Template()
+                {
+                    Name = "Паспорт",
+                    Metadata =  new ObservableCollection<Metadata>
+                    {
+                        new Metadata
+                        {
+                            Name ="Номер",
+                            Required = true,                            
+                        }
+                    }
+                },
+                new Template()
+                {
+                    Name = "Свидетельство",
+                    Metadata =  new ObservableCollection<Metadata>
+                    {
+                        new Metadata
+                        {
+                            Name ="Номер",
+                            Required = true,                            
+                        }
+                    }
+                },
+            };
 
             ObserverInitialize();
         }
