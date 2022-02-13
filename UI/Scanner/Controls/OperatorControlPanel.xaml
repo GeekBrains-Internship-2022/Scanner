@@ -7,7 +7,7 @@
     <Grid>
         <StackPanel>
             <ComboBox Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт"
-                      ItemsSource="{Binding Templates, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
+                      ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
                       SelectedIndex="0"
                       DisplayMemberPath="Name"/>
             <ListBox ItemsSource="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
