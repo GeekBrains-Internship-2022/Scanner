@@ -3,44 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Scanner.Controls">
+             xmlns:local="clr-namespace:Scanner.Controls"
+             DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}">
     <Grid>
         <StackPanel>
-            <ComboBox Name="tbxDocumentName" Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт">
-                <ComboBoxItem Content="Паспорт"/>
-                <ComboBoxItem Content="Паспорт2"/>
-                <ComboBoxItem Content="Паспорт3"/>
-                <ComboBoxItem Content="Паспорт4"/>
-            </ComboBox>
-            <ListBox>
+            <ComboBox Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт"
+                      ItemsSource="{Binding Templates}"
+                      SelectedIndex="0"
+                      DisplayMemberPath="Name"/>
+            <ListBox ItemsSource="{Binding Templates}"
+                     SelectedItem="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <GroupBox Header="Название метаданных">
+                        <GroupBox Header="{Binding Path=Metadata}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Text="Метаданные"/>
+                                <TextBox Text="{Binding Path=Metadata}"/>
                                 <Button Content="-"/>
                             </StackPanel>
                         </GroupBox>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBoxItem>
-                    <GroupBox Header="Название метаданных">
-                        <TextBox Text="Метаданные"/>
-                    </GroupBox>
-                </ListBoxItem>
-                <ListBoxItem>
-                    <GroupBox Header="Название метаданных">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Text="Метаданные"/>
-                            <Button Content="-"/>
-                        </StackPanel>
-                    </GroupBox>
-                </ListBoxItem>
-                <ListBoxItem>
-                    <GroupBox Header="Название метаданных">
-                        <TextBox Text="Метаданные"/>
-                    </GroupBox>
-                </ListBoxItem>
+                </ListBox.ItemTemplate>                
             </ListBox>
             <GroupBox Header="Дополнительные данные">
                 <StackPanel Orientation="Horizontal" Margin="4">
