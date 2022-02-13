@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+using Scanner.Data;
 using Scanner.Infrastructure.Commands;
 using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
@@ -28,10 +28,10 @@ namespace Scanner.ViewModels
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
+        private readonly TestData _TestData = new TestData();
 
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();
         public ObservableCollection<Template> Templates { get; set; } = new();
-
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();
 
         #region IsConnected : bool - индикатор подключения
@@ -101,9 +101,8 @@ namespace Scanner.ViewModels
             _FileService = fileService;
             _RabbitMQService = rabbitMQService;
 
-            //Templates.Add(new Template { Name = "Паспорт", Metadata = Metadatas.Add(new ObservableCollection<TemplateMetadata> { Id = 1, Name = "Номер", Required = true }) });
-
-            Templates =  new ObservableCollection<Template>
+            Templates = _TestData.Templates;
+            /*Templates =  new ObservableCollection<Template>
             {
                 new Template()
                 {
@@ -129,7 +128,7 @@ namespace Scanner.ViewModels
                         }
                     }
                 },
-            };
+            };*/
 
             ObserverInitialize();
         }
