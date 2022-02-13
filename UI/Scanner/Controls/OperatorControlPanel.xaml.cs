@@ -49,5 +49,7 @@ namespace Scanner.Controls
         #endregion
 
         public OperatorControlPanel() => InitializeComponent();
+
+
     }
 }
