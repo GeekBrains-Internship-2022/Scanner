@@ -127,75 +127,39 @@
                                     <Button Content="Удалить шаблон" Margin="2"/>
                                     <Button Content="Создать новый" Margin="2"/>
                                 </StackPanel>
-                                <ListBox>
-                                    <ListBoxItem>
-                                        <TextBlock Text="паспорт"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <TextBlock Text="договор"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <TextBlock Text="претензия"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <TextBlock Text="еще что-то"/>
-                                    </ListBoxItem>
+                                <ListBox x:Name="lbAdminTemplate" ItemsSource="{Binding Templates}" SelectedIndex="0"
+                                         SelectedItem="{Binding SelectedEditTemplateAdmin}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
                                 </ListBox>
                             </DockPanel>
                             <Border BorderBrush="Black" BorderThickness="1" >
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal" Margin="4">
                                         <TextBlock Text="Название шаблона:"/>
-                                        <TextBox Text="Паспорт" Margin="2,0"/>
+                                        <TextBox Text="{Binding SelectedEditTemplateAdmin.Name}" Margin="2,0"/>
                                     </StackPanel>
-                                    <ListBox Margin="4">
+                                    <ListBox Margin="4" ItemsSource="{Binding SelectedEditTemplateAdmin.Metadata}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <GroupBox Header="Название метаданных">
+                                                <GroupBox Header="{Binding Path=Name}">
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBox Text="Метаданные"/>
+                                                        <TextBox Text="{Binding Path=Name}"/>
                                                         <Button Content="-"/>
                                                         <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                        <CheckBox IsChecked="True"/>
+                                                        <CheckBox IsChecked="{Binding Path=Required}"/>
                                                     </StackPanel>
                                                 </GroupBox>
                                             </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                        <ListBoxItem>
-                                            <GroupBox Header="Название метаданных">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBox Text="Метаданные"/>
-                                                    <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                    <CheckBox IsChecked="True"/>
-                                                    <Button Content="-"/>
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </ListBoxItem>
-                                        <ListBoxItem>
-                                            <GroupBox Header="Название метаданных">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBox Text="Метаданные"/>
-                                                    <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                    <CheckBox IsChecked="True"/>
-                                                    <Button Content="-"/>
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </ListBoxItem>
-                                        <ListBoxItem>
-                                            <GroupBox Header="Название метаданных">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBox Text="Метаданные"/>
-                                                    <TextBlock Text="Обязательное поле" Margin="2,0"/>
-                                                    <CheckBox IsChecked="True"/>
-                                                    <Button Content="-"/>
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </ListBoxItem>
+                                        </ListBox.ItemTemplate> 
                                     </ListBox>
                                     <StackPanel Orientation="Vertical" Margin="4">
                                         <TextBlock Text="Имя метаданных:"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBox Text="Серия номер паспорта"/>
+                                            <TextBox Text="{Binding ExtraDataTemplate, UpdateSourceTrigger=PropertyChanged}"/>
                                             <Button Content="+" Margin="2,0"/>
                                         </StackPanel>
                                     </StackPanel>

@@ -61,14 +61,33 @@ namespace Scanner.ViewModels
         #endregion
 
         #region SelectedTemplate : Template - выбранный шаблон
+
         private Template _SelectedTemplate;
         public Template SelectedTemplate
         {
             get => _SelectedTemplate;
             set => Set(ref _SelectedTemplate, value);
         }
-        
+        #endregion
 
+        #region SelectedEditTemplateAdmin : Template - выбранный шаблон для редактирования
+
+        private Template _SelectedEditTemplateAdmin;
+        public Template SelectedEditTemplateAdmin
+        {
+            get => _SelectedEditTemplateAdmin;
+            set => Set(ref _SelectedEditTemplateAdmin, value);
+        }
+        #endregion
+
+        #region ExtraDataTemplate : Metadata - дополнительное поле данных для добавления в шаблон
+
+        private string _ExtraDataTemplate;
+        public string ExtraDataTemplate
+        {
+            get { return _ExtraDataTemplate; }
+            set { _ExtraDataTemplate = value; }            
+        }
         #endregion
 
         #region Status : string - статус
@@ -105,7 +124,7 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-            
+
 
             ObserverInitialize();
         }
@@ -258,11 +277,12 @@ namespace Scanner.ViewModels
                 Document = new Document
                 {
                     DocumentType = SelectedTemplate.Name,
-                    Id=1,
+                    Id = 1,
                     IndexingDate = System.DateTime.Now,
                     Metadata = _TestData.Documents[0].Metadata,
-            } });
-        }        
+                }
+            });
+        }
 
         private bool CanSaveFileCommandExecute(object p) => true;
 
@@ -270,9 +290,10 @@ namespace Scanner.ViewModels
 
         #region NextFileCommand - Команда выбора следующего файла - заглушка
 
-        private ICommand _NextFileCommand;
+        private ICommand _NextFileCommand;        
+
         public ICommand NextFileCommand => _NextFileCommand
-            ??= new LambdaCommand(OnNextFileCommandExecuted, CanNextFileCommandExecute);
+??= new LambdaCommand(OnNextFileCommandExecuted, CanNextFileCommandExecute);
 
         private void OnNextFileCommandExecuted(object p) => NextFile();
         private bool CanNextFileCommandExecute(object p) => true;
