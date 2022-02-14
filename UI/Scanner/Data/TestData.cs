@@ -104,7 +104,7 @@ namespace Scanner.Data
                 {
                     Id = d,
                     DocumentType = $"DocType {d}",
-                    IndexingDate = new DateTime(_Rand.Next(2000, 2021), _Rand.Next(1, 12), _Rand.Next(20)),
+                    IndexingDate = new DateTime(_Rand.Next(2000, 2021), _Rand.Next(1, 12), _Rand.Next(1, 20)),
                     Metadata = Enumerable.Range(1, 10).Select(m => new DocumentMetadata
                     {
                         Id = m,
