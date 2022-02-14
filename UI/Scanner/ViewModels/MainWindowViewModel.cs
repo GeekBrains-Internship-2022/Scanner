@@ -233,6 +233,8 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region SaveFileCommand - Команда сохранения файла после индексирования - заглушка
+
         private ICommand _SaveFileCommand;
         public ICommand SaveFileCommand => _SaveFileCommand
             ??= new LambdaCommand(OnSaveFileCommandExecuted, CanSaveFileCommandExecute);
@@ -257,9 +259,27 @@ namespace Scanner.ViewModels
                     IndexingDate = System.DateTime.Now,
                     Metadata = _TestData.Documents[0].Metadata,
             } });
-        }
+        }        
 
         private bool CanSaveFileCommandExecute(object p) => true;
+
+        #endregion
+
+        #region NextFileCommand - Команда выбора следующего файла - заглушка
+
+        private ICommand _NextFileCommand;
+        public ICommand NextFileCommand => _NextFileCommand
+            ??= new LambdaCommand(OnNextFileCommandExecuted, CanNextFileCommandExecute);
+
+        private void OnNextFileCommandExecuted(object p) => NextFile();
+        private bool CanNextFileCommandExecute(object p) => true;
+
+        private void NextFile()
+        {
+
+        }
+
+        #endregion
 
         #endregion
     }
