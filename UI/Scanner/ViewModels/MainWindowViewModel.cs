@@ -30,9 +30,12 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
         private readonly TestData _TestData = new TestData();
 
-        public ObservableCollection<ScanDocument> Documents { get; set; } = new();
-        public ObservableCollection<Template> Templates { get; set; } = new();
-        public ObservableCollection<Metadata> Metadatas { get; set; } = new();
+        public ObservableCollection<ScanDocument> Documents { get; set; } = new();  //Список отсканированных документов
+        public ObservableCollection<Template> Templates { get; set; } = new();      //Список шаблонов
+        public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
+        public ObservableCollection<Document> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
+        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
+
 
         #region IsConnected : bool - индикатор подключения
 
