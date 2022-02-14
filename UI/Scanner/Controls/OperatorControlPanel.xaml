@@ -10,6 +10,7 @@
             <ComboBox Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт"
                       ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
                       SelectedItem="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
+                      SelectedValue="{Binding SelectedTemplate}"
                       SelectedIndex="0"
                       DisplayMemberPath="Name"/>
             <ListBox ItemsSource="{Binding SelectedTemplate.Metadata, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
@@ -20,7 +21,7 @@
                         <GroupBox Header="{Binding Path=Name}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBox Text="{Binding Path=Name}"/>
-                                <Button Content="-"/>
+                                <Button Content="+"/>
                                 <CheckBox IsChecked="{Binding Path=Required}"/>
                             </StackPanel>
                         </GroupBox>
