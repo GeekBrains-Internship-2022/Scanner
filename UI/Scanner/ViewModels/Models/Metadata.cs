@@ -15,5 +15,17 @@ namespace Scanner.ViewModels.Models
         public string Name { get => _name; set => _name = value; }
 
         public bool Required { get => _required; set => _required = value; }
+
+        #region Data : string - метаданные
+
+        private string _Data;
+
+        public string Data
+        {
+            get => _Data;
+            set => Set(ref _Data, value);
+        }
+
+        #endregion
     }
 }

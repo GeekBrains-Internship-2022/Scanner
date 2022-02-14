@@ -3,42 +3,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Scanner.Controls"
+             xmlns:l="clr-namespace:Scanner.Controls"
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
              DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}">
-    <Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
         <StackPanel>
-            <ComboBox Height="20" IsEditable="True" IsTextSearchEnabled="True" Text="Паспорт"
-                      ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
-                      SelectedItem="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
-                      SelectedValue="{Binding SelectedTemplate}"
-                      SelectedIndex="0"
-                      DisplayMemberPath="Name"/>
-            <ListBox ItemsSource="{Binding SelectedTemplate.Metadata, RelativeSource={RelativeSource AncestorType=local:OperatorControlPanel}}"
-                     SelectedIndex="0"
-                     Height="200">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <GroupBox Header="{Binding Path=Name}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding Path=Name}"/>
-                                <Button Content="+"/>
-                                <CheckBox IsChecked="{Binding Path=Required}"/>
-                            </StackPanel>
-                        </GroupBox>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>                
-            </ListBox>
+
+            <StackPanel.Resources>
+                <Style TargetType="GroupBox" x:Key="gbData">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+                <Style TargetType="GroupBox">
+                    <Setter Property="Margin" Value="5 0"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <ComboBox Height="20" SelectedIndex="0" IsEditable="True" IsTextSearchEnabled="True"
+                  SelectedItem="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}, Mode=TwoWay}"
+                  ItemsSource="{Binding TemplatesItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
+                  DisplayMemberPath="Name"/>
+
+            <GroupBox Header="Основные" Margin="5 0">
+                <ItemsControl ItemsSource="{Binding SelectedTemplate.Metadata, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <GroupBox Header="{Binding Path=Name}" Style="{StaticResource gbData}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding Path=Data}"
+                                             TextWrapping="Wrap"
+                                             Width="200"/>
+                                    <Button>
+                                        <Button.Content>
+                                            <fa:SvgAwesome Icon="Regular_MinusSquare" Width="15"
+                                                       Foreground="Red"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </GroupBox>
+
             <GroupBox Header="Дополнительные данные">
                 <StackPanel Orientation="Horizontal" Margin="4">
                     <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
                     </ComboBox>
-                    <Button Content="+" Margin="4"/>
+                    <Button Padding="4">
+                        <Button.Content>
+                            <fa:SvgAwesome Icon="Regular_PlusSquare" Width="15"
+                                           Foreground="Green"/>
+                        </Button.Content>
+                    </Button>
                 </StackPanel>
             </GroupBox>
             <StackPanel>
-                <Button Content="Сохранить" Command="{Binding SaveFileCommand}"/>
-                <Button Content="Следующий документ" Command="{Binding NextFileCommand}"/>
+                <Button Content="Сохранить" Command="{Binding SaveCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
+                    Margin="5 2"/>
+                <Button Content="Следующий документ" Command="{Binding NextFileCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
+                    Margin="5 2"/>
             </StackPanel>
         </StackPanel>
-    </Grid>
+    </ScrollViewer>
 </UserControl>
