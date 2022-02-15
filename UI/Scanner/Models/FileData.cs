@@ -12,7 +12,7 @@ namespace Scanner.Models
         /// Уникальный идентификатор файла в БД
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Guid { get; } = Guid.NewGuid();
+        public Guid Guid { get; }// = Guid.NewGuid();
         /// <summary>
         /// Путь к файлу
         /// </summary>

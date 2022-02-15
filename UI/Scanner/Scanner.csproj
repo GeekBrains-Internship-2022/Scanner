@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Documents\Паспорт\" />
-    <Folder Include="Infrastructure\Converters\" />
   </ItemGroup>
 
   <ItemGroup>
