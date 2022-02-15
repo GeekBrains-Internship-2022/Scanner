@@ -47,6 +47,7 @@ namespace Scanner
 
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<SettingsWindowViewModel>();
+            services.AddSingleton<ViewModelTestDB>();
 
             var path = host.Configuration.GetConnectionString("Default");
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));

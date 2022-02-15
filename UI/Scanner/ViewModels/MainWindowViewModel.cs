@@ -266,23 +266,23 @@ namespace Scanner.ViewModels
 
         private void SaveFile()
         {
-            var path = _Configuration["Directories:StorageDirectory"];
-            _TestData.Files.Add(new FileData
-            {
-                DateAdded = System.DateTime.Now,
-                Description = "",
-                DocumentName = "",
-                FilePath = path,
-                Id = 1,
-                Indexed = true,
-                Document = new Document
-                {
-                    DocumentType = SelectedTemplate.Name,
-                    Id = 1,
-                    IndexingDate = System.DateTime.Now,
-                    Metadata = _TestData.Documents[0].Metadata,
-                }
-            });
+            //var path = _Configuration["Directories:StorageDirectory"];
+            //_TestData.Files.Add(new FileData
+            //{
+            //    DateAdded = System.DateTime.Now,
+            //    Description = "",
+            //    DocumentName = "",
+            //    FilePath = path,
+            //    Id = 1,
+            //    Indexed = true,
+            //    Document = new Document
+            //    {
+            //        DocumentType = SelectedTemplate.Name,
+            //        Id = 1,
+            //        IndexingDate = System.DateTime.Now,
+            //        Metadata = _TestData.Documents[0].Metadata,
+            //    }
+            //});
         }
 
         private bool CanSaveFileCommandExecute(object p) => true;
