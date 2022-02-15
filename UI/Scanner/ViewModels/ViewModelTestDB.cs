@@ -103,7 +103,7 @@ namespace Scanner.ViewModels
         }
         #endregion
 
-        #region Комманда для добавления метаданных
+        #region Комманда для добавления Шаблонов
         private ICommand _CreateNewTemplate;
 
         public ICommand CreateNewTemplate => _CreateNewTemplate
