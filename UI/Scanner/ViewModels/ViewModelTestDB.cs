@@ -38,6 +38,14 @@ namespace Scanner.ViewModels
             set { Set(ref _SelectedTemplate, value); }
         }
 
+        private FileData _SelectedFileData;
+
+        public FileData SelectedFileData
+        {
+            get { return _SelectedFileData; }
+            set { Set(ref _SelectedFileData, value); }
+        }
+
         #region Комманда для добавления в BD FileData
         private ICommand _CreateFileData;
 
@@ -142,6 +150,12 @@ namespace Scanner.ViewModels
             _scannerData = __ScannerData;
             FileData = new ObservableCollection<FileData>(_filedata.GetAll());
             ScannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(_scannerData.GetAll());
+            //SelectedFileData.PropertyChanged += SelectedFileData_PropertyChanged;
+        }
+
+        private void SelectedFileData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

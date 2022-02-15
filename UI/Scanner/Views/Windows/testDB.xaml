@@ -41,7 +41,8 @@
                 </Border>
                 
                 <StackPanel Orientation="Horizontal">
-                    <DataGrid ItemsSource="{Binding FileData}" Name="FileDataGrid" MinWidth="200" AutoGenerateColumns="False">
+                    <DataGrid ItemsSource="{Binding FileData}" Name="FileDataGrid" MinWidth="200" 
+                              AutoGenerateColumns="False" SelectedItem="{Binding SelectedFileData}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id записи" Binding="{Binding Id}" />
                             <DataGridCheckBoxColumn Header="Индексирован" Binding="{Binding Indexed}" />
