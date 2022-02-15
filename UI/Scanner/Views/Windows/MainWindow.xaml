@@ -125,9 +125,9 @@
                                 <TextBox Text="Фильтр для поиска шаблона" DockPanel.Dock="Top"/>
                                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
                                     <Button Content="Удалить шаблон" Command="{Binding RemoveTemplateFromBD}" Margin="2"/>
-                                    <Button Content="Создать новый" Margin="2"/>
+                                    <Button Content="Создать новый" Command="{Binding CreateNewTemplate}" Margin="2"/>
                                 </StackPanel>
-                                <ListBox x:Name="lbAdminTemplate" ItemsSource="{Binding Templates}" SelectedIndex="0"
+                                <ListBox x:Name="lbAdminTemplate" ItemsSource="{Binding Templates, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0"
                                          SelectedItem="{Binding SelectedEditTemplateAdmin}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>

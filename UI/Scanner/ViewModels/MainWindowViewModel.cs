@@ -336,6 +336,22 @@ namespace Scanner.ViewModels
 
         #region
 
+        #region CreateNewTemplate - команда создания нового шаблона - заглушка
+
+        private ICommand _CreateNewTemplate;
+        public ICommand CreateNewTemplate => _CreateNewTemplate
+            ??= new LambdaCommand(OnCreateNewTemplateExecuted, CanCreateNewTemplateExecute);
+        private void OnCreateNewTemplateExecuted(object p) => CreateTemplate();
+        private bool CanCreateNewTemplateExecute(object p) => true;
+
+        private void CreateTemplate()
+        {
+            Template template = new Template { Name = "Новый шаблон", Metadata = new ObservableCollection<Metadata>() };
+            Templates.Add(template);
+        }
+
+        #endregion
+
 
 
         #endregion
