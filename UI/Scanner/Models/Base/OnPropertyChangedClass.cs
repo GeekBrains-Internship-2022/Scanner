@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Scanner.Models.Base
 {
-    public class OnPropertyChangedClass : INotifyPropertyChanged
+    public class OnPropertyChangedClass : Entity, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
