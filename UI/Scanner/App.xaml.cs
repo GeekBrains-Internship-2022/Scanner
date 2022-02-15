@@ -46,6 +46,7 @@ namespace Scanner
             services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();           //  Сервис постоянного подключения кролика
 
             services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<SettingsWindowViewModel>();
 
             var path = host.Configuration.GetConnectionString("Default");
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
