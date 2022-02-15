@@ -35,6 +35,7 @@ namespace Scanner.ViewModels
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
         public ObservableCollection<Document> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
+        internal Metadata ExtraDataTemplate { get; set; } = new();          //Добавляемое поле в шаблон
 
 
         #region IsConnected : bool - индикатор подключения
@@ -80,13 +81,13 @@ namespace Scanner.ViewModels
         }
         #endregion
 
-        #region ExtraDataTemplate : Metadata - дополнительное поле данных для добавления в шаблон
+        #region NameExtraDataTemplate : Metadata - дополнительное поле данных для добавления в шаблон
 
-        private string _ExtraDataTemplate;
-        public string ExtraDataTemplate
+        private string _NameExtraDataTemplate;
+        public string NameExtraDataTemplate
         {
-            get { return _ExtraDataTemplate; }
-            set { _ExtraDataTemplate = value; }            
+            get { return _NameExtraDataTemplate; }
+            set { _NameExtraDataTemplate = value; }            
         }
         #endregion
 
@@ -288,12 +289,29 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region AddExtraMetadataTemplate - Команда добавления поля в редактируемый шаблон
+
+        private ICommand _AddExtraMetadataTemplate;
+        public ICommand AddExtraMetadataTemplate => _AddExtraMetadataTemplate
+            ??= new LambdaCommand(OnAddExtraMetadataTemplateExecuted, CanAddExtraMetadataTemplateExecute);
+
+        private void OnAddExtraMetadataTemplateExecuted(object p) => AddExtraMetadata();
+        private bool CanAddExtraMetadataTemplateExecute(object p) => true;
+
+        private void AddExtraMetadata()
+        {
+            ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
+            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);
+            _TestData.Templates.Add(SelectedTemplate);
+        }
+
+        #endregion
+
         #region NextFileCommand - Команда выбора следующего файла - заглушка
 
-        private ICommand _NextFileCommand;        
-
+        private ICommand _NextFileCommand;
         public ICommand NextFileCommand => _NextFileCommand
-??= new LambdaCommand(OnNextFileCommandExecuted, CanNextFileCommandExecute);
+            ??= new LambdaCommand(OnNextFileCommandExecuted, CanNextFileCommandExecute);
 
         private void OnNextFileCommandExecuted(object p) => NextFile();
         private bool CanNextFileCommandExecute(object p) => true;

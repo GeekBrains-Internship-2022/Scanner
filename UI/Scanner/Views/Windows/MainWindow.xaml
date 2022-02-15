@@ -159,8 +159,8 @@
                                     <StackPanel Orientation="Vertical" Margin="4">
                                         <TextBlock Text="Имя метаданных:"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBox Text="{Binding ExtraDataTemplate, UpdateSourceTrigger=PropertyChanged}"/>
-                                            <Button Content="+" Margin="2,0"/>
+                                            <TextBox Text="{Binding NameExtraDataTemplate, UpdateSourceTrigger=PropertyChanged}" MinWidth="200"/>
+                                            <Button Content="+" Command="{Binding AddExtraMetadataTemplate}" Margin="2,0"/>
                                         </StackPanel>
                                     </StackPanel>
                                     <Button Content="Сохранить" HorizontalAlignment="Left" Width="200"/>
