@@ -301,7 +301,22 @@ namespace Scanner.ViewModels
         private void AddExtraMetadata()
         {
             ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
-            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);
+            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);            
+        }
+
+        #endregion
+
+        #region SaveEditTemplateToBD - команда сохранения шаблона в базу - заглушка
+
+        private ICommand _SaveEditTemplateToBD;
+        public ICommand SaveEditTemplateToBD => _SaveEditTemplateToBD
+            ??= new LambdaCommand(OnSaveEditTemplateToBDExecuted, CanSaveEditTemplateToBDExecute);
+
+        private void OnSaveEditTemplateToBDExecuted(object p) => SaveEditTemplate();
+        private bool CanSaveEditTemplateToBDExecute(object p) => true;
+
+        private void SaveEditTemplate()
+        {
             _TestData.Templates.Add(SelectedTemplate);
         }
 
