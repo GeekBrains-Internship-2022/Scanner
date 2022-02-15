@@ -9,7 +9,7 @@ using Scanner.Data;
 namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220215141558_initial")]
+    [Migration("20220215151938_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace Scanner.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Document");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Scanner.Models.DocumentMetadata", b =>
@@ -132,9 +132,11 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.DocumentMetadata", b =>
                 {
-                    b.HasOne("Scanner.Models.Document", null)
+                    b.HasOne("Scanner.Models.Document", "Document")
                         .WithMany("Metadata")
                         .HasForeignKey("DocumentId");
+
+                    b.Navigation("Document");
                 });
 
             modelBuilder.Entity("Scanner.Models.FileData", b =>
@@ -148,9 +150,11 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.TemplateMetadata", b =>
                 {
-                    b.HasOne("Scanner.Models.ScannerDataTemplate", null)
+                    b.HasOne("Scanner.Models.ScannerDataTemplate", "ScannerDataTemplate")
                         .WithMany("TemplateMetadata")
                         .HasForeignKey("ScannerDataTemplateId");
+
+                    b.Navigation("ScannerDataTemplate");
                 });
 
             modelBuilder.Entity("Scanner.Models.Document", b =>

@@ -20,7 +20,7 @@ namespace Scanner.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -29,7 +29,7 @@ namespace Scanner.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,9 +37,9 @@ namespace Scanner.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ScannerDataTemplateId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Required = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ScannerDataTemplateId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Required = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,9 +68,9 @@ namespace Scanner.Data.Migrations
                 {
                     table.PrimaryKey("PK_FileDatas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileDatas_Document_DocumentId",
+                        name: "FK_FileDatas_Documents_DocumentId",
                         column: x => x.DocumentId,
-                        principalTable: "Document",
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -80,17 +80,17 @@ namespace Scanner.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DocumentId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Data = table.Column<string>(type: "TEXT", nullable: true),
-                    DocumentId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Data = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Metadata", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Metadata_Document_DocumentId",
+                        name: "FK_Metadata_Documents_DocumentId",
                         column: x => x.DocumentId,
-                        principalTable: "Document",
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -129,7 +129,7 @@ namespace Scanner.Data.Migrations
                 name: "TemplateMetadata");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "DataTemplates");
