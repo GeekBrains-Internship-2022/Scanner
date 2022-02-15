@@ -51,7 +51,9 @@ namespace Scanner.ViewModels
             fd.Document = new Document();
             fd.FilePath = Path;
             fd.Document.DocumentType = Type;
-            //fd.Document.Metadata = new ICollection<DocumentMetadata> { new DocumentMetadata { Name = "ФИО", Data = "Валерыч Петрович" } };
+            List<DocumentMetadata> meta = new List<DocumentMetadata>();
+            meta.Add(new DocumentMetadata());
+            fd.Document.Metadata = meta.ToArray();
             _filedata.Update(fd);
             FileData.Add(fd);
         }

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scanner.Views.Windows"
+        xmlns:models="clr-namespace:Scanner.Models"
         mc:Ignorable="d"
         DataContext="{Binding TestDBWindowModel, Source={StaticResource Locator}}"
         xmlns:convert="clr-namespace:Scanner.Infrastructure.Converters"
@@ -47,14 +48,21 @@
                             <DataGridTextColumn Header="Путь" Binding="{Binding FilePath}"/>
                             <DataGridTextColumn Header="Тип документа" Binding="{Binding Document.DocumentType}" />
                             <DataGridTextColumn Header="ID Документа" Binding="{Binding Document.Id}" />
-                            
+
                         </DataGrid.Columns>
-                    </DataGrid>
-                    <DataGrid ItemsSource="{Binding SelectedItem.Document, ElementName=FileDataGrid}" MinWidth="100" Margin="5,0">
-                        
                     </DataGrid>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="{Binding SelectedItem.Document.DocumentType, ElementName=FileDataGrid}"/>
+                        <ListBox ItemsSource="{Binding SelectedItem.Document.Metadata, ElementName=FileDataGrid}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:DocumentMetadata}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Data}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </StackPanel>
             </DockPanel>
