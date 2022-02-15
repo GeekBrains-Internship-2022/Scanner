@@ -30,6 +30,14 @@ namespace Scanner.ViewModels
             set { Set(ref _ScannerDataTemplatesObservableCollection, value); }
         }
 
+        private ScannerDataTemplate _SelectedTemplate;
+
+        public ScannerDataTemplate SelectedTemplate
+        {
+            get { return _SelectedTemplate; }
+            set { Set(ref _SelectedTemplate, value); }
+        }
+
         #region Комманда для добавления в BD FileData
         private ICommand _CreateFileData;
 
@@ -56,6 +64,75 @@ namespace Scanner.ViewModels
             fd.Document.Metadata = meta.ToArray();
             _filedata.Update(fd);
             FileData.Add(fd);
+        }
+        #endregion
+
+        #region Комманда для добавления метаданных
+        private ICommand _AddTemplateMetadata;
+
+        public ICommand AddTemplateMetadata => _AddTemplateMetadata
+            ??= new LambdaCommand(OnAddTemplateMetadata, CanAddTemplateMetadata);
+
+        private bool CanAddTemplateMetadata(object p)
+        {
+            if (SelectedTemplate != null) return true;
+            else return false;
+        }
+
+        private void OnAddTemplateMetadata(object p)
+        {
+            if (SelectedTemplate == null) return;
+            var value = (object[])p;
+            var Name = (string)value[0];
+            var Required = (bool)value[1];
+            SelectedTemplate.TemplateMetadata?.Add(new TemplateMetadata { ScannerDataTemplate = SelectedTemplate,
+                Name = Name, Required = Required });
+            //FileData fd = new FileData();
+            //fd.FilePath = Path;
+            //fd.Document = new Document { DocumentType = Type };
+            //FileData.Add(_filedata.Add(fd));
+            
+        }
+        #endregion
+
+        #region Комманда для добавления метаданных
+        private ICommand _CreateNewTemplate;
+
+        public ICommand CreateNewTemplate => _CreateNewTemplate
+            ??= new LambdaCommand(OnCreateNewTemplate, CanCreateNewTemplate);
+
+        private bool CanCreateNewTemplate(object p) => true;
+
+        private void OnCreateNewTemplate(object p)
+        {
+            SelectedTemplate = new ScannerDataTemplate();
+        }
+        #endregion
+
+        #region Комманда для Сохранения шаблона
+        private ICommand _SaveTemplateDocument;
+
+        public ICommand SaveTemplateDocument => _SaveTemplateDocument
+            ??= new LambdaCommand(OnSaveTemplateDocument, CanSaveTemplateDocument);
+
+        private bool CanSaveTemplateDocument(object p) { 
+        
+            if (SelectedTemplate == null) return false;
+            else return true;
+        }
+
+        private void OnSaveTemplateDocument(object p)
+        {
+         if (SelectedTemplate.DocumentType != null)
+            {
+                _scannerData.Update(SelectedTemplate);
+            }         
+         else
+            {                
+                var name = (string)p;
+                SelectedTemplate.DocumentType = name;                
+                ScannerDataTemplates.Add(_scannerData.Add(SelectedTemplate));
+            }
         }
         #endregion
 

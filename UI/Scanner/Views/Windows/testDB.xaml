@@ -67,5 +67,57 @@
                 </StackPanel>
             </DockPanel>
         </TabItem>
+        <TabItem Header="Template">
+            <DockPanel>
+                <DockPanel  DockPanel.Dock="Left">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+                        <Button Content="Add" Margin="2" Command="{Binding CreateNewTemplate}"/>
+                        <Button Content="Remove" Margin="2"/>
+                    </StackPanel>
+                    <ListBox MinWidth="100" ItemsSource="{Binding ScannerDataTemplates}" SelectedItem="{Binding SelectedTemplate}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DocumentType}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBox Text="{Binding SelectedTemplate.DocumentType, Mode=OneWay}" MinWidth="100" Name="TemplateName"/>
+                    <ListBox ItemsSource="{Binding SelectedTemplate.TemplateMetadata}" MinHeight="200">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:TemplateMetadata}">
+                                <Border BorderBrush="Black" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" Margin="2,0"/>
+                                        <CheckBox IsChecked="{Binding Required}" Margin="2,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox MinWidth="100" Margin="2" Name="Name"/>
+                            <TextBlock Text="Required:" Margin="2"/>
+                            <CheckBox IsChecked="False" Margin="2" Name="Required"/>
+                            <Button Content="Add" Margin="2" Command="{Binding AddTemplateMetadata}">
+                                <Button.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource FileDataConverter}" >
+                                        <Binding ElementName="Name" Path="Text"/>
+                                        <!--<Binding ElementName="Type" Path="Text"/>
+                                        <Binding ElementName="ServerBox" Path="Text"/>
+                                    <Binding ElementName="PasswordBox" Path="Password"/>
+                                    <Binding ElementName="PortBox" Path="Text"/>-->
+                                        <Binding ElementName="Required" Path="IsChecked"/>
+                                    </MultiBinding>
+                                </Button.CommandParameter>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Button Content="Save" HorizontalAlignment="Center" Margin="6" Width="100" Background="LightGreen" Command="{Binding SaveTemplateDocument}" CommandParameter="{Binding Text, ElementName=TemplateName}"/>
+                </StackPanel>
+            </DockPanel>
+        </TabItem>
     </TabControl>
 </Window>

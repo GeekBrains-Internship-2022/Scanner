@@ -30,7 +30,7 @@ namespace Scanner.Data.Stores.InDB
             _db.SaveChanges();
         }
 
-        public IEnumerable<ScannerDataTemplate> GetAll() => _db.DataTemplates.ToArray();
+        public IEnumerable<ScannerDataTemplate> GetAll() => _db.DataTemplates.Include(fd => fd.TemplateMetadata).ToArray();
 
 
         public ScannerDataTemplate GetById(Guid Id) => _db.DataTemplates.SingleOrDefault(r => r.Id == Id);
