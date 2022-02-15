@@ -317,8 +317,26 @@ namespace Scanner.ViewModels
 
         private void SaveEditTemplate()
         {
-            _TestData.Templates.Add(SelectedTemplate);
+            _TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
         }
+
+        #endregion RemoveTemplateFromBD - команда удаления шаблона из базы - заглушка
+
+        private ICommand _RemoveTemplateFromBD;
+        public ICommand RemoveTemplateFromBD => _RemoveTemplateFromBD
+            ??= new LambdaCommand(OnRemoveTemplateFromBDExecuted, CanRemoveTemplateFromBDExecute);
+
+        private void OnRemoveTemplateFromBDExecuted(object p) => RemoveTemplate();
+        private bool CanRemoveTemplateFromBDExecute(object p) => true;
+
+        private void RemoveTemplate()
+        {
+            _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
+        }
+
+        #region
+
+
 
         #endregion
 
