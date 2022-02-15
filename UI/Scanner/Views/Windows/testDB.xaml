@@ -24,7 +24,7 @@
                             <TextBlock Text="Type"/>
                             <TextBox x:Name="Type" Width="200"/>
                         </StackPanel>
-                        <Button Content="Save" Command="{Binding SaveSenderCommand}">
+                        <Button Content="Save" Command="{Binding CreateFileData}">
                             <Button.CommandParameter>
                                 <MultiBinding Converter="{StaticResource FileDataConverter}" >
                                     <Binding ElementName="Path" Path="Text"/>

@@ -30,15 +30,15 @@ namespace Scanner.ViewModels
             set { Set(ref _ScannerDataTemplatesObservableCollection, value); }
         }
 
-        #region Комманда для сохранения изменений в отправителе
-        private ICommand _SaveSenderCommand;
+        #region Комманда для добавления в BD FileData
+        private ICommand _CreateFileData;
 
-        public ICommand SaveSenderCommand => _SaveSenderCommand
-            ??= new LambdaCommand(OnSaveSenderCommandExecuted, CanSaveSenderCommandExecute);
+        public ICommand CreateFileData => _CreateFileData
+            ??= new LambdaCommand(OnCreateFileData, CanCreateFileData);
 
-        private bool CanSaveSenderCommandExecute(object p) => true;
+        private bool CanCreateFileData(object p) => true;
 
-        private void OnSaveSenderCommandExecuted(object p)
+        private void OnCreateFileData(object p)
         {
             var value = (object[])p;
             var Path = (string)value[0];

@@ -1,7 +1,10 @@
-﻿namespace Scanner.Models.Base
+﻿using System;
+
+namespace Scanner.Models.Base
 {
     public abstract class Entity
     {
-        public int Id { get; set; }
+        
+        public Guid Id { get; set; }
     }
 }

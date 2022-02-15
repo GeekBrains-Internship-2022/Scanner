@@ -22,7 +22,7 @@ namespace Scanner.Data.Stores.InDB
             return Item;
         }
 
-        public void Delete(int Id)
+        public void Delete(Guid Id)
         {
             var item = GetById(Id);
             if (item is null) return;            
@@ -33,7 +33,7 @@ namespace Scanner.Data.Stores.InDB
         public IEnumerable<ScannerDataTemplate> GetAll() => _db.DataTemplates.ToArray();
 
 
-        public ScannerDataTemplate GetById(int Id) => _db.DataTemplates.SingleOrDefault(r => r.Id == Id);
+        public ScannerDataTemplate GetById(Guid Id) => _db.DataTemplates.SingleOrDefault(r => r.Id == Id);
 
         public void Update(ScannerDataTemplate Item)
         {
