@@ -1,7 +1,9 @@
 ﻿using Scanner.Models.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scanner.Models
 {
+    [Table("TemplateMetadata")]
     public class TemplateMetadata: Entity
     {
         /// <summary>

@@ -30,7 +30,9 @@ namespace Scanner.Data.Stores.InDB
             _db.SaveChanges();
         }
 
-        public IEnumerable<FileData> GetAll() => _db.FileDatas.ToArray();
+        public IEnumerable<FileData> GetAll() => _db.FileDatas.Include(fd => fd.Document).Include(zd => zd.Document.Metadata).ToArray();
+
+        //_db.Brands.Include(brand => brand.Products).ToDTO();
 
 
         public FileData GetById(Guid Id) => _db.FileDatas.SingleOrDefault(r => r.Id == Id);

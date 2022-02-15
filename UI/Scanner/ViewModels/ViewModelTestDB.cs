@@ -43,9 +43,15 @@ namespace Scanner.ViewModels
             var value = (object[])p;
             var Path = (string)value[0];
             var Type = (string)value[1];
+            //FileData fd = new FileData();
+            //fd.FilePath = Path;
+            //fd.Document = new Document { DocumentType = Type };
+            //FileData.Add(_filedata.Add(fd));
             var fd = _filedata.Add(new FileData());
+            fd.Document = new Document();
             fd.FilePath = Path;
             fd.Document.DocumentType = Type;
+            //fd.Document.Metadata = new ICollection<DocumentMetadata> { new DocumentMetadata { Name = "ФИО", Data = "Валерыч Петрович" } };
             _filedata.Update(fd);
             FileData.Add(fd);
         }

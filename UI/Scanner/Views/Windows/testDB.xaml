@@ -40,12 +40,22 @@
                 </Border>
                 
                 <StackPanel Orientation="Horizontal">
-                    <DataGrid ItemsSource="{Binding FileData}" Name="FileDataGrid" MinWidth="200">
+                    <DataGrid ItemsSource="{Binding FileData}" Name="FileDataGrid" MinWidth="200" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id записи" Binding="{Binding Id}" />
+                            <DataGridCheckBoxColumn Header="Индексирован" Binding="{Binding Indexed}" />
+                            <DataGridTextColumn Header="Путь" Binding="{Binding FilePath}"/>
+                            <DataGridTextColumn Header="Тип документа" Binding="{Binding Document.DocumentType}" />
+                            <DataGridTextColumn Header="ID Документа" Binding="{Binding Document.Id}" />
+                            
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid ItemsSource="{Binding SelectedItem.Document, ElementName=FileDataGrid}" MinWidth="100" Margin="5,0">
                         
                     </DataGrid>
-                    <DataGrid ItemsSource="{Binding SelectedItem.Document, ElementName=FileDataGrid, Mode=OneWay}" MinWidth="100" Margin="5,0">
-                        
-                    </DataGrid>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding SelectedItem.Document.DocumentType, ElementName=FileDataGrid}"/>
+                    </StackPanel>
                 </StackPanel>
             </DockPanel>
         </TabItem>
