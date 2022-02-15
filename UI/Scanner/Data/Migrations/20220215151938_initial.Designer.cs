@@ -9,7 +9,7 @@ using Scanner.Data;
 namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220130130800_initial")]
+    [Migration("20220215151938_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,12 +20,11 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.Document", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DocumentType")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
@@ -34,20 +33,20 @@ namespace Scanner.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Document");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Scanner.Models.DocumentMetadata", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Data")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid?>("DocumentId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -56,14 +55,14 @@ namespace Scanner.Data.Migrations
 
                     b.HasIndex("DocumentId");
 
-                    b.ToTable("DocumentMetadata");
+                    b.ToTable("Metadata");
                 });
 
             modelBuilder.Entity("Scanner.Models.FileData", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("TEXT");
@@ -71,17 +70,13 @@ namespace Scanner.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("DocumentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid?>("DocumentId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FilePath")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Indexed")
@@ -96,9 +91,9 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.ScannerDataTemplate", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DocumentType")
                         .IsRequired()
@@ -115,9 +110,9 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.TemplateMetadata", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -125,8 +120,8 @@ namespace Scanner.Data.Migrations
                     b.Property<bool>("Required")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ScannerDataTemplateId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid?>("ScannerDataTemplateId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -137,9 +132,11 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.DocumentMetadata", b =>
                 {
-                    b.HasOne("Scanner.Models.Document", null)
+                    b.HasOne("Scanner.Models.Document", "Document")
                         .WithMany("Metadata")
                         .HasForeignKey("DocumentId");
+
+                    b.Navigation("Document");
                 });
 
             modelBuilder.Entity("Scanner.Models.FileData", b =>
@@ -153,9 +150,11 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.TemplateMetadata", b =>
                 {
-                    b.HasOne("Scanner.Models.ScannerDataTemplate", null)
+                    b.HasOne("Scanner.Models.ScannerDataTemplate", "ScannerDataTemplate")
                         .WithMany("TemplateMetadata")
                         .HasForeignKey("ScannerDataTemplateId");
+
+                    b.Navigation("ScannerDataTemplate");
                 });
 
             modelBuilder.Entity("Scanner.Models.Document", b =>

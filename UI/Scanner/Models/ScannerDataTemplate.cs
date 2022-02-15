@@ -3,6 +3,7 @@ using Scanner.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scanner.Models
 {
@@ -14,9 +15,15 @@ namespace Scanner.Models
         /// </summary>
         [Required,MaxLength(25)]
         public string DocumentType { get; set; }
+        
+        private ICollection<TemplateMetadata> _TemplateMetadata = new List<TemplateMetadata>();
         /// <summary>
         /// Шаблон метаданных
         /// </summary>
-        public ICollection<TemplateMetadata> TemplateMetadata { get; set; }
+        public ICollection<TemplateMetadata> TemplateMetadata { 
+            get=> _TemplateMetadata; 
+            set=> Set(ref _TemplateMetadata, value); 
+        }
+        
     }
 }

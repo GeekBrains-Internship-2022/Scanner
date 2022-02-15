@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Documents\Паспорт\" />
-    <Folder Include="Infrastructure\Converters\" />
   </ItemGroup>
 
   <ItemGroup>
