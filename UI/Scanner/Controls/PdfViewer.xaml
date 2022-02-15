@@ -9,10 +9,13 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
+            <ColumnDefinition MinWidth="200" Width="200"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+
         <DockPanel DockPanel.Dock="Left" Grid.Column="0">
+
             <ComboBox DockPanel.Dock="Top" Text="фильтр" IsEditable="True" IsTextSearchEnabled="True">
                 <ComboBoxItem Content="По имени"/>
                 <ComboBoxItem Content="По типу"/>
@@ -20,14 +23,26 @@
                 <ComboBoxItem Content="По времени"/>
                 <ComboBoxItem Content="Тип5"/>
             </ComboBox>
+
             <ListBox ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"
                      SelectedIndex="0"
                      DisplayMemberPath="Name"
-                     SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"/>
+                     SelectedItem="{Binding InternalSelectedItem, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"/>
+
         </DockPanel>
 
-        <pdf:MoonPdfPanel Grid.Column="1" x:Name="MoonPdfPanel" Background="LightGray" ViewType="SinglePage"/>
-        <StackPanel Grid.Column="1" VerticalAlignment="Top"
+        <GridSplitter Grid.Column="1" 
+                      VerticalAlignment="Stretch" 
+                      Width="3"
+                      HorizontalAlignment="Center"
+                      ShowsPreview="False"/>
+
+        <pdf:MoonPdfPanel Grid.Column="2"
+                          x:Name="MoonPdfPanel" 
+                          Background="LightGray" 
+                          ViewType="SinglePage"/>
+
+        <StackPanel Grid.Column="2" VerticalAlignment="Top"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
 

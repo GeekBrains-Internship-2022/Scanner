@@ -35,15 +35,36 @@ namespace Scanner.Controls
 
         #region SelectedItem : ScanDocument - выбранный объект
 
-        private ScanDocument _SelectedItem;
+        ///<summary>выбранный объект</summary>
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register(
+                nameof(SelectedItem),
+                typeof(ScanDocument),
+                typeof(PdfViewer),
+                new PropertyMetadata(default(ScanDocument)));
 
+        ///<summary>выбранный объект</summary>
         public ScanDocument SelectedItem
         {
-            get => _SelectedItem;
+            get => (ScanDocument)GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
+        }
+
+        #endregion
+
+        #region InternalSelectedItem : ScanDocument - выбранный объект
+        //  TODO: решить вопрос с костылями
+        private ScanDocument _InternalSelectedItem;
+
+        public ScanDocument InternalSelectedItem
+        {
+            get => _InternalSelectedItem;
             set
             {
-                Set(ref _SelectedItem, value);
-                PdfView(value);
+                Set(ref _InternalSelectedItem, value);
+                SelectedItem = value;
+                if (value is not null && !value.Path.Contains("Storage"))
+                    PdfView(value);
             }
         }
 
@@ -60,14 +81,6 @@ namespace Scanner.Controls
             {
                 throw;
             }
-
-            //btnZoomIn.IsEnabled = _isLoaded;
-            //btnZoomOut.IsEnabled = _isLoaded;
-            //btnDoublePage.IsEnabled = _isLoaded;
-            //btnFullHeight.IsEnabled = _isLoaded;
-            //btnFullWidth.IsEnabled = _isLoaded;
-            //btnSinglePage.IsEnabled = _isLoaded;
-            //btnZoomReset.IsEnabled = _isLoaded;
         }
 
         public PdfViewer() => InitializeComponent();
@@ -83,7 +96,7 @@ namespace Scanner.Controls
 
         private void OnZoomInCommandExecuted(object p) => MoonPdfPanel.ZoomIn();
 
-        private bool CanZoomInCommandExecute(object p) => true;
+        private bool CanZoomInCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
@@ -96,7 +109,7 @@ namespace Scanner.Controls
 
         private void OnZoomOutCommandExecuted(object p) => MoonPdfPanel.ZoomOut();
 
-        private bool CanZoomOutCommandExecute(object p) => true;
+        private bool CanZoomOutCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
@@ -109,7 +122,7 @@ namespace Scanner.Controls
 
         private void OnZoomResetCommandExecuted(object p) => MoonPdfPanel.Zoom(1d);
 
-        private bool CanZoomResetCommandExecute(object p) => true;
+        private bool CanZoomResetCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
@@ -122,7 +135,7 @@ namespace Scanner.Controls
 
         private void OnZoomToHeightCommandExecuted(object p) => MoonPdfPanel.ZoomToHeight();
 
-        private bool CanZoomToHeightCommandExecute(object p) => true;
+        private bool CanZoomToHeightCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
@@ -135,7 +148,7 @@ namespace Scanner.Controls
 
         private void OnZoomToWidthCommandExecuted(object p) => MoonPdfPanel.ZoomToWidth();
 
-        private bool CanZoomToWidthCommandExecute(object p) => true;
+        private bool CanZoomToWidthCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
@@ -148,7 +161,7 @@ namespace Scanner.Controls
 
         private void OnSinglePageViewCommandExecuted(object p) => MoonPdfPanel.ViewType = ViewType.SinglePage;
 
-        private bool CanSinglePageViewCommandExecute(object p) => true;
+        private bool CanSinglePageViewCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
@@ -161,12 +174,12 @@ namespace Scanner.Controls
 
         private void OnDoublePageViewCommandExecuted(object p) => MoonPdfPanel.ViewType = ViewType.Facing;
 
-        private bool CanDoublePageViewCommandExecute(object p) => true;
+        private bool CanDoublePageViewCommandExecute(object p) => InternalSelectedItem is not null;
 
         #endregion
 
         #endregion
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
