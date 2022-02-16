@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using Scanner.Data;
 using Scanner.Infrastructure.Commands;
 using Scanner.interfaces;
@@ -33,7 +35,7 @@ namespace Scanner.ViewModels
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();  //Список отсканированных документов
         public ObservableCollection<Template> Templates { get; set; } = new();      //Список шаблонов
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
-        public ObservableCollection<Document> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
+        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
 
 
@@ -67,7 +69,7 @@ namespace Scanner.ViewModels
             get => _SelectedTemplate;
             set => Set(ref _SelectedTemplate, value);
         }
-        
+
 
         #endregion
 
@@ -95,6 +97,18 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region SelectedIndexedDoc : ScanDocument - выбранный индексированный документ
+
+        private ScanDocument _SelectedIndexedDoc;
+
+        public ScanDocument SelectedIndexedDoc
+        {
+            get => _SelectedIndexedDoc;
+            set => Set(ref _SelectedIndexedDoc, value);
+        }
+
+        #endregion
+
         public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration,
             IObserverService observer, IFileService fileService, IRabbitMQService rabbitMQService)
         {
@@ -105,7 +119,7 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-            
+
 
             ObserverInitialize();
         }
@@ -247,22 +261,40 @@ namespace Scanner.ViewModels
         private void SaveFile()
         {
             var path = _Configuration["Directories:StorageDirectory"];
-            _TestData.Files.Add(new FileData
-            {
-                DateAdded = System.DateTime.Now,
-                Description = "",
-                DocumentName = "",
-                FilePath = path,
-                Id = 1,
-                Indexed = true,
-                Document = new Document
-                {
-                    DocumentType = SelectedTemplate.Name,
-                    Id=1,
-                    IndexingDate = System.DateTime.Now,
-                    Metadata = _TestData.Documents[0].Metadata,
-            } });
-        }        
+            path = Path.GetFullPath(path);
+
+            if (!Path.HasExtension(path))
+                Directory.CreateDirectory(path);
+
+            var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
+            var oldPath = SelectedDocument.Path;
+
+            SelectedDocument.Metadata = SelectedTemplate.Metadata;
+            SelectedDocument.Path = s;
+            IndexedDocs.Add(SelectedDocument);
+            Documents.Remove(SelectedDocument);
+            SelectedDocument = null;
+
+            //File.Replace(SelectedDocument.Path, path + Guid.NewGuid() + ".pdf", null);
+            File.Copy(oldPath, s);
+            File.Delete(oldPath);
+
+            //_TestData.Files.Add(new FileData
+            //{
+            //    DateAdded = System.DateTime.Now,
+            //    Description = "",
+            //    DocumentName = "",
+            //    FilePath = path,
+            //    Id = 1,
+            //    Indexed = true,
+            //    Document = new Document
+            //    {
+            //        DocumentType = SelectedTemplate.Name,
+            //        Id=1,
+            //        IndexingDate = System.DateTime.Now,
+            //        Metadata = _TestData.Documents[0].Metadata,
+            //} });
+        }
 
         private bool CanSaveFileCommandExecute(object p) => true;
 

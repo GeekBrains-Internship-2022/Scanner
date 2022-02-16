@@ -54,14 +54,15 @@
                     </StatusBar>
 
                     <ctrl:OperatorControlPanel DockPanel.Dock="Right"
-                                               TemplatesItemSource="{Binding Templates}"
-                                               SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
-                                               SaveCommand="{Binding SaveFileCommand}"
-                                               NextFileCommand="{Binding NextFileCommand}"/>
+                                                   TemplatesItemSource="{Binding Templates}"
+                                                   SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
+                                                   SaveCommand="{Binding SaveFileCommand}"
+                                                   NextFileCommand="{Binding NextFileCommand}"/>
 
                     <Grid>
 
-                        <ctrl:PdfViewer ItemSource="{Binding Documents}"/>
+                        <ctrl:PdfViewer ItemSource="{Binding Documents}"
+                                        SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"/>
 
                         <!-- #endregion -->
 
@@ -75,49 +76,16 @@
                 <TabControl>
                     <TabItem Header="Рецензирование">
                         <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Stretch">
-                            <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                <!--<ComboBox ItemsSource="" DockPanel.Dock="Top"/>-->
-                                <TextBlock Text="Паспорт" DockPanel.Dock="Top"/>
-                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
-                                    <Button Content="Завершить обработку" Background="LightGreen" Margin="2,0"/>
-                                    <Button Content="Отправить на доработку" Background="Red" Margin="2,0"/>
-                                </StackPanel>
-                                <ListBox>
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <GroupBox Header="Название метаданных">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBox Text="Метаданные"/>
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                    <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <TextBox Text="Метаданные"/>
-                                        </GroupBox>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="Метаданные"/>
-                                            </StackPanel>
-                                        </GroupBox>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <GroupBox Header="Название метаданных">
-                                            <TextBox Text="Метаданные"/>
-                                        </GroupBox>
-                                    </ListBoxItem>
-                                </ListBox>
 
-                            </DockPanel>
-                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <ctrl:AdministratorControlPanel DockPanel.Dock="Right"
+                                                            ItemSource="{Binding SelectedIndexedDoc}"
+                                                            Metadata="{Binding SelectedIndexedDoc.Metadata}"
+                                                            DocumentType="{Binding SelectedIndexedDoc.Type}"/>
 
-                                <ctrl:PdfViewer ItemSource="{Binding Documents}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-                            </Grid>
-                        </DockPanel>                        
+                            <ctrl:PdfViewer DockPanel.Dock="Left"
+                                            ItemSource="{Binding IndexedDocs}"
+                                            SelectedItem="{Binding SelectedIndexedDoc, Mode=TwoWay}"/>
+                        </DockPanel>
                     </TabItem>
                     <TabItem Header="Шаблоны">
                         <DockPanel>
