@@ -62,7 +62,8 @@
                     <Grid>
 
                         <ctrl:PdfViewer ItemSource="{Binding ScanDocuments}"
-                                        SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"/>
+                                        SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
+                                        CBItemSource="{Binding SubFolders}"/>
 
                         <!-- #endregion -->
 

@@ -38,6 +38,7 @@ namespace Scanner.ViewModels
         public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
         internal Metadata ExtraDataTemplate { get; set; } = new();          //Добавляемое поле в шаблон
+        internal ObservableCollection<string> SubFolders { get; set; } = new();         //Список подпапок с отсканированными файлами
 
 
         #region IsConnected : bool - индикатор подключения
@@ -138,7 +139,10 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-
+            foreach (var s in ScanDocuments)
+            {
+                SubFolders.Add(s.Type);
+            }
 
             ObserverInitialize();
         }
