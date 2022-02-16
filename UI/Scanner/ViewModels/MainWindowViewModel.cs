@@ -35,7 +35,7 @@ namespace Scanner.ViewModels
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();  //Список отсканированных документов
         public ObservableCollection<Template> Templates { get; set; } = new();      //Список шаблонов
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
-        public ObservableCollection<Document> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
+        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
         internal Metadata ExtraDataTemplate { get; set; } = new();          //Добавляемое поле в шаблон
 
@@ -88,7 +88,7 @@ namespace Scanner.ViewModels
         public string NameExtraDataTemplate
         {
             get { return _NameExtraDataTemplate; }
-            set { _NameExtraDataTemplate = value; }            
+            set { _NameExtraDataTemplate = value; }
         }
         #endregion
 
@@ -138,7 +138,7 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-            
+
 
             ObserverInitialize();
         }
@@ -297,9 +297,8 @@ namespace Scanner.ViewModels
             File.Copy(oldPath, s);
             File.Delete(oldPath);
 
-            
+
         }
-    }
 
         private bool CanSaveFileCommandExecute(object p) => true;
 
@@ -317,7 +316,7 @@ namespace Scanner.ViewModels
         private void AddExtraMetadata()
         {
             ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
-            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);            
+            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);
         }
 
         #endregion
@@ -338,6 +337,8 @@ namespace Scanner.ViewModels
 
         #endregion RemoveTemplateFromBD - команда удаления шаблона из базы - заглушка
 
+        #region RemoveTemplateFromBD - команда удаления шаблона из бд
+
         private ICommand _RemoveTemplateFromBD;
         public ICommand RemoveTemplateFromBD => _RemoveTemplateFromBD
             ??= new LambdaCommand(OnRemoveTemplateFromBDExecuted, CanRemoveTemplateFromBDExecute);
@@ -347,10 +348,12 @@ namespace Scanner.ViewModels
 
         private void RemoveTemplate()
         {
-            _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
+            if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.Name}?", "Удалить",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) 
+                _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
         }
 
-        #region
+        #endregion
 
         #region CreateNewTemplate - команда создания нового шаблона - заглушка
 
@@ -365,8 +368,6 @@ namespace Scanner.ViewModels
             Template template = new Template { Name = "Новый шаблон", Metadata = new ObservableCollection<Metadata>() };
             Templates.Add(template);
         }
-
-        private bool CanSaveFileCommandExecute(object p) => true;
 
         #endregion
 
