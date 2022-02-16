@@ -1,6 +1,7 @@
 ﻿using Scanner.Models.Base;
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scanner.Models
@@ -8,11 +9,6 @@ namespace Scanner.Models
 
     public class FileData: Entity
     {
-        /// <summary>
-        /// Уникальный идентификатор файла в БД
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Guid { get; } = Guid.NewGuid();
         /// <summary>
         /// Путь к файлу
         /// </summary>

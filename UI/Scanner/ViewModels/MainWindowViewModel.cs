@@ -35,8 +35,9 @@ namespace Scanner.ViewModels
         public ObservableCollection<ScanDocument> Documents { get; set; } = new();  //Список отсканированных документов
         public ObservableCollection<Template> Templates { get; set; } = new();      //Список шаблонов
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
-        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
+        public ObservableCollection<Document> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
+        internal Metadata ExtraDataTemplate { get; set; } = new();          //Добавляемое поле в шаблон
 
 
         #region IsConnected : bool - индикатор подключения
@@ -69,8 +70,26 @@ namespace Scanner.ViewModels
             get => _SelectedTemplate;
             set => Set(ref _SelectedTemplate, value);
         }
+        #endregion
 
+        #region SelectedEditTemplateAdmin : Template - выбранный шаблон для редактирования
 
+        private Template _SelectedEditTemplateAdmin;
+        public Template SelectedEditTemplateAdmin
+        {
+            get => _SelectedEditTemplateAdmin;
+            set => Set(ref _SelectedEditTemplateAdmin, value);
+        }
+        #endregion
+
+        #region NameExtraDataTemplate : Metadata - дополнительное поле данных для добавления в шаблон
+
+        private string _NameExtraDataTemplate;
+        public string NameExtraDataTemplate
+        {
+            get { return _NameExtraDataTemplate; }
+            set { _NameExtraDataTemplate = value; }            
+        }
         #endregion
 
         #region Status : string - статус
@@ -119,7 +138,7 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-
+            
 
             ObserverInitialize();
         }
@@ -275,25 +294,76 @@ namespace Scanner.ViewModels
             Documents.Remove(SelectedDocument);
             SelectedDocument = null;
 
-            //File.Replace(SelectedDocument.Path, path + Guid.NewGuid() + ".pdf", null);
             File.Copy(oldPath, s);
             File.Delete(oldPath);
 
-            //_TestData.Files.Add(new FileData
-            //{
-            //    DateAdded = System.DateTime.Now,
-            //    Description = "",
-            //    DocumentName = "",
-            //    FilePath = path,
-            //    Id = 1,
-            //    Indexed = true,
-            //    Document = new Document
-            //    {
-            //        DocumentType = SelectedTemplate.Name,
-            //        Id=1,
-            //        IndexingDate = System.DateTime.Now,
-            //        Metadata = _TestData.Documents[0].Metadata,
-            //} });
+            
+        }
+    }
+
+        private bool CanSaveFileCommandExecute(object p) => true;
+
+        #endregion
+
+        #region AddExtraMetadataTemplate - Команда добавления поля в редактируемый шаблон
+
+        private ICommand _AddExtraMetadataTemplate;
+        public ICommand AddExtraMetadataTemplate => _AddExtraMetadataTemplate
+            ??= new LambdaCommand(OnAddExtraMetadataTemplateExecuted, CanAddExtraMetadataTemplateExecute);
+
+        private void OnAddExtraMetadataTemplateExecuted(object p) => AddExtraMetadata();
+        private bool CanAddExtraMetadataTemplateExecute(object p) => true;
+
+        private void AddExtraMetadata()
+        {
+            ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
+            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);            
+        }
+
+        #endregion
+
+        #region SaveEditTemplateToBD - команда сохранения шаблона в базу - заглушка
+
+        private ICommand _SaveEditTemplateToBD;
+        public ICommand SaveEditTemplateToBD => _SaveEditTemplateToBD
+            ??= new LambdaCommand(OnSaveEditTemplateToBDExecuted, CanSaveEditTemplateToBDExecute);
+
+        private void OnSaveEditTemplateToBDExecuted(object p) => SaveEditTemplate();
+        private bool CanSaveEditTemplateToBDExecute(object p) => true;
+
+        private void SaveEditTemplate()
+        {
+            _TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
+        }
+
+        #endregion RemoveTemplateFromBD - команда удаления шаблона из базы - заглушка
+
+        private ICommand _RemoveTemplateFromBD;
+        public ICommand RemoveTemplateFromBD => _RemoveTemplateFromBD
+            ??= new LambdaCommand(OnRemoveTemplateFromBDExecuted, CanRemoveTemplateFromBDExecute);
+
+        private void OnRemoveTemplateFromBDExecuted(object p) => RemoveTemplate();
+        private bool CanRemoveTemplateFromBDExecute(object p) => true;
+
+        private void RemoveTemplate()
+        {
+            _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
+        }
+
+        #region
+
+        #region CreateNewTemplate - команда создания нового шаблона - заглушка
+
+        private ICommand _CreateNewTemplate;
+        public ICommand CreateNewTemplate => _CreateNewTemplate
+            ??= new LambdaCommand(OnCreateNewTemplateExecuted, CanCreateNewTemplateExecute);
+        private void OnCreateNewTemplateExecuted(object p) => CreateTemplate();
+        private bool CanCreateNewTemplateExecute(object p) => true;
+
+        private void CreateTemplate()
+        {
+            Template template = new Template { Name = "Новый шаблон", Metadata = new ObservableCollection<Metadata>() };
+            Templates.Add(template);
         }
 
         private bool CanSaveFileCommandExecute(object p) => true;

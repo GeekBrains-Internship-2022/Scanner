@@ -1,7 +1,26 @@
-﻿namespace Scanner.Models.Base
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace Scanner.Models.Base
 {
     public abstract class Entity
     {
-        public int Id { get; set; }
+        
+        public Guid Id { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+        }
+
+        protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string PropertyName = null)
+        {
+            if (Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(PropertyName);
+            return true;
+        }
     }
 }
