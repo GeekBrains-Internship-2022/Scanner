@@ -214,13 +214,16 @@ namespace Scanner.ViewModels
         private ScanDocument GetDocumentByPath(string file)
         {
             var fileInfo = new FileInfo(file);
+            var type = fileInfo.DirectoryName?.Split('\\')[^1];
+            var metadata = Templates.FirstOrDefault(t => t.Name == type);
 
             return new ScanDocument
             {
                 Name = fileInfo.Name,
                 Date = fileInfo.CreationTime,
                 Path = file,
-                Type = fileInfo.DirectoryName.Split('\\')[^1]
+                Type = type,
+                Metadata = metadata?.Metadata
             };
         }
 
@@ -293,7 +296,7 @@ namespace Scanner.ViewModels
             var metadata = new ObservableCollection<Metadata>();
 
             foreach (var m in SelectedTemplate.Metadata)
-                metadata.Add(new Metadata {Name = m.Name, Data = m.Data, Required = m.Required});
+                metadata.Add(new Metadata { Name = m.Name, Data = m.Data, Required = m.Required });
 
             doc.Metadata = metadata;
             doc.Path = s;
@@ -353,7 +356,7 @@ namespace Scanner.ViewModels
         private void RemoveTemplate()
         {
             if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.Name}?", "Удалить",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) 
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
         }
 
@@ -388,6 +391,42 @@ namespace Scanner.ViewModels
         {
 
         }
+
+        #endregion
+
+        #region AdminFinishCommand - Команда завершения обработки
+
+        private ICommand _AdminFinishCommand;
+
+        public ICommand AdminFinishCommand => _AdminFinishCommand
+            ??= new LambdaCommand(OnAdminFinishCommandExecuted, CanAdminFinishCommandExecute);
+
+        private void OnAdminFinishCommandExecuted(object p)
+        {
+
+        }
+
+        private bool CanAdminFinishCommandExecute(object p) => SelectedIndexedDoc is not null;
+
+        #endregion
+
+        #region AdminReworkCommand - Команда отправки на доработку
+
+        private ICommand _AdminReworkCommand;
+
+        public ICommand AdminReworkCommand => _AdminReworkCommand
+            ??= new LambdaCommand(OnAdminReworkCommandExecuted, CanAdminReworkCommandExecute);
+
+        private void OnAdminReworkCommandExecuted(object p)
+        {
+            var doc = SelectedIndexedDoc;
+            doc.Name = "(Доработать)" + doc.Name;
+            SelectedIndexedDoc = null;
+            IndexedDocs.Remove(doc);
+            Documents.Add(doc);
+        }
+
+        private bool CanAdminReworkCommandExecute(object p) => SelectedIndexedDoc is not null;
 
         #endregion
 

@@ -80,7 +80,9 @@
                             <ctrl:AdministratorControlPanel DockPanel.Dock="Right"
                                                             ItemSource="{Binding SelectedIndexedDoc}"
                                                             Metadata="{Binding SelectedIndexedDoc.Metadata}"
-                                                            DocumentType="{Binding SelectedIndexedDoc.Type}"/>
+                                                            DocumentType="{Binding SelectedIndexedDoc.Type}"
+                                                            ReworkCommand="{Binding AdminReworkCommand}"
+                                                            FinishCommand="{Binding AdminFinishCommand}"/>
 
                             <ctrl:PdfViewer DockPanel.Dock="Left"
                                             ItemSource="{Binding IndexedDocs}"
