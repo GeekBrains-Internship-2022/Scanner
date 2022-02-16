@@ -279,25 +279,29 @@ namespace Scanner.ViewModels
 
         private void SaveFile()
         {
+            var doc = SelectedDocument;
+            SelectedDocument = null;
             var path = _Configuration["Directories:StorageDirectory"];
             path = Path.GetFullPath(path);
 
-            if (!Path.HasExtension(path))
+            if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
-            var oldPath = SelectedDocument.Path;
+            var oldPath = doc.Path;
 
-            SelectedDocument.Metadata = SelectedTemplate.Metadata;
-            SelectedDocument.Path = s;
-            IndexedDocs.Add(SelectedDocument);
-            Documents.Remove(SelectedDocument);
-            SelectedDocument = null;
+            var metadata = new ObservableCollection<Metadata>();
 
+            foreach (var m in SelectedTemplate.Metadata)
+                metadata.Add(new Metadata {Name = m.Name, Data = m.Data, Required = m.Required});
+
+            doc.Metadata = metadata;
+            doc.Path = s;
             File.Copy(oldPath, s);
-            File.Delete(oldPath);
+            IndexedDocs.Add(doc);
+            Documents.Remove(doc);
 
-
+            //File.Delete(oldPath);
         }
 
         private bool CanSaveFileCommandExecute(object p) => true;

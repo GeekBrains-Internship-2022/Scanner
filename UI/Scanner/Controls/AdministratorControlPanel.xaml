@@ -19,17 +19,15 @@
                 </Style>
             </StackPanel.Resources>
 
-            <TextBlock Height="20" Width="200"
-                       Text="{Binding DocumentType, RelativeSource={RelativeSource AncestorType=l:AdministratorControlPanel}}"/>
-
-            <GroupBox Header="Основные" Margin="5 0">
+            <GroupBox Header="{Binding DocumentType, RelativeSource={RelativeSource AncestorType=l:AdministratorControlPanel}}" Margin="5 0">
                 <ItemsControl ItemsSource="{Binding Metadata, RelativeSource={RelativeSource AncestorType=l:AdministratorControlPanel}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <GroupBox Header="{Binding Path=Name}" Style="{StaticResource gbData}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBox Text="{Binding Path=Data}"
-                                             TextWrapping="Wrap"/>
+                                             TextWrapping="Wrap"
+                                             Width="200"/>
                                     <Button>
                                         <Button.Content>
                                             <fa5:SvgAwesome Icon="Regular_MinusSquare" Width="15"

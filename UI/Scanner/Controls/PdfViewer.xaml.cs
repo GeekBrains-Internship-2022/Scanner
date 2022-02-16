@@ -63,8 +63,7 @@ namespace Scanner.Controls
             {
                 Set(ref _InternalSelectedItem, value);
                 SelectedItem = value;
-                if (value is not null && !value.Path.Contains("Storage"))
-                    PdfView(value);
+                PdfView(value);
             }
         }
 
@@ -72,6 +71,9 @@ namespace Scanner.Controls
 
         private void PdfView(ScanDocument document)
         {
+            if (document is null)
+                return;
+
             try
             {
                 MoonPdfPanel.OpenFile(document.Path);
