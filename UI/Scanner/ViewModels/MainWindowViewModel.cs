@@ -32,7 +32,7 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
         private readonly TestData _TestData = new TestData();
 
-        public ObservableCollection<ScanDocument> Documents { get; set; } = new();  //Список отсканированных документов
+        public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();  //Список отсканированных документов
         public ObservableCollection<Template> Templates { get; set; } = new();      //Список шаблонов
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
         public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
@@ -156,7 +156,7 @@ namespace Scanner.ViewModels
 
         private void OnRenamedNotify(string oldPath, string currentPath)
         {
-            var document = Documents.FirstOrDefault(d => d.Path == oldPath);
+            var document = ScanDocuments.FirstOrDefault(d => d.Path == oldPath);
 
             if (document is null)
                 return;
@@ -169,12 +169,12 @@ namespace Scanner.ViewModels
 
         private void OnCreatedNotify(string message)
         {
-            var document = Documents.FirstOrDefault(d => d.Path == message);
+            var document = ScanDocuments.FirstOrDefault(d => d.Path == message);
 
-            if (Documents.Contains(document))
+            if (ScanDocuments.Contains(document))
                 throw new DuplicateNameException(message);
 
-            Application.Current.Dispatcher.Invoke(() => { Documents.Add(GetDocumentByPath(message)); });
+            Application.Current.Dispatcher.Invoke(() => { ScanDocuments.Add(GetDocumentByPath(message)); });
 
             //  Лампочка
             Status = "Появились новые документы для индексации!!!";
@@ -182,12 +182,12 @@ namespace Scanner.ViewModels
 
         private void OnDeletedNotify(string message)
         {
-            var document = Documents.FirstOrDefault(d => d.Path == message);
+            var document = ScanDocuments.FirstOrDefault(d => d.Path == message);
 
             if (document is null)
                 return;
 
-            Application.Current.Dispatcher.Invoke(() => { Documents.Remove(document); });
+            Application.Current.Dispatcher.Invoke(() => { ScanDocuments.Remove(document); });
         }
 
         #endregion
@@ -208,7 +208,7 @@ namespace Scanner.ViewModels
                 files.AddRange(Directory.GetFiles(dir));
 
             foreach (var file in files)
-                Documents.Add(GetDocumentByPath(file));
+                ScanDocuments.Add(GetDocumentByPath(file));
         }
 
         private ScanDocument GetDocumentByPath(string file)
@@ -302,7 +302,7 @@ namespace Scanner.ViewModels
             doc.Path = s;
             File.Copy(oldPath, s);
             IndexedDocs.Add(doc);
-            Documents.Remove(doc);
+            ScanDocuments.Remove(doc);
 
             //File.Delete(oldPath);
         }
@@ -423,7 +423,7 @@ namespace Scanner.ViewModels
             doc.Name = "(Доработать)" + doc.Name;
             SelectedIndexedDoc = null;
             IndexedDocs.Remove(doc);
-            Documents.Add(doc);
+            ScanDocuments.Add(doc);
         }
 
         private bool CanAdminReworkCommandExecute(object p) => SelectedIndexedDoc is not null;

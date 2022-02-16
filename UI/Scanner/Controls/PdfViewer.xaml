@@ -6,6 +6,7 @@
              xmlns:pdf="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:l="clr-namespace:Scanner.Controls"
+             DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
