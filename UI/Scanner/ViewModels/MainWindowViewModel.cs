@@ -25,7 +25,7 @@ namespace Scanner.ViewModels
     class MainWindowViewModel : ViewModel
     {
         private readonly ILogger<MainWindowViewModel> _Logger;
-        private readonly IConfiguration _Configuration;
+        private readonly IConfiguration _Configuration;        
 
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
@@ -33,12 +33,13 @@ namespace Scanner.ViewModels
         private readonly TestData _TestData = new TestData();
 
         public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();  //Список отсканированных документов
-        public ObservableCollection<Template> Templates { get; set; } = new();      //Список шаблонов
-        public ObservableCollection<Metadata> Metadatas { get; set; } = new();      //Список метаданных
+        public ObservableCollection<Template> Templates { get; set; } = new();          //Список шаблонов
+        public ObservableCollection<Metadata> Metadatas { get; set; } = new();          //Список метаданных
         public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
-        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();   //Список проверенных файлов
-        internal Metadata ExtraDataTemplate { get; set; } = new();          //Добавляемое поле в шаблон
-        internal ObservableCollection<string> SubFolders { get; set; } = new();         //Список подпапок с отсканированными файлами
+        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();       //Список проверенных файлов
+        internal Metadata ExtraDataTemplate { get; set; } = new();                      //Добавляемое поле в шаблон
+        public ObservableCollection<string> SubFolders { get; set; } = new();         //Список подпапок с отсканированными файлами
+
 
 
         #region IsConnected : bool - индикатор подключения
@@ -139,10 +140,6 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
-            foreach (var s in ScanDocuments)
-            {
-                SubFolders.Add(s.Type);
-            }
 
             ObserverInitialize();
         }
@@ -196,6 +193,8 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        
+
         private void GetFiles()
         {
             var path = _Configuration["Directories:ObserverPath"];
@@ -209,7 +208,11 @@ namespace Scanner.ViewModels
             var directories = Directory.GetDirectories(path);
             var files = new List<string>();
             foreach (var dir in directories)
+            {
                 files.AddRange(Directory.GetFiles(dir));
+                string[] str = dir.Split('\\');
+                SubFolders.Add(dir.Split('\\')[str.Length - 1]);
+            }
 
             foreach (var file in files)
                 ScanDocuments.Add(GetDocumentByPath(file));

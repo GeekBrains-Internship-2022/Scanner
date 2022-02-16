@@ -35,7 +35,7 @@ namespace Scanner.Controls
 
         #region CBItemSource : ObservableCollection<string> - коллекция подпапок
 
-        ///<summary>выбранный документ</summary>
+        ///<summary>коллекция подпапок</summary>
         public static readonly DependencyProperty CBItemSourceProperty =
             DependencyProperty.Register(
                 nameof(CBItemSource),
@@ -43,7 +43,7 @@ namespace Scanner.Controls
                 typeof(PdfViewer),
                 new PropertyMetadata(default(ObservableCollection<string>)));
 
-        ///<summary>выбранный документ</summary>
+        ///<summary>коллекция подпапок</summary>
         public ObservableCollection<string> CBItemSource
         {
             get => (ObservableCollection<string>)GetValue(CBItemSourceProperty);
