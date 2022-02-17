@@ -54,7 +54,7 @@
                     </StatusBar>
 
                     <ctrl:OperatorControlPanel DockPanel.Dock="Right"
-                                                   TemplatesItemSource="{Binding Templates}"
+                                                   TemplatesItemSource="{Binding FindTemplates}"
                                                    SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
                                                    SaveCommand="{Binding SaveFileCommand}"
                                                    NextFileCommand="{Binding NextFileCommand}"/>

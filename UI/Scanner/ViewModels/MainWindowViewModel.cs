@@ -32,14 +32,15 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
         private readonly TestData _TestData = new TestData();
 
-        public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();  //Список отсканированных документов
-        public ObservableCollection<ScanDocument> FilteredScanDocuments { get; set; } = new();  //Список отсканированных документов
-        public ObservableCollection<Template> Templates { get; set; } = new();          //Список шаблонов
-        public ObservableCollection<Metadata> Metadatas { get; set; } = new();          //Список метаданных
-        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
-        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();       //Список проверенных файлов
-        public Metadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое поле в шаблон
-        public ObservableCollection<string> SubFolders { get; set; } = new();           //Список подпапок с отсканированными файлами
+        public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();          //Список отсканированных документов
+        public ObservableCollection<ScanDocument> FilteredScanDocuments { get; set; } = new();  //Список отфильтрованных отсканированных документов
+        public ObservableCollection<Template> Templates { get; set; } = new();                  //Список шаблонов
+        public ObservableCollection<Template> FindTemplates { get; set; } = new();              //Список найденных шаблонов по типу выбранного отсканированного документа
+        public ObservableCollection<Metadata> Metadatas { get; set; } = new();                  //Список метаданных
+        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
+        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
+        public Metadata ExtraDataTemplate { get; set; } = new();                                //Добавляемое поле в шаблон
+        public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами
 
 
         #region IsConnected : bool - индикатор подключения
@@ -61,7 +62,20 @@ namespace Scanner.ViewModels
         public ScanDocument SelectedDocument
         {
             get => _SelectedDocument;
-            set => Set(ref _SelectedDocument, value);
+            set
+            {
+                Set(ref _SelectedDocument, value);
+                if (value != null)
+                    foreach(var t in Templates)
+                    {
+                        if(value.Type.ToLower() == t.Name.ToLower())
+                        {
+                            FindTemplates.Add(t);
+                        }
+                        if (FindTemplates.Count == 0)
+                            MessageBox.Show("К выбранному файлу отсутствует шаблон. Обратитесь к Администратору");
+                    }
+            }
         }
         #endregion
 
@@ -141,7 +155,7 @@ namespace Scanner.ViewModels
                 Set(ref _selectedFilterItem, value);
                 FilteredScanDocuments.Clear();                
 
-                foreach (var d in ScanDocuments)
+                foreach (var d in ScanDocuments)                            //Сортировка по типу
                 {
                     if (value.ToLower() == d.Type.ToLower())
                         FilteredScanDocuments.Add(d);
