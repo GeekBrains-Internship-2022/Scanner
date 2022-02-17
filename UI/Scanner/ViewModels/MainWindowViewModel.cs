@@ -37,8 +37,9 @@ namespace Scanner.ViewModels
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();          //Список метаданных
         public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();       //Список проверенных файлов
-        internal Metadata ExtraDataTemplate { get; set; } = new();                      //Добавляемое поле в шаблон
-        public ObservableCollection<string> SubFolders { get; set; } = new();         //Список подпапок с отсканированными файлами
+        public Metadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое поле в шаблон
+        public ObservableCollection<string> SubFolders { get; set; } = new();           //Список подпапок с отсканированными файлами
+        public string SelectedFilterItem { get; set; }                                  //Выбраный тип документа в фильтре
 
 
 

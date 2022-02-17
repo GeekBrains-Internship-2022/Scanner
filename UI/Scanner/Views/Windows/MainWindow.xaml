@@ -63,7 +63,8 @@
 
                         <ctrl:PdfViewer ItemSource="{Binding ScanDocuments}"
                                         SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
-                                        CBItemSource="{Binding SubFolders}"/>
+                                        CBItemSource="{Binding SubFolders}"
+                                        CBSelectedItem="{Binding SelectedFilterItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <!-- #endregion -->
 

@@ -71,6 +71,25 @@ namespace Scanner.Controls
 
         #endregion
 
+        #region CBSelectedItem : string - выбранный тип документа
+
+        ///<summary>выбранный объект</summary>
+        public static readonly DependencyProperty CBSelectedItemProperty =
+            DependencyProperty.Register(
+                nameof(CBSelectedItem),
+                typeof(string),
+                typeof(PdfViewer),
+                new PropertyMetadata(default(string)));
+
+        ///<summary>выбранный объект</summary>
+        public string CBSelectedItem
+        {
+            get => (string)GetValue(CBSelectedItemProperty);
+            set => SetValue(CBSelectedItemProperty, value);
+        }
+
+        #endregion
+
         #region InternalSelectedItem : ScanDocument - выбранный объект
         //  TODO: решить вопрос с костылями
         private ScanDocument _InternalSelectedItem;
