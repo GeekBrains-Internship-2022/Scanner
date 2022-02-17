@@ -17,7 +17,7 @@
 
         <DockPanel DockPanel.Dock="Left" Grid.Column="0">
 
-            <ComboBox DockPanel.Dock="Top" IsEditable="True" IsTextSearchEnabled="True" Text="Фильтр по типу"
+            <ComboBox DockPanel.Dock="Top" IsEditable="True" IsTextSearchEnabled="True"
                       ItemsSource="{Binding CBItemSource, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"
                       SelectedItem="{Binding CBSelectedItem, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}">
             </ComboBox>

@@ -61,7 +61,7 @@
 
                     <Grid>
 
-                        <ctrl:PdfViewer ItemSource="{Binding ScanDocuments}"
+                        <ctrl:PdfViewer ItemSource="{Binding FilteredScanDocuments, UpdateSourceTrigger=PropertyChanged}"
                                         SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
                                         CBItemSource="{Binding SubFolders}"
                                         CBSelectedItem="{Binding SelectedFilterItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

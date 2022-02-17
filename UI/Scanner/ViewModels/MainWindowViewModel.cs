@@ -25,7 +25,7 @@ namespace Scanner.ViewModels
     class MainWindowViewModel : ViewModel
     {
         private readonly ILogger<MainWindowViewModel> _Logger;
-        private readonly IConfiguration _Configuration;        
+        private readonly IConfiguration _Configuration;
 
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
@@ -33,14 +33,13 @@ namespace Scanner.ViewModels
         private readonly TestData _TestData = new TestData();
 
         public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();  //Список отсканированных документов
+        public ObservableCollection<ScanDocument> FilteredScanDocuments { get; set; } = new();  //Список отсканированных документов
         public ObservableCollection<Template> Templates { get; set; } = new();          //Список шаблонов
         public ObservableCollection<Metadata> Metadatas { get; set; } = new();          //Список метаданных
         public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();    //Список проиндексированных файлов
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();       //Список проверенных файлов
         public Metadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое поле в шаблон
         public ObservableCollection<string> SubFolders { get; set; } = new();           //Список подпапок с отсканированными файлами
-        public string SelectedFilterItem { get; set; }                                  //Выбраный тип документа в фильтре
-
 
 
         #region IsConnected : bool - индикатор подключения
@@ -131,6 +130,27 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region SelectedFilterItem : string - выбраный тип документа в фильтре
+
+        private string _selectedFilterItem;
+        public string SelectedFilterItem
+        {
+            get => _selectedFilterItem;
+            set
+            {
+                Set(ref _selectedFilterItem, value);
+                FilteredScanDocuments.Clear();                
+
+                foreach (var d in ScanDocuments)
+                {
+                    if (value.ToLower() == d.Type.ToLower())
+                        FilteredScanDocuments.Add(d);
+                }
+            }
+        }
+
+        #endregion
+
         public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration,
             IObserverService observer, IFileService fileService, IRabbitMQService rabbitMQService)
         {
@@ -193,8 +213,6 @@ namespace Scanner.ViewModels
         }
 
         #endregion
-
-        
 
         private void GetFiles()
         {
@@ -420,8 +438,7 @@ namespace Scanner.ViewModels
 
         #region AdminReworkCommand - Команда отправки на доработку
 
-        private ICommand _AdminReworkCommand;
-
+        private ICommand _AdminReworkCommand;        
         public ICommand AdminReworkCommand => _AdminReworkCommand
             ??= new LambdaCommand(OnAdminReworkCommandExecuted, CanAdminReworkCommandExecute);
 
@@ -438,6 +455,6 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #endregion
+        #endregion        
     }
 }
