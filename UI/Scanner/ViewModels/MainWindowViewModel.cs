@@ -67,16 +67,17 @@ namespace Scanner.ViewModels
                 Set(ref _SelectedDocument, value);
                 foreach(var t in Templates)
                 {
-                    if(value != null)
-                        if(value.Type.ToLower().Contains(t.Name.ToLower()))
-                        {
-                            SelectedTemplate = t;
-                            return;
-                        }
-                        else
-                        {
-                            SelectedTemplate = null;
-                        }
+                    if (value != null)
+                        SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Type.ToLower()));
+                        //if(value.Type.ToLower().Contains(t.Name.ToLower()))
+                        //{
+                        //    SelectedTemplate = t;
+                        //    return;
+                        //}
+                        //else
+                        //{
+                        //    SelectedTemplate = null;
+                        //}
                 }                    
             }
         }
@@ -159,7 +160,7 @@ namespace Scanner.ViewModels
 
                 if (value == null || value == "" || value.Contains("Не выбрано"))
                 {
-
+                    FilteredScanDocuments.Clear();
                     foreach (var d in ScanDocuments)
                     {
                         FilteredScanDocuments.Add(d);
