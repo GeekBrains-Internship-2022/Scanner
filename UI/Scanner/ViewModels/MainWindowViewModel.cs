@@ -65,16 +65,19 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedDocument, value);
-                if (value != null)
-                    foreach(var t in Templates)
-                    {
-                        if(value.Type.ToLower() == t.Name.ToLower())
+                foreach(var t in Templates)
+                {
+                    if(value != null)
+                        if(value.Type.ToLower().Contains(t.Name.ToLower()))
                         {
-                            FindTemplates.Add(t);
+                            SelectedTemplate = t;
+                            return;
                         }
-                        //if (FindTemplates.Count == 0)
-                            //MessageBox.Show("К выбранному файлу отсутствует шаблон. Обратитесь к Администратору");
-                    }
+                        else
+                        {
+                            SelectedTemplate = null;
+                        }
+                }                    
             }
         }
         #endregion
