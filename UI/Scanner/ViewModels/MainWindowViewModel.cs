@@ -364,6 +364,8 @@ namespace Scanner.ViewModels
             ScanDocuments.Remove(doc);
 
             //File.Delete(oldPath);
+
+            //SelectedDocument = FilteredScanDocuments.Next                 //Заглушка. Выбор следующего документа при сохранении (похоже нужно сначала отсортировать список)
         }
 
         private bool CanSaveFileCommandExecute(object p) => true;
