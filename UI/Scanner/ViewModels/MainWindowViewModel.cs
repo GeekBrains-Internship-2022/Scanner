@@ -72,8 +72,8 @@ namespace Scanner.ViewModels
                         {
                             FindTemplates.Add(t);
                         }
-                        if (FindTemplates.Count == 0)
-                            MessageBox.Show("К выбранному файлу отсутствует шаблон. Обратитесь к Администратору");
+                        //if (FindTemplates.Count == 0)
+                            //MessageBox.Show("К выбранному файлу отсутствует шаблон. Обратитесь к Администратору");
                     }
             }
         }
@@ -151,14 +151,27 @@ namespace Scanner.ViewModels
         {
             get => _selectedFilterItem;
             set
-            {
+            {                
                 Set(ref _selectedFilterItem, value);
-                FilteredScanDocuments.Clear();                
 
-                foreach (var d in ScanDocuments)                            //Сортировка по типу
+                if (value == null || value == "" || value.Contains("Не выбрано"))
                 {
-                    if (value.ToLower() == d.Type.ToLower())
+
+                    foreach (var d in ScanDocuments)
+                    {
                         FilteredScanDocuments.Add(d);
+                    }
+                    
+                }
+                else
+                {
+                    FilteredScanDocuments.Clear();
+
+                    foreach (var d in ScanDocuments)                            //Сортировка по типу
+                    {
+                        if (value.ToLower() == d.Type.ToLower())
+                            FilteredScanDocuments.Add(d);
+                    }
                 }
             }
         }
@@ -175,6 +188,8 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
+            GetFiles();
+            FilteredScanDocuments = new ObservableCollection<ScanDocument>(ScanDocuments);
 
             ObserverInitialize();
         }

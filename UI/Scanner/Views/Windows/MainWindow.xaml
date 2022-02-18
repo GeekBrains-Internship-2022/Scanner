@@ -12,11 +12,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Width="1328" Height="480">
 
-    <behaviors:Interaction.Triggers>
+    <!--<behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding GetFilesCommand}"/>
         </behaviors:EventTrigger>
-    </behaviors:Interaction.Triggers>
+    </behaviors:Interaction.Triggers>-->
 
     <Window.Resources>
         <!--<AlternationConverter x:Key="AlternationConverter"/>-->
