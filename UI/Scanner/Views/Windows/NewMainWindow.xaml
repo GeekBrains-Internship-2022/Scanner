@@ -4,10 +4,40 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scanner.Views.Windows"
+        xmlns:controls="clr-namespace:Scanner.Controls"
         mc:Ignorable="d"
         DataContext="{Binding NewMainWindowModel, Source={StaticResource Locator}}"
         Title="NewMainWindow" Height="450" Width="800">
-    <Grid>
+    <TabControl>
+        <TabItem Header="Оператор">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Left">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Text="Фильтр: "/>
+                        <ComboBox Width="100" ItemsSource="{Binding}"/>
+                    </StackPanel>
+                    <ListBox ItemsSource="{Binding FileDatas}" 
+                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DocumentName}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+                    <TextBlock Text="Шаблон: "/>
+                    <TextBox Text="Паспорт"/>
+                    <ListBox></ListBox>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox Width="100"/>
+                        <Button Content="+"/>
+                    </StackPanel>
+                    <Button Content="Закончить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
+                </StackPanel>
+                <controls:OnlyPDFViewer/>
+            </DockPanel>
+        </TabItem>
         
-    </Grid>
+    </TabControl>
 </Window>
