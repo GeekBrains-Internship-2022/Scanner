@@ -41,6 +41,7 @@ namespace Scanner.ViewModels
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
         public Metadata ExtraDataTemplate { get; set; } = new();                                //Добавляемое поле в шаблон
         public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами
+        public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data в выбранном шаблоне SelectedTemplate для SelectedDocument
 
 
         #region IsConnected : bool - индикатор подключения
@@ -83,12 +84,20 @@ namespace Scanner.ViewModels
         }
         #endregion
 
-        #region SelectedTemplate : Template - выбранный шаблон
+        #region SelectedTemplate : Template - выбранный шаблон для SelectedDocument
         private Template _SelectedTemplate;
         public Template SelectedTemplate
         {
             get => _SelectedTemplate;
-            set => Set(ref _SelectedTemplate, value);
+            set
+            {
+                Set(ref _SelectedTemplate, value);
+                DataListSelectedDocument.Clear();
+                foreach(var d in value.Metadata)
+                {
+                    DataListSelectedDocument.Add(d.Name);
+                }
+            }
         }
         #endregion
 
@@ -389,6 +398,22 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ
+
+        private ICommand _AddExtraDataToDocument;
+        public ICommand AddExtraDataToDocument => _AddExtraDataToDocument
+            ??= new LambdaCommand(OnAddExtraDataToDocumentExecuted, CanAddExtraDataToDocumentExecute);
+
+        private void OnAddExtraDataToDocumentExecuted(object p) => AddDataToDocument();
+        private bool CanAddExtraDataToDocumentExecute(object p) => true;
+
+        private void AddDataToDocument()
+        {
+            
+        }
+
+        #endregion
+
         #region SaveEditTemplateToBD - команда сохранения шаблона в базу - заглушка
 
         private ICommand _SaveEditTemplateToBD;
@@ -418,7 +443,7 @@ namespace Scanner.ViewModels
         {
             if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.Name}?", "Удалить",
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
+                _TestData.Templates.Remove(SelectedEditTemplateAdmin);
         }
 
         #endregion
@@ -455,7 +480,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region AdminFinishCommand - Команда завершения обработки
+        #region AdminFinishCommand - Команда завершения обработки - заглушка
 
         private ICommand _AdminFinishCommand;
 

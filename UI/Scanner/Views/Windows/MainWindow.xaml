@@ -57,7 +57,8 @@
                                                    TemplatesItemSource="{Binding Templates}"
                                                    SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
                                                    SaveCommand="{Binding SaveFileCommand}"
-                                                   NextFileCommand="{Binding NextFileCommand}"/>
+                                                   NextFileCommand="{Binding NextFileCommand}"
+                                                   CBItemSource="{Binding DataListSelectedDocument}"/>
 
                     <Grid>
 
