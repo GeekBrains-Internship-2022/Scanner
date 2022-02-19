@@ -23,7 +23,6 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
 
         private ObservableCollection<ScannerDataTemplate> _scannerDataTemplates;
-
         public ObservableCollection<ScannerDataTemplate> ScannerDataTemplates
         {
             get { return _scannerDataTemplates; }
@@ -31,12 +30,21 @@ namespace Scanner.ViewModels
         }
 
         private ObservableCollection<FileData> _fileDatas;
-
         public ObservableCollection<FileData> FileDatas
         {
             get { return _fileDatas; }
             set { Set(ref _fileDatas, value); }
         }
+
+        #region Выбранный элемент в панеле оператора, из списка файлов
+        private string _SelectedFileDataInOperatorPanel;
+
+        public string SelectedFileDataInOperatorPanel
+        {
+            get { return _SelectedFileDataInOperatorPanel; }
+            set { Set(ref _SelectedFileDataInOperatorPanel, value); }
+        } 
+        #endregion
 
         public NewMainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
             ILogger<NewMainWindowViewModel> __logger, IObserverService __Observer, 
@@ -52,7 +60,18 @@ namespace Scanner.ViewModels
             ScannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(__ScannerData.GetAll());
             FileDatas = new ObservableCollection<FileData>(__filedata.GetAll());
 
-            ObserverInitialize();
+            //ObserverInitialize();
+#if DEBUG
+            var rand = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                var file = new FileData
+                {
+                    DocumentName = "Document" + i
+                };
+                FileDatas.Add(file);
+            }
+#endif
         }
 
         private async void ObserverInitialize()
