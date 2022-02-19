@@ -54,7 +54,7 @@
                               SelectedItem="{Binding CBSelectedItem, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
                         
                     </ComboBox>
-                    <Button Padding="4">
+                    <Button Padding="4" Command="{Binding AddExtraDataToDocument}">
                         <Button.Content>
                             <fa:SvgAwesome Icon="Regular_PlusSquare" Width="15"
                                            Foreground="Green"/>

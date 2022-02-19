@@ -93,10 +93,11 @@ namespace Scanner.ViewModels
             {
                 Set(ref _SelectedTemplate, value);
                 DataListSelectedDocument.Clear();
-                foreach(var d in value.Metadata)
-                {
-                    DataListSelectedDocument.Add(d.Name);
-                }
+                if(value != null)
+                    foreach(var d in value.Metadata)
+                    {
+                        DataListSelectedDocument.Add(d.Name);
+                    }
             }
         }
         #endregion
@@ -398,7 +399,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ
+        #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ - заглушка
 
         private ICommand _AddExtraDataToDocument;
         public ICommand AddExtraDataToDocument => _AddExtraDataToDocument
@@ -409,7 +410,8 @@ namespace Scanner.ViewModels
 
         private void AddDataToDocument()
         {
-            
+            Metadata metadata = new Metadata();
+            SelectedDocument.Metadata.Add(metadata);
         }
 
         #endregion
