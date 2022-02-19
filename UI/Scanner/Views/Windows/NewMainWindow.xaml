@@ -5,18 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Scanner.Views.Windows"
         xmlns:controls="clr-namespace:Scanner.Controls"
+        xmlns:convert="clr-namespace:Scanner.Infrastructure.Converters"
         mc:Ignorable="d"
         DataContext="{Binding NewMainWindowModel, Source={StaticResource Locator}}"
         Title="NewMainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <convert:OperatorComboBoxFilterConverter x:Key="OperatorComboBoxFilterConverter"/>
+        <convert:FilesListBoxConverter x:Key="FilesListBoxConverter"/>
+    </Window.Resources>
     <TabControl>
         <TabItem Header="Оператор">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Left">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <TextBlock Text="Фильтр: "/>
-                        <ComboBox Width="100" ItemsSource="{Binding}"/>
+                        <ComboBox Name="SelectFiltrinOP" Width="100" 
+                                  ItemsSource="{Binding ScannerDataTemplates, 
+                            Converter={StaticResource OperatorComboBoxFilterConverter}}"
+                                  SelectedItem="{Binding SelectedFIlterInGroupboxOP, UpdateSourceTrigger=PropertyChanged}"
+                                  IsTextSearchEnabled="True" IsEditable="True"/>
                     </StackPanel>
-                    <ListBox ItemsSource="{Binding FileDatas}" 
+                    <ListBox ItemsSource="{Binding FileDatasInListOP}" 
                              SelectedItem="{Binding SelectedFileDataInOperatorPanel}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -27,10 +36,28 @@
                 </DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
                     <TextBlock Text="Шаблон: "/>
-                    <TextBox Text="Паспорт"/>
-                    <ListBox></ListBox>
+                    <ComboBox ItemsSource="{Binding ScannerDataTemplates, 
+                            Converter={StaticResource OperatorComboBoxFilterConverter}}"
+                                  SelectedItem="{Binding SelectedTemplateInOP}"
+                                  IsTextSearchEnabled="True" IsEditable="True"
+                              Text="{Binding SelectedFileDataInOperatorPanel.Document.DocumentType}"/>
+                    <ListBox ItemsSource="{Binding DocumentMetadataInOP}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <GroupBox Header="{Binding Name}">
+                                    <TextBox Text="{Binding Data}"/>
+                                </GroupBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                     <StackPanel Orientation="Horizontal">
-                        <ComboBox Width="100"/>
+                        <ComboBox Width="100" ItemsSource="{Binding TemplateMetadatas}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Button Content="+"/>
                     </StackPanel>
                     <Button Content="Закончить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
