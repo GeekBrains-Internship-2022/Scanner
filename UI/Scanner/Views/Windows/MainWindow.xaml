@@ -40,10 +40,13 @@
                         <Ellipse Width="10" Height="10">
                             <Ellipse.Style>
                                 <Style TargetType="Ellipse">
-                                    <Setter Property="Fill" Value="Red"/>
+                                    <Setter Property="Fill" Value="Green"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                        <DataTrigger Binding="{Binding IsNew}" Value="True">
                                             <Setter Property="Fill" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsNew}" Value="True">
+                                            <Setter Property="Fill" Value="Red"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

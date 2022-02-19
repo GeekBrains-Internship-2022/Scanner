@@ -134,6 +134,18 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region IsNew : bool - появились новые файлы
+
+        private bool _IsNew = false;
+
+        public bool IsNew
+        {
+            get => _IsNew;
+            set => Set(ref _IsNew, value);
+        }
+
+        #endregion
+
         #region SelectedSorting : string - выбранная сортировка
 
         private string _SelectedSorting;
@@ -243,6 +255,7 @@ namespace Scanner.ViewModels
 
             //  Лампочка
             Status = "Появились новые документы для индексации!!!";
+            IsNew = true;
         }
 
         private void OnDeletedNotify(string message)
@@ -372,6 +385,10 @@ namespace Scanner.ViewModels
             File.Copy(oldPath, s);
             IndexedDocs.Add(doc);
             ScanDocuments.Remove(doc);
+            FilteredScanDocuments.Remove(doc);
+
+            IsNew = false;
+            Status = "Готов";
 
             //File.Delete(oldPath);
 
