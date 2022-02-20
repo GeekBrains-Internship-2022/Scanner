@@ -6,8 +6,11 @@
         xmlns:local="clr-namespace:Scanner.Views.Windows"
         xmlns:controls="clr-namespace:Scanner.Controls"
         xmlns:convert="clr-namespace:Scanner.Infrastructure.Converters"
+        xmlns:vm="clr-namespace:Scanner.ViewModels"
         mc:Ignorable="d"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         DataContext="{Binding NewMainWindowModel, Source={StaticResource Locator}}"
+        xmlns:pdf="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
         Title="NewMainWindow" Height="450" Width="800">
     <Window.Resources>
         <convert:OperatorComboBoxFilterConverter x:Key="OperatorComboBoxFilterConverter"/>
@@ -26,7 +29,7 @@
                                   IsTextSearchEnabled="True" IsEditable="True"/>
                     </StackPanel>
                     <ListBox ItemsSource="{Binding FileDatasInListOP}" 
-                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}">
+                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}" Name="ListBoxinOP">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding DocumentName}"/>
@@ -40,12 +43,17 @@
                             Converter={StaticResource OperatorComboBoxFilterConverter}}"
                                   SelectedItem="{Binding SelectedTemplateInOP}"
                                   IsTextSearchEnabled="True" IsEditable="True"
-                              Text="{Binding SelectedFileDataInOperatorPanel.Document.DocumentType}"/>
+                              Text="{Binding SelectedFileDataInOperatorPanel.Document.DocumentType, Mode=OneWayToSource}"/> 
                     <ListBox ItemsSource="{Binding DocumentMetadataInOP}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <GroupBox Header="{Binding Name}">
-                                    <TextBox Text="{Binding Data}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding Data}"/>
+                                        <Button Command="{Binding Path=DelleteMetaDataInDocumentViewOP, RelativeSource={RelativeSource AncestorType=vm:NewMainWindowViewModel}}">
+                                            <fa5:SvgAwesome Icon="Solid_Trash" Width="10" Height="10"/>
+                                        </Button>
+                                    </StackPanel>
                                 </GroupBox>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -60,9 +68,51 @@
                         </ComboBox>
                         <Button Content="+"/>
                     </StackPanel>
-                    <Button Content="Закончить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
+                    <Button Command="{Binding DelleteMetaDataInDocumentViewOP}"
+                        Content="Закончить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
                 </StackPanel>
-                <controls:OnlyPDFViewer/>
+                <Grid>
+                    <pdf:MoonPdfPanel
+                          x:Name="MoonPdfPanelINOP" 
+                          Background="LightGray" 
+                          ViewType="SinglePage"/>
+                    <StackPanel VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Margin" Value="1, 0"/>
+                                <Setter Property="Height" Value="25"/>
+                                <Setter Property="Width"  Value="25"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Background" Value="#f0f0f0"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button Command="{Binding ZoomInCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="Увеличить">
+                            <fa5:SvgAwesome Icon="Regular_PlusSquare"/>
+                        </Button>
+                        <Button Command="{Binding ZoomOutCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="Уменьшить">
+                            <fa5:SvgAwesome Icon="Regular_MinusSquare"/>
+                        </Button>
+                        <Button Command="{Binding ZoomResetCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="100%">
+                            <fa5:SvgAwesome Icon="Solid_ExpandArrowsAlt"/>
+                        </Button>
+                        <Button Command="{Binding ZoomToHeightCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="Растянуть по высоте">
+                            <fa5:SvgAwesome Icon="Solid_ArrowsAltV"/>
+                        </Button>
+                        <Button Command="{Binding ZoomToWidthCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="Растянуть по ширине">
+                            <fa5:SvgAwesome Icon="Solid_ArrowsAltH"/>
+                        </Button>
+                        <Button Command="{Binding SinglePageViewCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="Одна страница">
+                            <fa5:SvgAwesome Icon="Regular_FileAlt"/>
+                        </Button>
+                        <Button Command="{Binding DoublePageViewCommand, RelativeSource={RelativeSource AncestorType=local:NewMainWindow}}" ToolTip="Две страницы">
+                            <fa5:SvgAwesome Icon="Regular_Copy"/>
+                        </Button>
+                    </StackPanel>
+                    
+                </Grid>
+                
             </DockPanel>
         </TabItem>
         <TabItem Header="Администратор">
@@ -103,7 +153,8 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                            <Button Content="Закончить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
+                            <Button Content="Завершить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
+                            <Button Content="Отправить на добработку" Width="150" HorizontalAlignment="Center" Background="OrangeRed"/>
                         </StackPanel>
                         <controls:OnlyPDFViewer/>
                     </DockPanel>
@@ -112,19 +163,40 @@
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Left">
                             <GroupBox Header="Фильтр шаблонов:" DockPanel.Dock="Top" Margin="4,0">
-                                <TextBox Width="200"/>
+                                <TextBox Width="200" Text="{Binding SearchTemplate, UpdateSourceTrigger=PropertyChanged}"/>
                             </GroupBox>
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
                                 <Button Content="Удалить" Margin="4" Width="60"/>
                                 <Button Content="Добавить" Margin="4" Width="60"/>
                             </StackPanel>
-                            <ListBox Margin="4,0" BorderBrush="Gray" BorderThickness="1"/>
+                            <ListBox Margin="4,0" BorderBrush="Gray" BorderThickness="1" 
+                                     ItemsSource="{Binding TemplateCollectionViewer}" Name="ListTemplate"
+                                     SelectedItem="{Binding SelectedTemplateInView}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DocumentType}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </DockPanel>
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Шаблон:">
-                                <TextBox/>
+                                <TextBox Text="{Binding SelectedItem.DocumentType,
+                                    ElementName=ListTemplate, Mode=OneWay}"/>
                             </GroupBox>
-                            <ListBox MinHeight="100" Margin="4" BorderBrush="Gray" BorderThickness="1"></ListBox>
+                            <ListBox MinHeight="100" Margin="4" BorderBrush="Gray" BorderThickness="1"
+                                     ItemsSource="{Binding TemplateMetadataInView}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="{Binding Name}"/>
+                                            <TextBlock Text="Обязательное поле:"/>
+                                            <CheckBox IsChecked="{Binding Required}"/>
+                                            <Button Content="Удалить поле"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                             <GroupBox Header="Новые данные:" Margin="4" BorderThickness="0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBox Width="150"/>
