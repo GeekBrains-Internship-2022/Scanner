@@ -29,9 +29,13 @@
                                   IsTextSearchEnabled="True" IsEditable="True"/>
                     </StackPanel>
                     <ListBox ItemsSource="{Binding FileDatasInListOP}" 
-                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}" 
-                             DisplayMemberPath="DocumentName"
-                             Name="ListBoxinOP"/>
+                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}" Name="ListBoxinOP">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DocumentName}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
                     <TextBlock Text="Шаблон: "/>
@@ -39,14 +43,14 @@
                             Converter={StaticResource OperatorComboBoxFilterConverter}}"
                                   SelectedItem="{Binding SelectedTemplateInOP}"
                                   IsTextSearchEnabled="True" IsEditable="True"
-                              Text="{Binding SelectedItem.Document.DocumentType, ElementName=ListBoxinOP}"/> 
-                    <ListBox ItemsSource="{Binding DocumentMetadataInOP}" Name="ListBoxMetadaInOP">
+                              Text="{Binding SelectedFileDataInOperatorPanel.Document.DocumentType, Mode=OneWayToSource}"/> 
+                    <ListBox ItemsSource="{Binding DocumentMetadataInOP}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <GroupBox Header="{Binding Name}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox Text="{Binding Data}"/>
-                                        <Button >
+                                        <Button Command="{Binding Path=DelleteMetaDataInDocumentViewOP, RelativeSource={RelativeSource AncestorType=vm:NewMainWindowViewModel}}">
                                             <fa5:SvgAwesome Icon="Solid_Trash" Width="10" Height="10"/>
                                         </Button>
                                     </StackPanel>
@@ -139,8 +143,13 @@
                                 </GroupBox>
                             </StackPanel>
                             <ListBox ItemsSource="{Binding FileDatasInListOP}" 
-                                     DisplayMemberPath="DocumentName"
-                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}"/>
+                             SelectedItem="{Binding SelectedFileDataInOperatorPanel}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DocumentName}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </DockPanel>
                         <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
                             <TextBlock Text="Шаблон: "/>
@@ -176,8 +185,13 @@
                             </StackPanel>
                             <ListBox Margin="4,0" BorderBrush="Gray" BorderThickness="1" 
                                      ItemsSource="{Binding TemplateCollectionViewer}" Name="ListTemplate"
-                                     DisplayMemberPath="DocumentType"
-                                     SelectedItem="{Binding SelectedTemplateInView}"/>
+                                     SelectedItem="{Binding SelectedTemplateInView}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DocumentType}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </DockPanel>
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Шаблон:">

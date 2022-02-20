@@ -33,8 +33,6 @@ namespace Scanner.Views.Windows
         private void ListBoxInopSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.MoonPdfPanelINOP.Unload();
-            if (e.AddedItems.Count == 0) return;
-            if (e.AddedItems[0] is null) return;
             if (e.AddedItems[0] is FileData data)
             {
                 if (data is null || data.FilePath is null)
