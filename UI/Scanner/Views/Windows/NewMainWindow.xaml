@@ -115,18 +115,32 @@
                 
             </DockPanel>
         </TabItem>
-        <TabItem Header="Администратор">
+        <TabItem Header="Администратор" IsSelected="{Binding IsSelectedPeerreview}">
             <TabControl>
                 <TabItem Header="Рецензирование">
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Left">
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                <TextBlock Text="Фильтр: "/>
-                                <ComboBox Width="100" 
+                            <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Фильтр: "/>
+                                    <ComboBox Width="100" 
                                   ItemsSource="{Binding ScannerDataTemplates, 
                             Converter={StaticResource OperatorComboBoxFilterConverter}}"
                                   SelectedItem="{Binding SelectedFIlterInGroupboxOP, UpdateSourceTrigger=PropertyChanged}"
                                   IsTextSearchEnabled="True" IsEditable="True"/>
+                                </StackPanel>
+                                <GroupBox Header="Показать">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Не обработанные: "/>
+                                            <CheckBox IsChecked="{Binding InProcessedFileDataFilter}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Завершенные: "/>
+                                            <CheckBox IsChecked="{Binding InCompletedFileDataFilter}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </GroupBox>
                             </StackPanel>
                             <ListBox ItemsSource="{Binding FileDatasInListOP}" 
                              SelectedItem="{Binding SelectedFileDataInOperatorPanel}">

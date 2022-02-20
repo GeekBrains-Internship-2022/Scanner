@@ -156,6 +156,46 @@ namespace Scanner.ViewModels
         /// </summary>
         public ICollectionView TemplateCollectionViewer { get; }
 
+        /// <summary>
+        /// Хренотень, сообщающая какая вкладка отображается, для применения фильтров к списку файлов
+        /// </summary>
+        private bool _IsSelectedPeerreview;
+
+        public bool IsSelectedPeerreview
+        {
+            get { return _IsSelectedPeerreview; }
+            set { 
+                Set(ref _IsSelectedPeerreview, value);
+                FileDatasInListOP.Refresh();
+            }
+        }
+
+        //Not processed Не обработанные
+        
+        private bool _InProcessedFileDataFilter;
+
+        public bool InProcessedFileDataFilter
+        {
+            get { return _InProcessedFileDataFilter; }
+            set
+            {
+                Set(ref _InProcessedFileDataFilter, value);
+                FileDatasInListOP.Refresh();
+            }
+        }
+        //Completed Завершенные
+
+        private bool _InCompletedFileDataFilter;
+
+        public bool InCompletedFileDataFilter
+        {
+            get { return _InCompletedFileDataFilter; }
+            set
+            {
+                Set(ref _InCompletedFileDataFilter, value);
+                FileDatasInListOP.Refresh();
+            }
+        }
 
         #region Команды
 
@@ -279,12 +319,25 @@ namespace Scanner.ViewModels
         {
             if (obj is FileData filedata)
             {
-                if (!filedata.Indexed)
+                if (IsSelectedPeerreview)
                 {
-                    if (SelectedFIlterInGroupboxOP is null || SelectedFIlterInGroupboxOP == "") return true;
-                    var contains = filedata.Document.DocumentType.Contains(SelectedFIlterInGroupboxOP);
-                    return contains;
+                    if (filedata.Indexed == !InProcessedFileDataFilter && filedata.Checked == InCompletedFileDataFilter)
+                    {
+                        if (SelectedFIlterInGroupboxOP is null || SelectedFIlterInGroupboxOP == "") return true;
+                        var contains = filedata.Document.DocumentType.Contains(SelectedFIlterInGroupboxOP);
+                        return contains;
+                    }                                           
                 }
+                else
+                {
+                    if (!filedata.Indexed && !filedata.Checked)
+                    {
+                        if (SelectedFIlterInGroupboxOP is null || SelectedFIlterInGroupboxOP == "") return true;
+                        var contains = filedata.Document.DocumentType.Contains(SelectedFIlterInGroupboxOP);
+                        return contains;
+                    }
+                }
+                
             }
             return false;
         } 
