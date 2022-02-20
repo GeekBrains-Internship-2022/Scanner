@@ -62,6 +62,7 @@ namespace Scanner.Data.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     DateAdded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Indexed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Checked = table.Column<bool>(type: "INTEGER", nullable: false),
                     DocumentId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>

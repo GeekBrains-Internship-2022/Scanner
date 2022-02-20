@@ -62,6 +62,9 @@ namespace Scanner.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Checked")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("TEXT");
 

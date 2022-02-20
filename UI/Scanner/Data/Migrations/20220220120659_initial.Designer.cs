@@ -9,7 +9,7 @@ using Scanner.Data;
 namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220215151938_initial")]
+    [Migration("20220220120659_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,9 @@ namespace Scanner.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Checked")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("TEXT");

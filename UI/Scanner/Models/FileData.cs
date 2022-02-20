@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Scanner.Models
 {
 
-    public class FileData: Entity
+    public class FileData : Entity
     {
         /// <summary>
         /// Путь к файлу
@@ -29,6 +29,10 @@ namespace Scanner.Models
         /// Состояния индексирования
         /// </summary>
         public bool Indexed { get; set; }
+        /// <summary>
+        /// Файл был проверен администратором
+        /// </summary>
+        public bool Checked {get;set;}
         /// <summary>
         /// Шаблон данных
         /// </summary>
