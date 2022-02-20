@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Scanner.Data.Stores.InDB;
+using Scanner.Infrastructure.Commands;
 using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Models;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Scanner.ViewModels
 {
@@ -38,7 +40,8 @@ namespace Scanner.ViewModels
             set { Set(ref _fileDatas, value); }
         }
 
-        
+
+        #region Поля и свойства для отображения на вкладке Оператор
         private ObservableCollection<DocumentMetadata> _documentMetadata;
         /// <summary>
         /// Коллекция метаданных выбранного файла для отображения в окне оператора
@@ -56,13 +59,13 @@ namespace Scanner.ViewModels
         {
             get { return _templateMetadatas; }
             set { Set(ref _templateMetadatas, value); }
-        } 
+        }
         #endregion
 
         /// <summary>
         /// Коллекция для отображения файлов на вкладке Оператор с возможностью фильтрации
         /// </summary>
-        public ICollectionView FileDatasInListOP { get;}
+        public ICollectionView FileDatasInListOP { get; }
 
         #region Выбранный элемент в ComboBox на панеле оператора для фильтрации списка файлов
         private string _selectedFIlterInGroupboxOP;
@@ -75,7 +78,7 @@ namespace Scanner.ViewModels
                 Set(ref _selectedFIlterInGroupboxOP, value);
                 FileDatasInListOP.Refresh();
             }
-        } 
+        }
         #endregion
 
         #region Выбранный элемент в панеле оператора, из списка файлов
@@ -84,8 +87,18 @@ namespace Scanner.ViewModels
         public FileData SelectedFileDataInOperatorPanel
         {
             get { return _SelectedFileDataInOperatorPanel; }
-            set { 
-                Set(ref _SelectedFileDataInOperatorPanel, value);                
+            set
+            {
+                Set(ref _SelectedFileDataInOperatorPanel, value);
+
+                if (SelectedTemplateInOP is not null)
+                {
+                    if (value.Document?.DocumentType == SelectedTemplateInOP)
+                    {
+                        ClearCollectionMetadata();
+                        UpdateDocumentMetadataInOP(SelectedTemplateInOP);
+                    }
+                }               
             }
         }
         #endregion
@@ -96,14 +109,73 @@ namespace Scanner.ViewModels
         public string SelectedTemplateInOP
         {
             get { return _selectedTemplateInOP; }
-            set {
+            set
+            {
                 ClearCollectionMetadata();
                 UpdateDocumentMetadataInOP(value);
-                Set(ref _selectedTemplateInOP, value);                
+                Set(ref _selectedTemplateInOP, value);
             }
-        } 
+        }
+        #endregion
         #endregion
 
+        private ObservableCollection<TemplateMetadata> _TemplateMetadataInViewAdm;
+        /// <summary>
+        /// Отображение метаданных выбранного шаблона
+        /// </summary>
+        public ObservableCollection<TemplateMetadata> TemplateMetadataInView
+        {
+            get { return _TemplateMetadataInViewAdm; }
+            set { Set(ref _TemplateMetadataInViewAdm, value); }
+        }
+
+        private ScannerDataTemplate _SelectedTemplateInView;
+        public ScannerDataTemplate SelectedTemplateInView
+        {
+            get { return _SelectedTemplateInView; }
+            set { 
+                Set(ref _SelectedTemplateInView, value);
+                TemplateMetadataInView.Clear();
+                UpdateTemplateMetadataInView();
+            }
+        }        
+        #region Поле для сортировки шаблонов на вкладке шаблоны
+        private string _SearchTemplate;
+
+        public string SearchTemplate
+        {
+            get { return _SearchTemplate; }
+            set { 
+                Set(ref _SearchTemplate, value);
+                TemplateCollectionViewer.Refresh();
+            }
+        }
+        #endregion
+        /// <summary>
+        /// Коллекция для отображение шаблонов
+        /// </summary>
+        public ICollectionView TemplateCollectionViewer { get; }
+
+
+        #region Команды
+
+        //private ICommand _delleteMetaDataInDocumentViewOP;
+
+        public ICommand DelleteMetaDataInDocumentViewOP { get; }
+
+        private void OnDelleteMetaDataInDocumentViewOP(object p) {
+
+            if (p is DocumentMetadata)
+            {
+                return;
+            }
+            return;
+        }
+
+        private bool CanDelleteMetaDataInDocumentViewOP(object p) => true;
+
+
+        #endregion
         public NewMainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
             ILogger<NewMainWindowViewModel> __logger, IObserverService __Observer, 
             IFileService __FileService, IRabbitMQService __RabbitMQService)
@@ -124,22 +196,52 @@ namespace Scanner.ViewModels
 
             FileDatasInListOP.Filter = FilterFileDatasInListOP;
 
+            TemplateCollectionViewer = CollectionViewSource.GetDefaultView(ScannerDataTemplates);
+
+            TemplateCollectionViewer.Filter = FilterTemplateCollectionViewer;
+
+            TemplateMetadataInView = new ObservableCollection<TemplateMetadata>();
+
+
+            DelleteMetaDataInDocumentViewOP = new LambdaCommand(OnDelleteMetaDataInDocumentViewOP, CanDelleteMetaDataInDocumentViewOP);
+
             //ObserverInitialize();
 #if DEBUG
             TestDataInit();
 #endif
         }
 
+        private bool FilterTemplateCollectionViewer(object obj)
+        {
+            if (obj is ScannerDataTemplate scannerDataTemplate)
+            {
+                if (SearchTemplate is null || SearchTemplate == "") return true;
+                var contains = scannerDataTemplate.DocumentType.Contains(SearchTemplate);
+                return contains;
+            }
+            return false;
+        }
+
+        private void UpdateTemplateMetadataInView()
+        {
+            if (SelectedTemplateInView.TemplateMetadata is null) return;
+            foreach (var item in SelectedTemplateInView.TemplateMetadata)
+            {
+                TemplateMetadataInView.Add(item);
+            }
+        }
+
+        #region Методы для отображения на вкладке Оператор
         private void ClearCollectionMetadata()
         {
             DocumentMetadataInOP.Clear();
-            TemplateMetadatas.Clear();            
+            TemplateMetadatas.Clear();
         }
         private void UpdateDocumentMetadataInOP(string value)
         {
             if (value is null) return;
             var template = ScannerDataTemplates.FirstOrDefault(o => o.DocumentType == value);
-            if (template == null || template.TemplateMetadata == null) return;
+            if (template == null || template.TemplateMetadata == null || SelectedFileDataInOperatorPanel == null) return;
 
             var meta = SelectedFileDataInOperatorPanel.Document.Metadata?.ToArray();
             List<DocumentMetadata> list;
@@ -151,7 +253,7 @@ namespace Scanner.ViewModels
                 if (item.Required)
                 {
                     DocumentMetadata data = list.FirstOrDefault(o => o.Name == item.Name);
-                    DocumentMetadataInOP.Add(new DocumentMetadata { Name = item.Name, Data = data?.Data});
+                    DocumentMetadataInOP.Add(new DocumentMetadata { Name = item.Name, Data = data?.Data });
                     if (data != null) list.Remove(data);
                 }
                 else
@@ -166,12 +268,27 @@ namespace Scanner.ViewModels
             }
             if (list.Count > 0)
             {
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     DocumentMetadataInOP.Add(new DocumentMetadata { Name = item.Name, Data = item.Data });
                 }
             }
         }
+
+        private bool FilterFileDatasInListOP(object obj)
+        {
+            if (obj is FileData filedata)
+            {
+                if (!filedata.Indexed)
+                {
+                    if (SelectedFIlterInGroupboxOP is null || SelectedFIlterInGroupboxOP == "") return true;
+                    var contains = filedata.Document.DocumentType.Contains(SelectedFIlterInGroupboxOP);
+                    return contains;
+                }
+            }
+            return false;
+        } 
+        #endregion
 
         private void TestDataInit()
         {
@@ -203,7 +320,7 @@ namespace Scanner.ViewModels
             {
                  DateAdded = DateTime.Now,
                   DocumentName = "Паспорт васи",
-                   FilePath = "c:\\\\Паспорт\\Паспорт васи.pdf",
+                   FilePath = "D:\\github.com\\GeekBrains-Internship-2022\\Scanner\\UI\\Scanner\\bin\\Debug\\net5.0-windows\\Documents\\Диплом\\Диплом1.pdf",
                     Document = doc,
                      Indexed=false,
             });
@@ -266,23 +383,7 @@ namespace Scanner.ViewModels
             {
                 FileDatas.Add(fd);
             }
-        }
-
-        private bool FilterFileDatasInListOP(object obj)
-        {
-            
-
-            if (obj is FileData filedata)
-            {
-                if (!filedata.Indexed)
-                {
-                    if (SelectedFIlterInGroupboxOP is null || SelectedFIlterInGroupboxOP == "") return true;
-                    var contains = filedata.Document.DocumentType.Contains(SelectedFIlterInGroupboxOP);                    
-                    return contains;                    
-                }                
-            }            
-            return false;
-        }
+        }        
 
         private async void ObserverInitialize()
         {
