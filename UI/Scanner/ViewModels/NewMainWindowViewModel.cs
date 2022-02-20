@@ -229,6 +229,7 @@ namespace Scanner.ViewModels
 
             ScannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(__ScannerData.GetAll());
             FileDatas = new ObservableCollection<FileData>(__filedata.GetAll());
+            
             DocumentMetadataInOP = new ObservableCollection<DocumentMetadata>();
             TemplateMetadatas = new ObservableCollection<TemplateMetadata>();
 
