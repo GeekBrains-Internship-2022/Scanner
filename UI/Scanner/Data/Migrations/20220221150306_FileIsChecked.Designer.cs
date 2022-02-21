@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scanner.Data;
 
 namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    partial class ScannerDBModelSnapshot : ModelSnapshot
+    [Migration("20220221150306_FileIsChecked")]
+    partial class FileIsChecked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
