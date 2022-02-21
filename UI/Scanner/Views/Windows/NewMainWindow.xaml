@@ -39,18 +39,18 @@
                 </DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
                     <TextBlock Text="Шаблон: "/>
-                    <ComboBox ItemsSource="{Binding ScannerDataTemplates, 
-                            Converter={StaticResource OperatorComboBoxFilterConverter}}"
+                    <ComboBox ItemsSource="{Binding ScannerDataTemplates}"
                                   SelectedItem="{Binding SelectedTemplateInOP}"
-                                  IsTextSearchEnabled="True" IsEditable="True"
-                              Text="{Binding SelectedFileDataInOperatorPanel.Document.DocumentType, Mode=OneWayToSource}"/> 
-                    <ListBox ItemsSource="{Binding DocumentMetadataInOP}">
+                                  IsTextSearchEnabled="True" IsEditable="True" 
+                              DisplayMemberPath="DocumentType"/> 
+                    <ListBox ItemsSource="{Binding DocumentMetadataInOP}" MinHeight="100" x:Name="ListBoxMetaData">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <GroupBox Header="{Binding Name}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox Text="{Binding Data}"/>
-                                        <Button Command="{Binding Path=DelleteMetaDataInDocumentViewOP, RelativeSource={RelativeSource AncestorType=vm:NewMainWindowViewModel}}">
+                                        <Button Command="{Binding Path=DataContext.DelleteMetaDataInDocumentViewOP, 
+                                            ElementName=ListBoxMetaData, Mode=OneWay}" CommandParameter="{Binding}">
                                             <fa5:SvgAwesome Icon="Solid_Trash" Width="10" Height="10"/>
                                         </Button>
                                     </StackPanel>

@@ -91,22 +91,22 @@ namespace Scanner.ViewModels
             {
                 Set(ref _SelectedFileDataInOperatorPanel, value);
 
-                if (SelectedTemplateInOP is not null)
-                {
-                    if (value.Document?.DocumentType == SelectedTemplateInOP)
-                    {
-                        ClearCollectionMetadata();
-                        UpdateDocumentMetadataInOP(SelectedTemplateInOP);
-                    }
-                }               
+                //if (SelectedTemplateInOP is not null)
+                //{
+                //    if (value.Document?.DocumentType == SelectedTemplateInOP)
+                //    {
+                //        ClearCollectionMetadata();
+                //        UpdateDocumentMetadataInOP(SelectedTemplateInOP);
+                //    }
+                //}               
             }
         }
         #endregion
 
         #region Выбранный шаблон в окне оператора
-        private string _selectedTemplateInOP;
+        private ScannerDataTemplate _selectedTemplateInOP;
 
-        public string SelectedTemplateInOP
+        public ScannerDataTemplate SelectedTemplateInOP
         {
             get { return _selectedTemplateInOP; }
             set
@@ -205,14 +205,24 @@ namespace Scanner.ViewModels
 
         private void OnDelleteMetaDataInDocumentViewOP(object p) {
 
-            if (p is DocumentMetadata)
+            if (p is DocumentMetadata meta)
             {
-                return;
+                DocumentMetadataInOP.Remove(meta);
             }
             return;
         }
 
-        private bool CanDelleteMetaDataInDocumentViewOP(object p) => true;
+        private bool CanDelleteMetaDataInDocumentViewOP(object p) {
+
+            if (p is DocumentMetadata meta)
+            {
+                var temp = SelectedTemplateInOP.TemplateMetadata.FirstOrDefault(o => o.Name == meta.Name);
+                if (temp == null) return true;
+                if (temp.Required) return false;
+            }
+            //
+            return true;
+        }
 
 
         #endregion
@@ -277,18 +287,18 @@ namespace Scanner.ViewModels
             DocumentMetadataInOP.Clear();
             TemplateMetadatas.Clear();
         }
-        private void UpdateDocumentMetadataInOP(string value)
+        private void UpdateDocumentMetadataInOP(ScannerDataTemplate value)
         {
             if (value is null) return;
-            var template = ScannerDataTemplates.FirstOrDefault(o => o.DocumentType == value);
-            if (template == null || template.TemplateMetadata == null || SelectedFileDataInOperatorPanel == null) return;
+            //var template = ScannerDataTemplates.FirstOrDefault(o => o.DocumentType == value);
+            if (value.TemplateMetadata == null || SelectedFileDataInOperatorPanel == null) return;
 
             var meta = SelectedFileDataInOperatorPanel.Document.Metadata?.ToArray();
             List<DocumentMetadata> list;
             if (meta != null) list = new List<DocumentMetadata>(meta);
             else list = new List<DocumentMetadata>();
 
-            foreach (var item in template.TemplateMetadata)
+            foreach (var item in value.TemplateMetadata)
             {
                 if (item.Required)
                 {
