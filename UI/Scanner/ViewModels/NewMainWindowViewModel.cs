@@ -97,7 +97,7 @@ namespace Scanner.ViewModels
             {
                 Set(ref _SelectedFileDataInOperatorPanel, value);
 
-                if (value.Document?.DocumentType != null)
+                if (value?.Document?.DocumentType != null)
                 {
                     var temp = ScannerDataTemplates.FirstOrDefault(o => o.DocumentType == value.Document?.DocumentType);
                     if (temp != null) SelectedTemplateInOP = temp;
@@ -196,7 +196,9 @@ namespace Scanner.ViewModels
         //Not processed Не обработанные
         
         private bool _InProcessedFileDataFilter;
-
+        /// <summary>
+        /// Фильтр сортировки отображения списка файлов на панеле администратора
+        /// </summary>
         public bool InProcessedFileDataFilter
         {
             get { return _InProcessedFileDataFilter; }
@@ -209,7 +211,9 @@ namespace Scanner.ViewModels
         //Completed Завершенные
 
         private bool _InCompletedFileDataFilter;
-
+        /// <summary>
+        /// Фильтр сортировки отображения списка файлов на панеле администратора
+        /// </summary>
         public bool InCompletedFileDataFilter
         {
             get { return _InCompletedFileDataFilter; }
@@ -241,10 +245,11 @@ namespace Scanner.ViewModels
 
         private bool CanDelleteMetaDataInDocumentViewOP(object p)
         {
-
+            if (p is null) return true;
+            
             if (p is DocumentMetadata meta)
             {
-                var temp = SelectedTemplateInOP.TemplateMetadata.FirstOrDefault(o => o.Name == meta.Name);
+                var temp = SelectedTemplateInOP?.TemplateMetadata.FirstOrDefault(o => o.Name == meta.Name);
                 if (temp == null) return true;
                 if (temp.Required) return false;
             }
