@@ -70,6 +70,9 @@ namespace Scanner.ViewModels
         #region Выбранный элемент в ComboBox на панеле оператора для фильтрации списка файлов
         private string _selectedFIlterInGroupboxOP;
 
+        /// <summary>
+        /// Выбранный элемент в ComboBox на панеле оператора для фильтрации списка файлов
+        /// </summary>
         public string SelectedFIlterInGroupboxOP
         {
             get { return _selectedFIlterInGroupboxOP; }
@@ -84,6 +87,9 @@ namespace Scanner.ViewModels
         #region Выбранный элемент в панеле оператора, из списка файлов
         private FileData _SelectedFileDataInOperatorPanel;
 
+        /// <summary>
+        /// Выбранный элемент в панеле оператора, из списка файлов
+        /// </summary>
         public FileData SelectedFileDataInOperatorPanel
         {
             get { return _SelectedFileDataInOperatorPanel; }
@@ -91,14 +97,12 @@ namespace Scanner.ViewModels
             {
                 Set(ref _SelectedFileDataInOperatorPanel, value);
 
-                //if (SelectedTemplateInOP is not null)
-                //{
-                //    if (value.Document?.DocumentType == SelectedTemplateInOP)
-                //    {
-                //        ClearCollectionMetadata();
-                //        UpdateDocumentMetadataInOP(SelectedTemplateInOP);
-                //    }
-                //}               
+                if (value.Document?.DocumentType != null)
+                {
+                    var temp = ScannerDataTemplates.FirstOrDefault(o => o.DocumentType == value.Document?.DocumentType);
+                    if (temp != null) SelectedTemplateInOP = temp;
+                    //else SelectedTemplateInOP = new ScannerDataTemplate { DocumentType= value.Document?.DocumentType };
+                }              
             }
         }
         #endregion
@@ -106,6 +110,9 @@ namespace Scanner.ViewModels
         #region Выбранный шаблон в окне оператора
         private ScannerDataTemplate _selectedTemplateInOP;
 
+        /// <summary>
+        /// Выбранный шаблон в окне оператора
+        /// </summary>
         public ScannerDataTemplate SelectedTemplateInOP
         {
             get { return _selectedTemplateInOP; }
@@ -130,6 +137,9 @@ namespace Scanner.ViewModels
         }
 
         private ScannerDataTemplate _SelectedTemplateInView;
+        /// <summary>
+        /// Выбранный шаблон для редактирования метданных документа
+        /// </summary>
         public ScannerDataTemplate SelectedTemplateInView
         {
             get { return _SelectedTemplateInView; }
@@ -138,10 +148,23 @@ namespace Scanner.ViewModels
                 TemplateMetadataInView.Clear();
                 UpdateTemplateMetadataInView();
             }
-        }        
+        }
+        
+        private TemplateMetadata _SelectedTemplateMetadate;
+        /// <summary>
+        /// Поле содержащие в себе выбранные метедаданные для добалвения в колекцию метданных документа
+        /// </summary>
+        public TemplateMetadata SelectedTemplateMetadate
+        {
+            get => _SelectedTemplateMetadate;
+            set => Set(ref _SelectedTemplateMetadate, value);
+
+        }
         #region Поле для сортировки шаблонов на вкладке шаблоны
         private string _SearchTemplate;
-
+        /// <summary>
+        /// Поле для сортировки шаблонов на вкладке шаблоны
+        /// </summary>
         public string SearchTemplate
         {
             get { return _SearchTemplate; }
@@ -199,11 +222,15 @@ namespace Scanner.ViewModels
 
         #region Команды
 
-        //private ICommand _delleteMetaDataInDocumentViewOP;
 
+        #region Команда удаления элемента метаднных из списка метаданных документа
+        /// <summary>
+        /// Команда удаления элемента метаднных из списка метаданных документа
+        /// </summary>
         public ICommand DelleteMetaDataInDocumentViewOP { get; }
 
-        private void OnDelleteMetaDataInDocumentViewOP(object p) {
+        private void OnDelleteMetaDataInDocumentViewOP(object p)
+        {
 
             if (p is DocumentMetadata meta)
             {
@@ -212,7 +239,8 @@ namespace Scanner.ViewModels
             return;
         }
 
-        private bool CanDelleteMetaDataInDocumentViewOP(object p) {
+        private bool CanDelleteMetaDataInDocumentViewOP(object p)
+        {
 
             if (p is DocumentMetadata meta)
             {
@@ -221,6 +249,25 @@ namespace Scanner.ViewModels
                 if (temp.Required) return false;
             }
             //
+            return true;
+        }
+        #endregion
+
+        public ICommand AddMetaDataInDocumentViewOP { get; }
+
+        private void OnAddMetaDataInDocumentViewOP(object p)
+        {
+            //SelectedTemplateMetadate
+            //TemplateMetadatas
+            //DocumentMetadataInOP
+            DocumentMetadataInOP.Add(new DocumentMetadata { Name = SelectedTemplateMetadate.Name });
+            TemplateMetadatas.Remove(SelectedTemplateMetadate);            
+        }
+
+        private bool CanAddMetaDataInDocumentViewOP(object p)
+        {
+
+            if (SelectedTemplateMetadate is null) return false;
             return true;
         }
 
@@ -254,6 +301,8 @@ namespace Scanner.ViewModels
 
 
             DelleteMetaDataInDocumentViewOP = new LambdaCommand(OnDelleteMetaDataInDocumentViewOP, CanDelleteMetaDataInDocumentViewOP);
+
+            AddMetaDataInDocumentViewOP = new LambdaCommand(OnAddMetaDataInDocumentViewOP, CanAddMetaDataInDocumentViewOP);
 
             //ObserverInitialize();
 #if DEBUG

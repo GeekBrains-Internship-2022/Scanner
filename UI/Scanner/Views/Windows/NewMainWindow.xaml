@@ -59,14 +59,8 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <StackPanel Orientation="Horizontal">
-                        <ComboBox Width="100" ItemsSource="{Binding TemplateMetadatas}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Button Content="+"/>
+                        <ComboBox Width="100" ItemsSource="{Binding TemplateMetadatas}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedTemplateMetadate}" Margin="2"/>
+                        <Button Content="+" Command="{Binding AddMetaDataInDocumentViewOP}" Margin="4"/>
                     </StackPanel>
                     <Button Command="{Binding DelleteMetaDataInDocumentViewOP}"
                         Content="Закончить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
