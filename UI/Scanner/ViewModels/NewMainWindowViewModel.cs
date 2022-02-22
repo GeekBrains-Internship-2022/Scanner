@@ -476,7 +476,7 @@ namespace Scanner.ViewModels
 
         private void UpdateTemplateMetadataInView()
         {
-            if (SelectedTemplateInView.TemplateMetadata is null) return;
+            if (SelectedTemplateInView?.TemplateMetadata is null) return;
             foreach (var item in SelectedTemplateInView.TemplateMetadata)
             {
                 TemplateMetadataInView.Add(item);
