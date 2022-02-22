@@ -42,13 +42,13 @@
                     <ComboBox ItemsSource="{Binding ScannerDataTemplates}"
                                   SelectedItem="{Binding SelectedTemplateInOP}"
                                   IsTextSearchEnabled="True" IsEditable="True" 
-                              DisplayMemberPath="DocumentType"/> 
+                              DisplayMemberPath="DocumentType" IsEnabled="{Binding EnableMeteDataPanelInOP}"/> 
                     <ListBox ItemsSource="{Binding DocumentMetadataInOP}" MinHeight="100" x:Name="ListBoxMetaData">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <GroupBox Header="{Binding Name}">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBox Text="{Binding Data}"/>
+                                        <TextBox Text="{Binding Data}" MinWidth="50"/>
                                         <Button Command="{Binding Path=DataContext.DelleteMetaDataInDocumentViewOP, 
                                             ElementName=ListBoxMetaData, Mode=OneWay}" CommandParameter="{Binding}">
                                             <fa5:SvgAwesome Icon="Solid_Trash" Width="10" Height="10"/>

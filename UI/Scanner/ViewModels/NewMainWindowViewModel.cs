@@ -102,7 +102,8 @@ namespace Scanner.ViewModels
                     var temp = ScannerDataTemplates.FirstOrDefault(o => o.DocumentType == value.Document?.DocumentType);
                     if (temp != null) SelectedTemplateInOP = temp;
                     //else SelectedTemplateInOP = new ScannerDataTemplate { DocumentType= value.Document?.DocumentType };
-                }              
+                }
+                if (value is not null) EnableMeteDataPanelInOP = true;
             }
         }
         #endregion
@@ -124,6 +125,13 @@ namespace Scanner.ViewModels
             }
         }
         #endregion
+        private bool _EnableMeteDataPanelInOP;
+        //SelectedFileDataInOperatorPanel
+        public bool EnableMeteDataPanelInOP
+        {
+            get => _EnableMeteDataPanelInOP;
+            set => Set(ref _EnableMeteDataPanelInOP, value);
+        }
         #endregion
 
         private ObservableCollection<TemplateMetadata> _TemplateMetadataInViewAdm;
@@ -239,6 +247,14 @@ namespace Scanner.ViewModels
             if (p is DocumentMetadata meta)
             {
                 DocumentMetadataInOP.Remove(meta);
+                var temp = SelectedTemplateInOP?.TemplateMetadata.FirstOrDefault(o => o.Name == meta.Name);
+                if (temp is null) return;
+                if (!TemplateMetadatas.Contains(temp))
+                {
+                    TemplateMetadatas.Add(temp);
+                }
+                
+
             }
             return;
         }
