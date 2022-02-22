@@ -19,10 +19,12 @@ namespace Scanner.ViewModels
 {
     internal class NewMainWindowViewModel : ViewModel
     {
-        private readonly IStore<FileData> _FileDataInDB;
-        private readonly IStore<ScannerDataTemplate> _DataTemplateInDB;
+        private readonly IStore<FileData> _DBFileDataInDB;
+        private readonly IStore<ScannerDataTemplate> _DBDataTemplateInDB;
         private readonly ILogger<NewMainWindowViewModel> _Logger;
         private readonly IObserverService _Observer;
+        private readonly IStore<DocumentMetadata> _DBdocumentMetadata;
+        private readonly IStore<TemplateMetadata> _DBtemplateMetadata;
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
 
@@ -413,13 +415,16 @@ namespace Scanner.ViewModels
 
         #endregion
         public NewMainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
-            ILogger<NewMainWindowViewModel> __logger, IObserverService __Observer, 
+            ILogger<NewMainWindowViewModel> __logger, IObserverService __Observer, IStore<DocumentMetadata> __DocumentMetadataDB,
+            IStore<TemplateMetadata> __TemplateMetadata,
             IFileService __FileService, IRabbitMQService __RabbitMQService)
         {
-            _FileDataInDB = __filedata;
-            _DataTemplateInDB = __ScannerData;
+            _DBFileDataInDB = __filedata;
+            _DBDataTemplateInDB = __ScannerData;
             _Logger = __logger;
             _Observer = __Observer;
+            _DBdocumentMetadata = __DocumentMetadataDB;
+            _DBtemplateMetadata = __TemplateMetadata;
             _FileService = __FileService;
             _RabbitMQService = __RabbitMQService;
 
