@@ -152,6 +152,13 @@ namespace Scanner.ViewModels
         {
             get { return _SelectedTemplateInView; }
             set { 
+                if (_SelectedTemplateInView is not null)
+                {
+                    if (_SelectedTemplateInView?.DocumentType is null)
+                    {
+                        ScannerDataTemplates.Remove(_SelectedTemplateInView);
+                    }
+                }                
                 Set(ref _SelectedTemplateInView, value);
                 TemplateMetadataInView.Clear();
                 UpdateTemplateMetadataInView();
@@ -298,6 +305,10 @@ namespace Scanner.ViewModels
 
         private void OnDelleteMetaDataInListBoxTemplateMD(object p)
         {
+            if (p is TemplateMetadata temp)
+            {
+                TemplateMetadataInView.Remove(temp);
+            }
             return;
         }
 
@@ -311,12 +322,21 @@ namespace Scanner.ViewModels
 
         private void OnAddMetaDataInListBoxTemplateMD(object p)
         {
+            if (p is string s)
+            {
+                var serach = TemplateMetadataInView.FirstOrDefault(o => o.Name.Equals(s));
+                if (serach is not null) return;
+                var meta = new TemplateMetadata { Name = s };
+                TemplateMetadataInView.Add(meta);
+
+            }
             return;
         }
 
         private bool CanAddMetaDataInListBoxTemplateMD(object p)
         {
-
+            if (p is null) return false;
+            //if (p is string )
             return true;
         }
 
@@ -337,6 +357,9 @@ namespace Scanner.ViewModels
 
         private void OnCreateNewTemplateMetaData(object p)
         {
+            var newDataTemp = new ScannerDataTemplate();            
+            ScannerDataTemplates.Add(newDataTemp);
+            SelectedTemplateInView = newDataTemp;
             return;
         }
 
@@ -350,7 +373,8 @@ namespace Scanner.ViewModels
 
         private void OnDeleteTemplateMetaData(object p)
         {
-            return;
+            ScannerDataTemplates.Remove(SelectedTemplateInView);
+            SelectedTemplateInView = ScannerDataTemplates.FirstOrDefault();
         }
 
         private bool CanDeleteTemplateMetaData(object p)
