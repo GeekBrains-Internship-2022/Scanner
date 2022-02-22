@@ -54,6 +54,10 @@ namespace Scanner
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
             services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
             services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();
+            //DocumentMetadataInDB: IStore<DocumentMetadata>
+            services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();
+            // TemplateMetadataInDB : IStore<TemplateMetadata>
+            services.AddSingleton<IStore<TemplateMetadata>, TemplateMetadataInDB>();
             services.AddTransient<ScannerDbInitializer>();
 
             //services.AddSingleton<MainWindowViewModel>();
