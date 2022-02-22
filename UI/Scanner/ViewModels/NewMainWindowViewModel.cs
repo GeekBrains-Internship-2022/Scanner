@@ -359,6 +359,34 @@ namespace Scanner.ViewModels
             return true;
         }
 
+        public ICommand EndCompletedDocument { get; }
+
+        private void OnEndCompletedDocument(object p)
+        {
+            return;
+        }
+
+        private bool CanEndCompletedDocument(object p)
+        {
+
+            return true;
+        }
+
+        //Return to work
+
+        public ICommand ReturnToWorkDokument { get; }
+
+        private void OnReturnToWorkDokument(object p)
+        {
+            return;
+        }
+
+        private bool CanReturnToWorkDokument(object p)
+        {
+
+            return true;
+        }
+
         #endregion
         public NewMainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
             ILogger<NewMainWindowViewModel> __logger, IObserverService __Observer, 
@@ -400,6 +428,10 @@ namespace Scanner.ViewModels
             CreateNewTemplateMetaData = new LambdaCommand(OnCreateNewTemplateMetaData, CanCreateNewTemplateMetaData);
 
             DeleteTemplateMetaData = new LambdaCommand(OnDeleteTemplateMetaData, CanDeleteTemplateMetaData);
+
+            EndCompletedDocument = new LambdaCommand(OnEndCompletedDocument, CanEndCompletedDocument);
+
+            ReturnToWorkDokument = new LambdaCommand(OnReturnToWorkDokument, CanReturnToWorkDokument);
 
             //ObserverInitialize();
 #if DEBUG

@@ -161,8 +161,8 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                            <Button Content="Завершить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen"/>
-                            <Button Content="Отправить на добработку" Width="150" HorizontalAlignment="Center" Background="OrangeRed"/>
+                            <Button Content="Завершить обработку" Width="150" HorizontalAlignment="Center" Background="LightGreen" Command="{Binding EndCompletedDocument}"/>
+                            <Button Content="Отправить на добработку" Width="150" HorizontalAlignment="Center" Background="OrangeRed" Command="{Binding ReturnToWorkDokument}"/>
                         </StackPanel>
                         <controls:OnlyPDFViewer/>
                     </DockPanel>
