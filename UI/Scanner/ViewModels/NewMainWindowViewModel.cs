@@ -292,6 +292,72 @@ namespace Scanner.ViewModels
             return true;
         }
 
+        //DelleteMetaDataInListBoxTemplateMD
+
+        public ICommand DelleteMetaDataInListBoxTemplateMD { get; }
+
+        private void OnDelleteMetaDataInListBoxTemplateMD(object p)
+        {
+            return;
+        }
+
+        private bool CanDelleteMetaDataInListBoxTemplateMD(object p)
+        {
+
+            return true;
+        }
+
+        public ICommand AddMetaDataInListBoxTemplateMD { get; }
+
+        private void OnAddMetaDataInListBoxTemplateMD(object p)
+        {
+            return;
+        }
+
+        private bool CanAddMetaDataInListBoxTemplateMD(object p)
+        {
+
+            return true;
+        }
+
+        public ICommand SaveTemplateMetaData { get; }
+
+        private void OnSaveTemplateMetaData(object p)
+        {
+            return;
+        }
+
+        private bool CanSaveTemplateMetaData(object p)
+        {
+
+            return true;
+        }
+
+        public ICommand CreateNewTemplateMetaData { get; }
+
+        private void OnCreateNewTemplateMetaData(object p)
+        {
+            return;
+        }
+
+        private bool CanCreateNewTemplateMetaData(object p)
+        {
+
+            return true;
+        }
+
+        public ICommand DeleteTemplateMetaData { get; }
+
+        private void OnDeleteTemplateMetaData(object p)
+        {
+            return;
+        }
+
+        private bool CanDeleteTemplateMetaData(object p)
+        {
+
+            return true;
+        }
 
         #endregion
         public NewMainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
@@ -324,6 +390,16 @@ namespace Scanner.ViewModels
             DelleteMetaDataInDocumentViewOP = new LambdaCommand(OnDelleteMetaDataInDocumentViewOP, CanDelleteMetaDataInDocumentViewOP);
 
             AddMetaDataInDocumentViewOP = new LambdaCommand(OnAddMetaDataInDocumentViewOP, CanAddMetaDataInDocumentViewOP);
+
+            DelleteMetaDataInListBoxTemplateMD = new LambdaCommand(OnDelleteMetaDataInListBoxTemplateMD, CanDelleteMetaDataInListBoxTemplateMD);
+
+            AddMetaDataInListBoxTemplateMD = new LambdaCommand(OnAddMetaDataInListBoxTemplateMD, CanAddMetaDataInListBoxTemplateMD);
+
+            SaveTemplateMetaData = new LambdaCommand(OnSaveTemplateMetaData, CanSaveTemplateMetaData);
+
+            CreateNewTemplateMetaData = new LambdaCommand(OnCreateNewTemplateMetaData, CanCreateNewTemplateMetaData);
+
+            DeleteTemplateMetaData = new LambdaCommand(OnDeleteTemplateMetaData, CanDeleteTemplateMetaData);
 
             //ObserverInitialize();
 #if DEBUG

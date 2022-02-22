@@ -174,8 +174,8 @@
                                 <TextBox Width="200" Text="{Binding SearchTemplate, UpdateSourceTrigger=PropertyChanged}"/>
                             </GroupBox>
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
-                                <Button Content="Удалить" Margin="4" Width="60"/>
-                                <Button Content="Добавить" Margin="4" Width="60"/>
+                                <Button Content="Удалить" Margin="4" Width="60" Command="{Binding DeleteTemplateMetaData}"/>
+                                <Button Content="Добавить" Margin="4" Width="60" Command="{Binding CreateNewTemplateMetaData}"/>
                             </StackPanel>
                             <ListBox Margin="4,0" BorderBrush="Gray" BorderThickness="1" 
                                      ItemsSource="{Binding TemplateCollectionViewer}" Name="ListTemplate"
@@ -193,25 +193,26 @@
                                     ElementName=ListTemplate, Mode=OneWay}"/>
                             </GroupBox>
                             <ListBox MinHeight="100" Margin="4" BorderBrush="Gray" BorderThickness="1"
-                                     ItemsSource="{Binding TemplateMetadataInView}">
+                                     ItemsSource="{Binding TemplateMetadataInView}" x:Name="ListBoxTemplateMD">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox Text="{Binding Name}"/>
                                             <TextBlock Text="Обязательное поле:"/>
                                             <CheckBox IsChecked="{Binding Required}"/>
-                                            <Button Content="Удалить поле"/>
+                                            <Button Content="Удалить поле" Command="{Binding Path=DataContext.DelleteMetaDataInListBoxTemplateMD, 
+                                            ElementName=ListBoxTemplateMD, Mode=OneWay}" CommandParameter="{Binding}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
                             <GroupBox Header="Новые данные:" Margin="4" BorderThickness="0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Width="150"/>
-                                <Button Content="+" Margin="2,0"/>
+                                <TextBox Width="150" Name="MetadataAdd"/>
+                                    <Button Content="+" Margin="2,0" Command="{Binding AddMetaDataInListBoxTemplateMD}" CommandParameter="{Binding Text,ElementName=MetadataAdd}"/>
                             </StackPanel>
                             </GroupBox>
-                            <Button Content="Сохранить изменения" Width="140"/>
+                            <Button Content="Сохранить изменения" Width="140" Command="{Binding SaveTemplateMetaData}"/>
                         </StackPanel>
                     </DockPanel>
                 </TabItem>
