@@ -27,6 +27,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Меню">
                 <MenuItem Header="Настройки" Command="{Binding OpenSettingsCommand}"/>
+                <MenuItem Header="Тест БД" Command="{Binding OpenTestBDCommand}"/>
                 <Separator/>
                 <MenuItem Header="Выход" Command="{Binding CloseAppCommand}"/>
             </MenuItem>

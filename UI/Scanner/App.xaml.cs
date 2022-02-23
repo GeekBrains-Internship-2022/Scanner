@@ -10,7 +10,6 @@ using Scanner.Data;
 using Scanner.Data.Stores.InDB;
 using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
-using Microsoft.EntityFrameworkCore;
 using Scanner.Models;
 using Scanner.Service;
 using Scanner.Service.RabbitMQ;
