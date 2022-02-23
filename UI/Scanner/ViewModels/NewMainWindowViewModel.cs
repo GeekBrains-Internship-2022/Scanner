@@ -328,7 +328,7 @@ namespace Scanner.ViewModels
             {
                 var serach = TemplateMetadataInView.FirstOrDefault(o => o.Name.Equals(s));
                 if (serach is not null) return;
-                var meta = new TemplateMetadata { Name = s };
+                var meta = new TemplateMetadata { Name = s};
                 TemplateMetadataInView.Add(meta);
 
             }
@@ -346,7 +346,36 @@ namespace Scanner.ViewModels
 
         private void OnSaveTemplateMetaData(object p)
         {
-            return;
+           if (p is string typeDocument)
+            {
+
+                if (SelectedTemplateInView.DocumentType == null)
+                {
+                    if (ScannerDataTemplates.FirstOrDefault(o => typeDocument.Equals(o.DocumentType)) != null) return;
+                    SelectedTemplateInView.DocumentType = typeDocument;                                        
+                    _DBDataTemplateInDB.Add(SelectedTemplateInView);
+                    foreach (var item in TemplateMetadataInView)
+                    {                        
+                        SelectedTemplateInView.TemplateMetadata.Add(_DBtemplateMetadata.Add(item));
+
+                    }
+                    _DBDataTemplateInDB.Update(SelectedTemplateInView);
+                } else
+                {
+                    if (!typeDocument.Equals(SelectedTemplateInView.DocumentType)) SelectedTemplateInView.DocumentType = typeDocument;
+                    foreach (var item in TemplateMetadataInView)
+                    {
+                        if (!SelectedTemplateInView.TemplateMetadata.Contains(item))
+                        {
+                            SelectedTemplateInView.TemplateMetadata.Add(_DBtemplateMetadata.Add(item));
+                        } else
+                        {
+                            //SelectedTemplateInView.TemplateMetadata.FirstOrDefault
+                        }
+                    }
+                }
+            }
+            TemplateCollectionViewer.Refresh();
         }
 
         private bool CanSaveTemplateMetaData(object p)
@@ -473,6 +502,7 @@ namespace Scanner.ViewModels
             if (obj is ScannerDataTemplate scannerDataTemplate)
             {
                 if (SearchTemplate is null || SearchTemplate == "") return true;
+                if (scannerDataTemplate.DocumentType == null) return true;
                 var contains = scannerDataTemplate.DocumentType.Contains(SearchTemplate);
                 return contains;
             }

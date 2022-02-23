@@ -190,7 +190,7 @@
                         <StackPanel Orientation="Vertical">
                             <GroupBox Header="Шаблон:">
                                 <TextBox Text="{Binding SelectedItem.DocumentType,
-                                    ElementName=ListTemplate, Mode=OneWay}"/>
+                                    ElementName=ListTemplate, Mode=OneWay}" Name="TextBoxDocumentType"/>
                             </GroupBox>
                             <ListBox MinHeight="100" Margin="4" BorderBrush="Gray" BorderThickness="1"
                                      ItemsSource="{Binding TemplateMetadataInView}" x:Name="ListBoxTemplateMD">
@@ -212,7 +212,7 @@
                                     <Button Content="+" Margin="2,0" Command="{Binding AddMetaDataInListBoxTemplateMD}" CommandParameter="{Binding Text,ElementName=MetadataAdd}"/>
                             </StackPanel>
                             </GroupBox>
-                            <Button Content="Сохранить изменения" Width="140" Command="{Binding SaveTemplateMetaData}"/>
+                            <Button Content="Сохранить изменения" Width="140" Command="{Binding SaveTemplateMetaData}" CommandParameter="{Binding Text,ElementName=TextBoxDocumentType}"/>
                         </StackPanel>
                     </DockPanel>
                 </TabItem>
