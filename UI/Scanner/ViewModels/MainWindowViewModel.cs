@@ -32,16 +32,65 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
         private readonly TestData _TestData = new TestData();
 
+        /// <summary>
+        /// Список отсканированных документов
+        /// </summary>
         public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();          //Список отсканированных документов
+
+        /// <summary>
+        /// Список отфильтрованных отсканированных документов
+        /// </summary>
         public ObservableCollection<ScanDocument> FilteredScanDocuments { get; set; } = new();  //Список отфильтрованных отсканированных документов
+
+        /// <summary>
+        /// Список шаблонов
+        /// </summary>
         public ObservableCollection<Template> Templates { get; set; } = new();                  //Список шаблонов
+
+        /// <summary>
+        /// Список найденных шаблонов по типу выбранного отсканированного документа
+        /// </summary>
         public ObservableCollection<Template> FindTemplates { get; set; } = new();              //Список найденных шаблонов по типу выбранного отсканированного документа
-        public ObservableCollection<Metadata> Metadatas { get; set; } = new();                  //Список метаданных
+
+        /// <summary>
+        /// Список проиндексированных файлов
+        /// </summary>
         public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
+
+        /// <summary>
+        /// Список проверенных файлов
+        /// </summary>
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
-        public Metadata ExtraDataTemplate { get; set; } = new();                                //Добавляемое поле в шаблон
+
+        /// <summary>
+        /// Добавляемое поле в шаблон
+        /// </summary>
+        public TemplateMetadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое поле в шаблон
+
+        /// <summary>
+        /// Список подпапок с отсканированными файлами
+        /// </summary>
         public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами
-        public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data в выбранном шаблоне SelectedTemplate для SelectedDocument
+
+        /// <summary>
+        /// Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
+        /// </summary>
+        public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
+
+        # region ObservableCollection<Metadata> Metadatas - Список метаданных
+        private ObservableCollection<Metadata> _Metadatas = new ObservableCollection<Metadata>();
+        /// <summary>
+        /// Список метаданных
+        /// </summary>
+        public ObservableCollection<Metadata> Metadatas                                         //Список метаданных
+        {
+            get => _Metadatas;
+            set
+            {
+                Set(ref _Metadatas, value);
+            }
+        }
+        #endregion
 
 
         #region IsConnected : bool - индикатор подключения
@@ -66,20 +115,21 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedDocument, value);
-                foreach(var t in Templates)
-                {
-                    if (value != null)
-                        SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Type.ToLower()));
-                        //if(value.Type.ToLower().Contains(t.Name.ToLower()))
-                        //{
-                        //    SelectedTemplate = t;
-                        //    return;
-                        //}
-                        //else
-                        //{
-                        //    SelectedTemplate = null;
-                        //}
-                }                    
+                if (Templates != null)
+                    foreach(var t in Templates)
+                    {
+                        if (value != null)
+                            SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Type.ToLower()));
+                            //if(value.Type.ToLower().Contains(t.Name.ToLower()))
+                            //{
+                            //    SelectedTemplate = t;
+                            //    return;
+                            //}
+                            //else
+                            //{
+                            //    SelectedTemplate = null;
+                            //}
+                    }                    
             }
         }
         #endregion
@@ -94,9 +144,14 @@ namespace Scanner.ViewModels
                 Set(ref _SelectedTemplate, value);
                 DataListSelectedDocument.Clear();
                 if(value != null)
-                    foreach(var d in value.Metadata)
+                    foreach(var d in value.TemplateMetadata)
                     {
                         DataListSelectedDocument.Add(d.Name);
+                        Metadatas.Add(new Metadata {
+                            Name = d.Name,
+                            Data = null,
+                            Required = d.Required,
+                        });
                     }
             }
         }
@@ -297,7 +352,7 @@ namespace Scanner.ViewModels
         {
             var fileInfo = new FileInfo(file);
             var type = fileInfo.DirectoryName?.Split('\\')[^1];
-            var metadata = Templates.FirstOrDefault(t => t.Name == type);
+            var metadata = Metadatas.Where(t => t.Name == type) as ObservableCollection<Metadata>;
 
             return new ScanDocument
             {
@@ -305,7 +360,7 @@ namespace Scanner.ViewModels
                 Date = fileInfo.CreationTime,
                 Path = file,
                 Type = type,
-                Metadata = metadata?.Metadata
+                Metadata = metadata,
             };
         }
 
@@ -377,7 +432,7 @@ namespace Scanner.ViewModels
 
             var metadata = new ObservableCollection<Metadata>();
 
-            foreach (var m in SelectedTemplate.Metadata)
+            foreach (var m in Metadatas)
                 metadata.Add(new Metadata { Name = m.Name, Data = m.Data, Required = m.Required });
 
             doc.Metadata = metadata;
@@ -410,8 +465,8 @@ namespace Scanner.ViewModels
 
         private void AddExtraMetadata()
         {
-            ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
-            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);
+            ExtraDataTemplate = new TemplateMetadata { Name = NameExtraDataTemplate, Required = false };
+            SelectedEditTemplateAdmin.TemplateMetadata.Add(ExtraDataTemplate);
         }
 
         #endregion
@@ -477,7 +532,7 @@ namespace Scanner.ViewModels
 
         private void CreateTemplate()
         {
-            Template template = new Template { Name = "Новый шаблон", Metadata = new ObservableCollection<Metadata>() };
+            Template template = new Template { Name = "Новый шаблон", TemplateMetadata = new ObservableCollection<TemplateMetadata>() };
             Templates.Add(template);
         }
 

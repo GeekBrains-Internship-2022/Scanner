@@ -21,17 +21,16 @@ namespace Scanner.Data
 
         public TestData()
         {
-            Templates = new ObservableCollection<Template>
+            /*Templates = new ObservableCollection<Template>
             {
                 new Template()
                 {
                     Name = "Паспорт",
-                    Metadata = new ObservableCollection<Metadata>
+                    TemplateMetadata = new ObservableCollection<Metadata>
                     {
-                        new Metadata
-                        {
-                            Name = "Номер",
-                            Data = "1234567890",
+                        new TemplateMetadata()
+                        { ScannerDataTemplate = new ScannerDataTemplate(),                            
+                            Name = "Номер",                            
                             Required = true,
                         },
                         new Metadata
@@ -97,7 +96,7 @@ namespace Scanner.Data
                         },
                     }
                 },
-            };
+            };*/
 
             //Documents = new ObservableCollection<Document>(Enumerable.Range(1, 10).Select(d =>
             //    new Document
