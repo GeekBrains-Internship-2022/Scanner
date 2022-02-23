@@ -11,6 +11,7 @@
         Title="testDB" Height="450" Width="800">
     <Window.Resources>
         <convert:ToFileDataConverter x:Key="FileDataConverter"/>
+        
     </Window.Resources>
     <TabControl>
         <TabItem Header="DB FileData">

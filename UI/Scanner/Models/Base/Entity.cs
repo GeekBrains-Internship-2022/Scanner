@@ -7,7 +7,7 @@ namespace Scanner.Models.Base
     public abstract class Entity
     {
         
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
