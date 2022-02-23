@@ -10,11 +10,8 @@ namespace Scanner.ViewModels.Models
     public class Metadata : OnPropertyChangedClass
     {
         private string _name;
-        private bool _required;
 
         public string Name { get => _name; set => _name = value; }
-
-        public bool Required { get => _required; set => _required = value; }
 
         #region Data : string - метаданные
 
