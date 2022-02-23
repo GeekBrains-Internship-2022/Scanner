@@ -59,6 +59,7 @@
                     <ctrl:OperatorControlPanel DockPanel.Dock="Right"
                                                    TemplatesItemSource="{Binding Templates}"
                                                    SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
+                                                   MetadataItemSource="{Binding Metadatas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                    SaveCommand="{Binding SaveFileCommand}"
                                                    NextFileCommand="{Binding NextFileCommand}"
                                                    CBItemSource="{Binding DataListSelectedDocument}"/>
@@ -118,7 +119,7 @@
                                         <TextBlock Text="Название шаблона:"/>
                                         <TextBox Text="{Binding SelectedEditTemplateAdmin.Name}" Margin="2,0"/>
                                     </StackPanel>
-                                    <ListBox Margin="4" ItemsSource="{Binding SelectedEditTemplateAdmin.Metadata}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox Margin="4" ItemsSource="{Binding SelectedEditTemplateAdmin.TemplateMetadata}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <GroupBox Header="{Binding Path=Name}">

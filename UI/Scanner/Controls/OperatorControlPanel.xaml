@@ -25,7 +25,7 @@
                   DisplayMemberPath="Name"/>
 
             <GroupBox Header="Основные" Margin="5 0">
-                <ItemsControl ItemsSource="{Binding SelectedTemplate.Metadata, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
+                <ItemsControl ItemsSource="{Binding MetadataItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <GroupBox Header="{Binding Path=Name}" Style="{StaticResource gbData}">
