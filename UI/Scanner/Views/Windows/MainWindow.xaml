@@ -12,11 +12,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Width="1328" Height="480">
 
-    <behaviors:Interaction.Triggers>
+    <!--<behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding GetFilesCommand}"/>
         </behaviors:EventTrigger>
-    </behaviors:Interaction.Triggers>
+    </behaviors:Interaction.Triggers>-->
 
     <Window.Resources>
         <!--<AlternationConverter x:Key="AlternationConverter"/>-->
@@ -40,10 +40,13 @@
                         <Ellipse Width="10" Height="10">
                             <Ellipse.Style>
                                 <Style TargetType="Ellipse">
-                                    <Setter Property="Fill" Value="Red"/>
+                                    <Setter Property="Fill" Value="Green"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                        <DataTrigger Binding="{Binding IsNew}" Value="True">
                                             <Setter Property="Fill" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsNew}" Value="True">
+                                            <Setter Property="Fill" Value="Red"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -54,10 +57,11 @@
                     </StatusBar>
 
                     <ctrl:OperatorControlPanel DockPanel.Dock="Right"
-                                                   TemplatesItemSource="{Binding FindTemplates}"
+                                                   TemplatesItemSource="{Binding Templates}"
                                                    SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
                                                    SaveCommand="{Binding SaveFileCommand}"
-                                                   NextFileCommand="{Binding NextFileCommand}"/>
+                                                   NextFileCommand="{Binding NextFileCommand}"
+                                                   CBItemSource="{Binding DataListSelectedDocument}"/>
 
                     <Grid>
 

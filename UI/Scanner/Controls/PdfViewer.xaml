@@ -8,6 +8,10 @@
              xmlns:l="clr-namespace:Scanner.Controls"
              DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="MyKey" Source="{Binding CBItemSource, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}" />
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="200" Width="200"/>
@@ -18,8 +22,14 @@
         <DockPanel DockPanel.Dock="Left" Grid.Column="0">
 
             <ComboBox DockPanel.Dock="Top" IsEditable="True" IsTextSearchEnabled="True"
-                      ItemsSource="{Binding CBItemSource, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"
+                      Text="Не выбрано"
                       SelectedItem="{Binding CBSelectedItem, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}">
+                <ComboBox.ItemsSource>
+                    <CompositeCollection>
+                        <ComboBoxItem Content="Не выбрано"/>
+                        <CollectionContainer Collection="{Binding Source={StaticResource MyKey}}"/>
+                    </CompositeCollection>
+                </ComboBox.ItemsSource>
             </ComboBox>
 
             <ListBox ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"

@@ -41,6 +41,7 @@ namespace Scanner.ViewModels
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
         public Metadata ExtraDataTemplate { get; set; } = new();                                //Добавляемое поле в шаблон
         public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами
+        public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data в выбранном шаблоне SelectedTemplate для SelectedDocument
 
 
         #region IsConnected : bool - индикатор подключения
@@ -65,26 +66,39 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedDocument, value);
-                if (value != null)
-                    foreach(var t in Templates)
-                    {
-                        if(value.Type.ToLower() == t.Name.ToLower())
-                        {
-                            FindTemplates.Add(t);
-                        }
-                        if (FindTemplates.Count == 0)
-                            MessageBox.Show("К выбранному файлу отсутствует шаблон. Обратитесь к Администратору");
-                    }
+                foreach(var t in Templates)
+                {
+                    if (value != null)
+                        SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Type.ToLower()));
+                        //if(value.Type.ToLower().Contains(t.Name.ToLower()))
+                        //{
+                        //    SelectedTemplate = t;
+                        //    return;
+                        //}
+                        //else
+                        //{
+                        //    SelectedTemplate = null;
+                        //}
+                }                    
             }
         }
         #endregion
 
-        #region SelectedTemplate : Template - выбранный шаблон
+        #region SelectedTemplate : Template - выбранный шаблон для SelectedDocument
         private Template _SelectedTemplate;
         public Template SelectedTemplate
         {
             get => _SelectedTemplate;
-            set => Set(ref _SelectedTemplate, value);
+            set
+            {
+                Set(ref _SelectedTemplate, value);
+                DataListSelectedDocument.Clear();
+                if(value != null)
+                    foreach(var d in value.Metadata)
+                    {
+                        DataListSelectedDocument.Add(d.Name);
+                    }
+            }
         }
         #endregion
 
@@ -120,6 +134,18 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region IsNew : bool - появились новые файлы
+
+        private bool _IsNew = false;
+
+        public bool IsNew
+        {
+            get => _IsNew;
+            set => Set(ref _IsNew, value);
+        }
+
+        #endregion
+
         #region SelectedSorting : string - выбранная сортировка
 
         private string _SelectedSorting;
@@ -151,14 +177,27 @@ namespace Scanner.ViewModels
         {
             get => _selectedFilterItem;
             set
-            {
+            {                
                 Set(ref _selectedFilterItem, value);
-                FilteredScanDocuments.Clear();                
 
-                foreach (var d in ScanDocuments)                            //Сортировка по типу
+                if (value == null || value == "" || value.Contains("Не выбрано"))
                 {
-                    if (value.ToLower() == d.Type.ToLower())
+                    FilteredScanDocuments.Clear();
+                    foreach (var d in ScanDocuments)
+                    {
                         FilteredScanDocuments.Add(d);
+                    }
+                    
+                }
+                else
+                {
+                    FilteredScanDocuments.Clear();
+
+                    foreach (var d in ScanDocuments)                            //Сортировка по типу
+                    {
+                        if (value.ToLower() == d.Type.ToLower())
+                            FilteredScanDocuments.Add(d);
+                    }
                 }
             }
         }
@@ -175,6 +214,8 @@ namespace Scanner.ViewModels
             _RabbitMQService = rabbitMQService;
 
             Templates = _TestData.Templates;
+            GetFiles();
+            FilteredScanDocuments = new ObservableCollection<ScanDocument>(ScanDocuments);
 
             ObserverInitialize();
         }
@@ -214,6 +255,7 @@ namespace Scanner.ViewModels
 
             //  Лампочка
             Status = "Появились новые документы для индексации!!!";
+            IsNew = true;
         }
 
         private void OnDeletedNotify(string message)
@@ -343,8 +385,14 @@ namespace Scanner.ViewModels
             File.Copy(oldPath, s);
             IndexedDocs.Add(doc);
             ScanDocuments.Remove(doc);
+            FilteredScanDocuments.Remove(doc);
+
+            IsNew = false;
+            Status = "Готов";
 
             //File.Delete(oldPath);
+
+            //SelectedDocument = FilteredScanDocuments.Next                 //Заглушка. Выбор следующего документа при сохранении (похоже нужно сначала отсортировать список)
         }
 
         private bool CanSaveFileCommandExecute(object p) => true;
@@ -364,6 +412,23 @@ namespace Scanner.ViewModels
         {
             ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
             SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);
+        }
+
+        #endregion
+
+        #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ - заглушка
+
+        private ICommand _AddExtraDataToDocument;
+        public ICommand AddExtraDataToDocument => _AddExtraDataToDocument
+            ??= new LambdaCommand(OnAddExtraDataToDocumentExecuted, CanAddExtraDataToDocumentExecute);
+
+        private void OnAddExtraDataToDocumentExecuted(object p) => AddDataToDocument();
+        private bool CanAddExtraDataToDocumentExecute(object p) => true;
+
+        private void AddDataToDocument()
+        {
+            Metadata metadata = new Metadata();
+            SelectedDocument.Metadata.Add(metadata);
         }
 
         #endregion
@@ -397,7 +462,7 @@ namespace Scanner.ViewModels
         {
             if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.Name}?", "Удалить",
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                _TestData.Templates.Remove(SelectedEditTemplateAdmin);      //Необходимо реализовать контрольный вопрос о согласии удаления
+                _TestData.Templates.Remove(SelectedEditTemplateAdmin);
         }
 
         #endregion
@@ -434,7 +499,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region AdminFinishCommand - Команда завершения обработки
+        #region AdminFinishCommand - Команда завершения обработки - заглушка
 
         private ICommand _AdminFinishCommand;
 

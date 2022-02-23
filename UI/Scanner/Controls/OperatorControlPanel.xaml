@@ -49,9 +49,12 @@
 
             <GroupBox Header="Дополнительные данные">
                 <StackPanel Orientation="Horizontal" Margin="4">
-                    <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True" Text="Место рождения">
+                    <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True"
+                              ItemsSource="{Binding CBItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
+                              SelectedItem="{Binding CBSelectedItem, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
+                        
                     </ComboBox>
-                    <Button Padding="4">
+                    <Button Padding="4" Command="{Binding AddExtraDataToDocument}">
                         <Button.Content>
                             <fa:SvgAwesome Icon="Regular_PlusSquare" Width="15"
                                            Foreground="Green"/>

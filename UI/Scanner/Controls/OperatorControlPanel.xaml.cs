@@ -85,6 +85,44 @@ namespace Scanner.Controls
 
         #endregion
 
+        #region CBItemSource : ObservableCollection<string> - коллекция метаданных в выбранном шаблоне
+
+        ///<summary>коллекция подпапок</summary>
+        public static readonly DependencyProperty CBItemSourceProperty =
+            DependencyProperty.Register(
+                nameof(CBItemSource),
+                typeof(ObservableCollection<string>),
+                typeof(OperatorControlPanel),
+                new PropertyMetadata(default(ObservableCollection<string>)));
+
+        ///<summary>коллекция подпапок</summary>
+        public ObservableCollection<string> CBItemSource
+        {
+            get => (ObservableCollection<string>)GetValue(CBItemSourceProperty);
+            set => SetValue(CBItemSourceProperty, value);
+        }
+
+        #endregion
+
+        #region CBSelectedItem : string - выбранный тип метаданного
+
+        ///<summary>выбранный объект</summary>
+        public static readonly DependencyProperty CBSelectedItemProperty =
+            DependencyProperty.Register(
+                nameof(CBSelectedItem),
+                typeof(string),
+                typeof(OperatorControlPanel),
+                new PropertyMetadata(default(string)));
+
+        ///<summary>выбранный объект</summary>
+        public string CBSelectedItem
+        {
+            get => (string)GetValue(CBSelectedItemProperty);
+            set => SetValue(CBSelectedItemProperty, value);
+        }
+
+        #endregion
+
         #region SaveCommand : ICommand - Команда сохранить
 
         ///<summary>Команда сохранить</summary>

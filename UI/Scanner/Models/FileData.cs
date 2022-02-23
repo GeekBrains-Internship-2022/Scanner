@@ -37,5 +37,9 @@ namespace Scanner.Models
         /// Шаблон данных
         /// </summary>
         public Document Document { get; set; }
+        /// <summary>
+        /// Файл был проверен администратором
+        /// </summary>
+        public bool Checked { get; set; }
     }
 }
