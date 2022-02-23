@@ -9,7 +9,7 @@ using Scanner.Data;
 namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220220120659_initial")]
+    [Migration("20220223144829_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
