@@ -35,12 +35,12 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список отсканированных документов
         /// </summary>
-        public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();          //Список отсканированных документов
+        public ObservableCollection<FileData> ScanDocuments { get; set; } = new();          //Список отсканированных документов
 
         /// <summary>
         /// Список отфильтрованных отсканированных документов
         /// </summary>
-        public ObservableCollection<ScanDocument> FilteredScanDocuments { get; set; } = new();  //Список отфильтрованных отсканированных документов
+        public ObservableCollection<FileData> FilteredScanDocuments { get; set; } = new();  //Список отфильтрованных отсканированных документов
 
         /// <summary>
         /// Список шаблонов
@@ -55,7 +55,7 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список проиндексированных файлов
         /// </summary>
-        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
+        public ObservableCollection<FileData> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
 
         /// <summary>
         /// Список проверенных файлов
@@ -77,12 +77,12 @@ namespace Scanner.ViewModels
         /// </summary>
         public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
 
-        # region ObservableCollection<Metadata> Metadatas - Список метаданных
-        private ObservableCollection<Metadata> _Metadatas = new ObservableCollection<Metadata>();
+        # region ObservableCollection<DocumentMetadata> Metadatas - Список метаданных
+        private ObservableCollection<DocumentMetadata> _Metadatas = new ObservableCollection<DocumentMetadata>();
         /// <summary>
         /// Список метаданных
         /// </summary>
-        public ObservableCollection<Metadata> Metadatas                                         //Список метаданных
+        public ObservableCollection<DocumentMetadata> Metadatas                                         //Список метаданных
         {
             get => _Metadatas;
             set
@@ -105,11 +105,11 @@ namespace Scanner.ViewModels
 
         #endregion        
 
-        #region SelectedDocument : ScanDocument - выбранный документ
+        #region SelectedDocument : FileData - выбранный документ
 
-        private ScanDocument _SelectedDocument;
+        private FileData _SelectedDocument;
 
-        public ScanDocument SelectedDocument
+        public FileData SelectedDocument
         {
             get => _SelectedDocument;
             set
@@ -119,7 +119,7 @@ namespace Scanner.ViewModels
                     foreach(var t in Templates)
                     {
                         if (value != null)
-                            SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Type.ToLower()));
+                            SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Document.DocumentType.ToLower()));
                             //if(value.Type.ToLower().Contains(t.Name.ToLower()))
                             //{
                             //    SelectedTemplate = t;
@@ -147,7 +147,8 @@ namespace Scanner.ViewModels
                     foreach(var d in value.TemplateMetadata)
                     {
                         DataListSelectedDocument.Add(d.Name);
-                        Metadatas.Add(new Metadata {
+                        Metadatas.Add(new DocumentMetadata
+                        {
                             Name = d.Name,
                             Data = null,                            
                         });
@@ -212,11 +213,11 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region SelectedIndexedDoc : ScanDocument - выбранный индексированный документ
+        #region SelectedIndexedDoc : FileData - выбранный индексированный документ
 
-        private ScanDocument _SelectedIndexedDoc;
+        private FileData _SelectedIndexedDoc;
 
-        public ScanDocument SelectedIndexedDoc
+        public FileData SelectedIndexedDoc
         {
             get => _SelectedIndexedDoc;
             set => Set(ref _SelectedIndexedDoc, value);
@@ -249,7 +250,7 @@ namespace Scanner.ViewModels
 
                     foreach (var d in ScanDocuments)                            //Сортировка по типу
                     {
-                        if (value.ToLower() == d.Type.ToLower())
+                        if (value.ToLower() == d.Document.DocumentType.ToLower())
                             FilteredScanDocuments.Add(d);
                     }
                 }
@@ -269,7 +270,7 @@ namespace Scanner.ViewModels
 
             Templates = _TestData.Templates;
             GetFiles();
-            FilteredScanDocuments = new ObservableCollection<ScanDocument>(ScanDocuments);
+            FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);
 
             ObserverInitialize();
         }
@@ -287,20 +288,20 @@ namespace Scanner.ViewModels
 
         private void OnRenamedNotify(string oldPath, string currentPath)
         {
-            var document = ScanDocuments.FirstOrDefault(d => d.Path == oldPath);
+            var document = ScanDocuments.FirstOrDefault(d => d.FilePath == oldPath);
 
             if (document is null)
                 return;
 
             var fileName = new FileInfo(currentPath).Name;
 
-            document.Name = fileName;
-            document.Path = currentPath;
+            document.DocumentName = fileName;
+            document.FilePath = currentPath;
         }
 
         private void OnCreatedNotify(string message)
         {
-            var document = ScanDocuments.FirstOrDefault(d => d.Path == message);
+            var document = ScanDocuments.FirstOrDefault(d => d.FilePath == message);
 
             if (ScanDocuments.Contains(document))
                 throw new DuplicateNameException(message);
@@ -314,7 +315,7 @@ namespace Scanner.ViewModels
 
         private void OnDeletedNotify(string message)
         {
-            var document = ScanDocuments.FirstOrDefault(d => d.Path == message);
+            var document = ScanDocuments.FirstOrDefault(d => d.FilePath == message);
 
             if (document is null)
                 return;
@@ -347,20 +348,33 @@ namespace Scanner.ViewModels
                 ScanDocuments.Add(GetDocumentByPath(file));
         }
 
-        private ScanDocument GetDocumentByPath(string file)
+        private FileData GetDocumentByPath(string file)
         {
             var fileInfo = new FileInfo(file);
             var type = fileInfo.DirectoryName?.Split('\\')[^1];
-            var metadata = Metadatas.Where(t => t.Name == type) as ObservableCollection<Metadata>;
+            var metadata = Metadatas.Where(t => t.Name == type) as ICollection<DocumentMetadata>;
 
-            return new ScanDocument
+            var document = new Document { DocumentType = type, IndexingDate = DateTime.MinValue, Metadata = metadata };
+
+            return new FileData
+            {
+                DocumentName = fileInfo.Name,
+                FilePath = file,
+                Description = "",
+                DateAdded = fileInfo.CreationTime,
+                Indexed = false,
+                Checked = false,
+                Document = document,
+            };
+
+            /*return new ScanDocument
             {
                 Name = fileInfo.Name,
                 Date = fileInfo.CreationTime,
                 Path = file,
                 Type = type,
                 Metadata = metadata,
-            };
+            };*/
         }
 
         #region Команды
@@ -431,15 +445,15 @@ namespace Scanner.ViewModels
                 Directory.CreateDirectory(path);
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
-            var oldPath = doc.Path;
+            var oldPath = doc.FilePath;
 
-            var metadata = new ObservableCollection<Metadata>();
+            var metadata = new ObservableCollection<DocumentMetadata>();
 
             foreach (var m in Metadatas)
-                metadata.Add(new Metadata { Name = m.Name, Data = m.Data, });
+                metadata.Add(new DocumentMetadata { Name = m.Name, Data = m.Data, });
 
-            doc.Metadata = metadata;
-            doc.Path = s;
+            doc.Document.Metadata = metadata;
+            doc.FilePath = s;
             File.Copy(oldPath, s);
             IndexedDocs.Add(doc);
             ScanDocuments.Remove(doc);
@@ -485,8 +499,8 @@ namespace Scanner.ViewModels
 
         private void AddDataToDocument()
         {
-            Metadata metadata = new Metadata();
-            SelectedDocument.Metadata.Add(metadata);
+            DocumentMetadata metadata = new DocumentMetadata();
+            SelectedDocument.Document.Metadata.Add(metadata);
         }
 
         #endregion
@@ -582,7 +596,7 @@ namespace Scanner.ViewModels
         private void OnAdminReworkCommandExecuted(object p)
         {
             var doc = SelectedIndexedDoc;
-            doc.Name = "(Доработать)" + doc.Name;
+            doc.DocumentName = "(Доработать)" + doc.DocumentName;
             SelectedIndexedDoc = null;
             IndexedDocs.Remove(doc);
             ScanDocuments.Add(doc);

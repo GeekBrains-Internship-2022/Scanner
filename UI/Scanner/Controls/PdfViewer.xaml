@@ -34,7 +34,7 @@
 
             <ListBox ItemsSource="{Binding ItemSource, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"
                      SelectedIndex="0"
-                     DisplayMemberPath="Name"
+                     DisplayMemberPath="DocumentName"
                      SelectedItem="{Binding InternalSelectedItem, RelativeSource={RelativeSource AncestorType=l:PdfViewer}}"/>
 
         </DockPanel>

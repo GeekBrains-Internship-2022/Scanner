@@ -9,77 +9,77 @@ namespace Scanner.Controls
 {
     public partial class OperatorControlPanel : UserControl
     {
-        #region TemplatesItemSource : ObservableCollection<Template> - Шаблоны
+        #region TemplatesItemSource : ObservableCollection<TemplateMetadata> - Шаблоны
 
         ///<summary>Шаблоны</summary>
         public static readonly DependencyProperty TemplatesItemSourceProperty =
             DependencyProperty.Register(
                 nameof(TemplatesItemSource),
-                typeof(ObservableCollection<Template>),
+                typeof(ObservableCollection<TemplateMetadata>),
                 typeof(OperatorControlPanel),
                 new PropertyMetadata(default(ObservableCollection<Template>)));
 
         ///<summary>Шаблоны</summary>
-        public ObservableCollection<Template> TemplatesItemSource
+        public ObservableCollection<TemplateMetadata> TemplatesItemSource
         {
-            get => (ObservableCollection<Template>) GetValue(TemplatesItemSourceProperty);
+            get => (ObservableCollection<TemplateMetadata>) GetValue(TemplatesItemSourceProperty);
             set => SetValue(TemplatesItemSourceProperty, value);
         }
 
         #endregion
 
-        #region SelectedTemplate : Template - Выбранный шаблон
+        #region SelectedTemplate : TemplateMetadata - Выбранный шаблон
 
         ///<summary>Выбранный шаблон</summary>
         public static readonly DependencyProperty SelectedTemplateProperty =
             DependencyProperty.Register(
                 nameof(SelectedTemplate),
-                typeof(Template),
+                typeof(TemplateMetadata),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(Template)));
+                new PropertyMetadata(default(TemplateMetadata)));
 
         ///<summary>Выбранный шаблон</summary>
-        public Template SelectedTemplate
+        public TemplateMetadata SelectedTemplate
         {
-            get => (Template) GetValue(SelectedTemplateProperty);
+            get => (TemplateMetadata) GetValue(SelectedTemplateProperty);
             set => SetValue(SelectedTemplateProperty, value);
         }
 
         #endregion
 
-        #region MetadataItemSource : ObservableCollection<Metadata> - Метаданные
+        #region MetadataItemSource : ObservableCollection<DocumentMetadata> - Метаданные
 
         ///<summary>Метаданные</summary>
         public static readonly DependencyProperty MetadataItemSourceProperty =
             DependencyProperty.Register(
                 nameof(MetadataItemSource),
-                typeof(ObservableCollection<Metadata>),
+                typeof(ObservableCollection<DocumentMetadata>),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<Metadata>)));
+                new PropertyMetadata(default(ObservableCollection<DocumentMetadata>)));
 
         ///<summary>Метаданные</summary>
-        public ObservableCollection<Metadata> MetadataItemSource
+        public ObservableCollection<DocumentMetadata> MetadataItemSource
         {
-            get => (ObservableCollection<Metadata>) GetValue(MetadataItemSourceProperty);
+            get => (ObservableCollection<DocumentMetadata>) GetValue(MetadataItemSourceProperty);
             set => SetValue(MetadataItemSourceProperty, value);
         }
 
         #endregion
 
-        #region SelectedMetadata : Metadata - Выбранные метаданные
+        #region SelectedMetadata : DocumentMetadata - Выбранные метаданные
 
         ///<summary>Выбранные метаданные</summary>
         public static readonly DependencyProperty SelectedMetadataProperty =
             DependencyProperty.Register(
                 nameof(SelectedMetadata),
-                typeof(Metadata),
+                typeof(DocumentMetadata),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(Metadata)));
+                new PropertyMetadata(default(DocumentMetadata)));
 
         ///<summary>Выбранные метаданные</summary>
-        public Metadata SelectedMetadata
+        public DocumentMetadata SelectedMetadata
         {
-            get => (Metadata) GetValue(SelectedMetadataProperty);
+            get => (DocumentMetadata) GetValue(SelectedMetadataProperty);
             set => SetValue(SelectedMetadataProperty, value);
         }
 
