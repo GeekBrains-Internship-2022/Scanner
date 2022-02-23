@@ -409,6 +409,23 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region OpenTestBDCommand - команда открыть настройки 
+
+        private ICommand _OpenTestBDCommand;
+
+        public ICommand OpenTestBDCommand => _OpenTestBDCommand
+            ??= new LambdaCommand(OnOpenTestBDCommandExecuted, CanOpenTestBDCommandExecute);
+
+        private void OnOpenTestBDCommandExecuted(object p)
+        {
+            var testBDWindow = new testDB();
+            testBDWindow.ShowDialog();
+        }
+
+        private bool CanOpenTestBDCommandExecute(object p) => true;
+
+        #endregion
+
         #region CloseAppCommand - команда закрыть приложение
 
         private ICommand _CloseAppCommand;
