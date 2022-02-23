@@ -45,12 +45,12 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список шаблонов
         /// </summary>
-        public ObservableCollection<Template> Templates { get; set; } = new();                  //Список шаблонов
+        public ObservableCollection<ScannerDataTemplate> Templates { get; set; } = new();                  //Список шаблонов
 
         /// <summary>
         /// Список найденных шаблонов по типу выбранного отсканированного документа
         /// </summary>
-        public ObservableCollection<Template> FindTemplates { get; set; } = new();              //Список найденных шаблонов по типу выбранного отсканированного документа
+        public ObservableCollection<ScannerDataTemplate> FindTemplates { get; set; } = new();              //Список найденных шаблонов по типу выбранного отсканированного документа
 
         /// <summary>
         /// Список проиндексированных файлов
@@ -75,7 +75,7 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
         /// </summary>
-        public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
+        public ObservableCollection<DocumentMetadata> DataListSelectedDocument { get; set; } = new();     //Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
 
         # region ObservableCollection<DocumentMetadata> Metadatas - Список метаданных
         private ObservableCollection<DocumentMetadata> _Metadatas = new ObservableCollection<DocumentMetadata>();
@@ -119,7 +119,7 @@ namespace Scanner.ViewModels
                     foreach(var t in Templates)
                     {
                         if (value != null)
-                            SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Document.DocumentType.ToLower()));
+                            SelectedTemplate = Templates.FirstOrDefault(t => t.DocumentType.ToLower().Contains(value.Document.DocumentType.ToLower()));
                             //if(value.Type.ToLower().Contains(t.Name.ToLower()))
                             //{
                             //    SelectedTemplate = t;
@@ -135,8 +135,8 @@ namespace Scanner.ViewModels
         #endregion
 
         #region SelectedTemplate : Template - выбранный шаблон для SelectedDocument
-        private Template _SelectedTemplate;
-        public Template SelectedTemplate
+        private ScannerDataTemplate _SelectedTemplate;
+        public ScannerDataTemplate SelectedTemplate
         {
             get => _SelectedTemplate;
             set
@@ -146,7 +146,7 @@ namespace Scanner.ViewModels
                 if(value != null)
                     foreach(var d in value.TemplateMetadata)
                     {
-                        DataListSelectedDocument.Add(d.Name);
+                        //DataListSelectedDocument.Add(d.Name);
                         Metadatas.Add(new DocumentMetadata
                         {
                             Name = d.Name,
@@ -159,8 +159,8 @@ namespace Scanner.ViewModels
 
         #region SelectedEditTemplateAdmin : Template - выбранный шаблон для редактирования
 
-        private Template _SelectedEditTemplateAdmin;
-        public Template SelectedEditTemplateAdmin
+        private ScannerDataTemplate _SelectedEditTemplateAdmin;
+        public ScannerDataTemplate SelectedEditTemplateAdmin
         {
             get => _SelectedEditTemplateAdmin;
             set => Set(ref _SelectedEditTemplateAdmin, value);
@@ -268,7 +268,7 @@ namespace Scanner.ViewModels
             _FileService = fileService;
             _RabbitMQService = rabbitMQService;
 
-            Templates = _TestData.Templates;
+            //Templates = _TestData.Templates;
             GetFiles();
             FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);
 
@@ -516,8 +516,8 @@ namespace Scanner.ViewModels
 
         private void AddDataToDocument()
         {
-            DocumentMetadata metadata = new DocumentMetadata();
-            SelectedDocument.Document.Metadata.Add(metadata);
+            TemplateMetadata metadata = new TemplateMetadata();
+            SelectedDocument.Document.Metadata.Add(new DocumentMetadata { Name = metadata.Name,});
         }
 
         #endregion
@@ -533,7 +533,7 @@ namespace Scanner.ViewModels
 
         private void SaveEditTemplate()
         {
-            _TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
+            //_TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
         }
 
         #endregion RemoveTemplateFromBD - команда удаления шаблона из базы - заглушка
@@ -549,9 +549,11 @@ namespace Scanner.ViewModels
 
         private void RemoveTemplate()
         {
-            if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.Name}?", "Удалить",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                _TestData.Templates.Remove(SelectedEditTemplateAdmin);
+            if (SelectedEditTemplateAdmin != null)
+                if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.DocumentType}?", "Удалить",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    //_TestData.Templates.Remove(SelectedEditTemplateAdmin);
+                    return;
         }
 
         #endregion
@@ -566,7 +568,7 @@ namespace Scanner.ViewModels
 
         private void CreateTemplate()
         {
-            Template template = new Template { Name = "Новый шаблон", TemplateMetadata = new ObservableCollection<TemplateMetadata>() };
+            ScannerDataTemplate template = new ScannerDataTemplate { DocumentType = "Новый шаблон", };
             Templates.Add(template);
         }
 
