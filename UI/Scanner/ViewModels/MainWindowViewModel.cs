@@ -149,8 +149,7 @@ namespace Scanner.ViewModels
                         DataListSelectedDocument.Add(d.Name);
                         Metadatas.Add(new Metadata {
                             Name = d.Name,
-                            Data = null,
-                            Required = d.Required,
+                            Data = null,                            
                         });
                     }
             }
@@ -417,6 +416,10 @@ namespace Scanner.ViewModels
 
         private void OnSaveFileCommandExecuted(object p) => SaveFile();
 
+
+        /// <summary>
+        /// Сохранение файла
+        /// </summary>
         private void SaveFile()
         {
             var doc = SelectedDocument;
@@ -433,7 +436,7 @@ namespace Scanner.ViewModels
             var metadata = new ObservableCollection<Metadata>();
 
             foreach (var m in Metadatas)
-                metadata.Add(new Metadata { Name = m.Name, Data = m.Data, Required = m.Required });
+                metadata.Add(new Metadata { Name = m.Name, Data = m.Data, });
 
             doc.Metadata = metadata;
             doc.Path = s;
