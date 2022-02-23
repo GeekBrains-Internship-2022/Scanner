@@ -31,39 +31,39 @@ namespace Scanner.Controls
 
         #endregion
 
-        #region ItemSource : ScanDocument - Источник
+        #region ItemSource : FileData - Источник
 
         ///<summary>источник метаданных</summary>
         public static readonly DependencyProperty ItemSourceProperty =
             DependencyProperty.Register(
                 nameof(ItemSource),
-                typeof(ScanDocument),
+                typeof(FileData),
                 typeof(AdministratorControlPanel),
-                new PropertyMetadata(default(ScanDocument)));
+                new PropertyMetadata(default(FileData)));
 
         ///<summary>источник метаданных</summary>
-        public ScanDocument ItemSource
+        public FileData ItemSource
         {
-            get => (ScanDocument) GetValue(ItemSourceProperty);
+            get => (FileData) GetValue(ItemSourceProperty);
             set => SetValue(ItemSourceProperty, value);
         }
 
         #endregion
 
-        #region Metadata : ObservableCollection<Metadata> - Метаданные
+        #region Metadata : ObservableCollection<TemplateMetadata> - Метаданные
 
         ///<summary>Метаданные</summary>
         public static readonly DependencyProperty MetadataProperty =
             DependencyProperty.Register(
                 nameof(Metadata),
-                typeof(ObservableCollection<Metadata>),
+                typeof(ObservableCollection<TemplateMetadata>),
                 typeof(AdministratorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<Metadata>)));
+                new PropertyMetadata(default(ObservableCollection<TemplateMetadata>)));
 
         ///<summary>Метаданные</summary>
-        public ObservableCollection<Metadata> Metadata
+        public ObservableCollection<TemplateMetadata> Metadata
         {
-            get => (ObservableCollection<Metadata>) GetValue(MetadataProperty);
+            get => (ObservableCollection<TemplateMetadata>) GetValue(MetadataProperty);
             set => SetValue(MetadataProperty, value);
         }
 
