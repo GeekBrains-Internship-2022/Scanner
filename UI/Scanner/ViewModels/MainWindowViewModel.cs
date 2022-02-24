@@ -6,10 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
 using Scanner.Data;
 using Scanner.Infrastructure.Commands;
 using Scanner.interfaces;
@@ -24,9 +22,12 @@ namespace Scanner.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
+        private readonly IStore<FileData> _DBFileDataInDB;
+        private readonly IStore<ScannerDataTemplate> _DBDataTemplateInDB;
+        private readonly IStore<DocumentMetadata> _DBdocumentMetadata;
+        private readonly IStore<TemplateMetadata> _DBtemplateMetadata;
         private readonly ILogger<MainWindowViewModel> _Logger;
         private readonly IConfiguration _Configuration;
-
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
@@ -259,17 +260,31 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration,
-            IObserverService observer, IFileService fileService, IRabbitMQService rabbitMQService)
+        public MainWindowViewModel(IStore<FileData> __filedata,
+            IStore<ScannerDataTemplate> __ScannerData,
+            IStore<DocumentMetadata> __DocumentMetadataDB,
+            IStore<TemplateMetadata> __TemplateMetadata,
+            ILogger<MainWindowViewModel> __logger,
+            IConfiguration __configuration,
+            IObserverService __observer,
+            IFileService __fileService,
+            IRabbitMQService __rabbitMQService)
         {
-            _Logger = logger;
-            _Configuration = configuration;
-            _Observer = observer;
-            _FileService = fileService;
-            _RabbitMQService = rabbitMQService;
+            _DBFileDataInDB = __filedata;                   // Подлючение к базе FileData - хранение информации о файлах
+            _DBDataTemplateInDB = __ScannerData;            // Подключение к базе ScannerDataTemplate - хранение шаблонов
+            _DBdocumentMetadata = __DocumentMetadataDB;     // Подключение к базе DocumentMetadata - храненние метаданных документов
+            _DBtemplateMetadata = __TemplateMetadata;       // Подключение к базе TemplateMetadata  - хранение названий полей в шаблоне
+            _Logger = __logger;
+            _Configuration = __configuration;
+            _Observer = __observer;
+            _FileService = __fileService;
+            _RabbitMQService = __rabbitMQService;
 
             //Templates = _TestData.Templates;
+            ObservableCollection<ScannerDataTemplate> ScannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(__ScannerData.GetAll());
             GetFiles();
+            foreach(var d in ScanDocuments)
+                _DBFileDataInDB.Add(d);
             FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);
 
             ObserverInitialize();
@@ -341,11 +356,11 @@ namespace Scanner.ViewModels
             {
                 files.AddRange(Directory.GetFiles(dir));
                 string[] str = dir.Split('\\');
-                SubFolders.Add(dir.Split('\\')[str.Length - 1]);
+                SubFolders.Add(dir.Split('\\')[str.Length - 1]);    // Получение списка подпапок, содержащихся в горячей папке
             }
 
             foreach (var file in files)
-                ScanDocuments.Add(GetDocumentByPath(file));
+                ScanDocuments.Add(GetDocumentByPath(file));         // Получение списка отсканированных документов
         }
 
         private FileData GetDocumentByPath(string file)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scanner.Data;
 
-namespace Scanner.Data.Migrations
+namespace Scanner.Migrations
 {
     [DbContext(typeof(ScannerDB))]
     partial class ScannerDBModelSnapshot : ModelSnapshot

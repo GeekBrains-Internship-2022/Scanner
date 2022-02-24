@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scanner.Data;
 
-namespace Scanner.Data.Migrations
+namespace Scanner.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220223144829_initial")]
-    partial class initial
+    [Migration("20220224171256_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
