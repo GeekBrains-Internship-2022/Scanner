@@ -9,39 +9,39 @@ namespace Scanner.Controls
 {
     public partial class OperatorControlPanel : UserControl
     {
-        #region TemplatesItemSource : ObservableCollection<TemplateMetadata> - Шаблоны
+        #region TemplatesItemSource : ObservableCollection<ScannerDataTemplate> - Шаблоны
 
         ///<summary>Шаблоны</summary>
         public static readonly DependencyProperty TemplatesItemSourceProperty =
             DependencyProperty.Register(
                 nameof(TemplatesItemSource),
-                typeof(ObservableCollection<TemplateMetadata>),
+                typeof(ObservableCollection<ScannerDataTemplate>),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<Template>)));
+                new PropertyMetadata(default(ObservableCollection<ScannerDataTemplate>)));
 
         ///<summary>Шаблоны</summary>
-        public ObservableCollection<TemplateMetadata> TemplatesItemSource
+        public ObservableCollection<ScannerDataTemplate> TemplatesItemSource
         {
-            get => (ObservableCollection<TemplateMetadata>) GetValue(TemplatesItemSourceProperty);
+            get => (ObservableCollection<ScannerDataTemplate>) GetValue(TemplatesItemSourceProperty);
             set => SetValue(TemplatesItemSourceProperty, value);
         }
 
         #endregion
 
-        #region SelectedTemplate : TemplateMetadata - Выбранный шаблон
+        #region SelectedTemplate : ScannerDataTemplate - Выбранный шаблон
 
         ///<summary>Выбранный шаблон</summary>
         public static readonly DependencyProperty SelectedTemplateProperty =
             DependencyProperty.Register(
                 nameof(SelectedTemplate),
-                typeof(TemplateMetadata),
+                typeof(ScannerDataTemplate),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(TemplateMetadata)));
+                new PropertyMetadata(default(ScannerDataTemplate)));
 
         ///<summary>Выбранный шаблон</summary>
-        public TemplateMetadata SelectedTemplate
+        public ScannerDataTemplate SelectedTemplate
         {
-            get => (TemplateMetadata) GetValue(SelectedTemplateProperty);
+            get => (ScannerDataTemplate) GetValue(SelectedTemplateProperty);
             set => SetValue(SelectedTemplateProperty, value);
         }
 

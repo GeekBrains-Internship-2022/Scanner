@@ -24,14 +24,14 @@ namespace Scanner.ViewModels
     {
         private readonly IStore<FileData> _DBFileDataInDB;
         private readonly IStore<ScannerDataTemplate> _DBDataTemplateInDB;
-        private readonly IStore<DocumentMetadata> _DBdocumentMetadata;
-        private readonly IStore<TemplateMetadata> _DBtemplateMetadata;
+        private readonly IStore<DocumentMetadata> _DBdocumentMetadataInDB;
+        private readonly IStore<TemplateMetadata> _DBtemplateMetadataInDB;
         private readonly ILogger<MainWindowViewModel> _Logger;
         private readonly IConfiguration _Configuration;
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
-        private readonly TestData _TestData = new TestData();
+        private readonly TestData _TestData;
 
         /// <summary>
         /// Список отсканированных документов
@@ -46,7 +46,7 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список шаблонов
         /// </summary>
-        public ObservableCollection<ScannerDataTemplate> Templates { get; set; } = new();                  //Список шаблонов
+        public ObservableCollection<ScannerDataTemplate> Templates { get; set; }                  //Список шаблонов
 
         /// <summary>
         /// Список найденных шаблонов по типу выбранного отсканированного документа
@@ -270,49 +270,38 @@ namespace Scanner.ViewModels
             IFileService __fileService,
             IRabbitMQService __rabbitMQService)
         {
-            _DBFileDataInDB = __filedata;                   // Подлючение к базе FileData - хранение информации о файлах
-            _DBDataTemplateInDB = __ScannerData;            // Подключение к базе ScannerDataTemplate - хранение шаблонов
-            _DBdocumentMetadata = __DocumentMetadataDB;     // Подключение к базе DocumentMetadata - храненние метаданных документов
-            _DBtemplateMetadata = __TemplateMetadata;       // Подключение к базе TemplateMetadata  - хранение названий полей в шаблоне
+            _DBFileDataInDB = __filedata;                       // Подлючение к базе FileData - хранение информации о файлах
+            _DBDataTemplateInDB = __ScannerData;                // Подключение к базе ScannerDataTemplate - хранение шаблонов
+            _DBdocumentMetadataInDB = __DocumentMetadataDB;     // Подключение к базе DocumentMetadata - храненние метаданных документов
+            _DBtemplateMetadataInDB = __TemplateMetadata;       // Подключение к базе TemplateMetadata  - хранение названий полей в шаблоне
             _Logger = __logger;
             _Configuration = __configuration;
             _Observer = __observer;
             _FileService = __fileService;
             _RabbitMQService = __rabbitMQService;
 
-            //Templates = _TestData.Templates;
-            ObservableCollection<ScannerDataTemplate> ScannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(__ScannerData.GetAll());
+            _TestData = new TestData();
+
+            ObservableCollection<ScannerDataTemplate> ScannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+            ObservableCollection<FileData> FileDatasInDB = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll());
+
             GetFiles();
-            //foreach(var d in ScanDocuments)
-            //    _DBFileDataInDB.Add(d);
 
-            List<ScannerDataTemplate> scannerDataTemplates = new List<ScannerDataTemplate>();
-            List<TemplateMetadata> templateMetadatas = new List<TemplateMetadata>();
-            templateMetadatas.Add(new TemplateMetadata
-            {
-                Name = "Серия",
-                Required = true,
-            });
-            templateMetadatas.Add(new TemplateMetadata
-            {
-                Name = "Номер",
-                Required = true,
-            });
-            templateMetadatas.Add(new TemplateMetadata
-            {
-                Name = "ФИО",
-                Required = true,
-            });
+            Templates = _TestData.DataTemplates;
+            _TestData.FilesDatas = ScanDocuments;
+            
 
-            scannerDataTemplates.Add(new ScannerDataTemplate
-            {
-                DocumentType = "Паспорт",
-                TemplateMetadata = templateMetadatas,
-
-            });
-
-            foreach(var s in scannerDataTemplates)
-                __ScannerData.Add(s);
+            /*if (!ScannerDataTemplatesInDB.Contains(testScannerDataTemplates))
+                if (ScannerDataTemplatesInDB.First(t => t.DocumentType.ToLower() == testScannerDataTemplates.DocumentType.ToLower()) is null)
+                    ScannerDataTemplatesInDB.Add(testScannerDataTemplates);
+                else if(ScannerDataTemplatesInDB.First(t => t.DocumentType.ToLower() == testScannerDataTemplates.DocumentType.ToLower()).TemplateMetadata.Count != testScannerDataTemplates.TemplateMetadata.Count)
+                {
+                    var v = ScannerDataTemplatesInDB.First(t => t.DocumentType.ToLower() == testScannerDataTemplates.DocumentType.ToLower());
+                    testScannerDataTemplates.DocumentType = testScannerDataTemplates.DocumentType + DateTime.Now.ToShortDateString();
+                    ScannerDataTemplatesInDB.Add(testScannerDataTemplates);
+                    _DBDataTemplateInDB.Add(testScannerDataTemplates);
+                }*/
+                
 
             FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);
 
@@ -410,15 +399,6 @@ namespace Scanner.ViewModels
                 Checked = false,
                 Document = document,
             };
-
-            /*return new ScanDocument
-            {
-                Name = fileInfo.Name,
-                Date = fileInfo.CreationTime,
-                Path = file,
-                Type = type,
-                Metadata = metadata,
-            };*/
         }
 
         #region Команды
