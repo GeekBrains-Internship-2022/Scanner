@@ -22,7 +22,7 @@
             <ComboBox Height="20" SelectedIndex="0" IsEditable="True" IsTextSearchEnabled="True"
                   SelectedItem="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}, Mode=TwoWay}"
                   ItemsSource="{Binding TemplatesItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
-                  DisplayMemberPath="Name"/>
+                  DisplayMemberPath="DocumentType"/>
 
             <GroupBox Header="Основные" Margin="5 0">
                 <ItemsControl ItemsSource="{Binding MetadataItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">

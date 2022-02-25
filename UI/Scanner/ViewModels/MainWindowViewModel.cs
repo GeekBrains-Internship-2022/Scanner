@@ -143,7 +143,8 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedTemplate, value);
-                DataListSelectedDocument.Clear();
+                //DataListSelectedDocument.Clear();
+                Metadatas.Clear();
                 if(value != null)
                     foreach(var d in value.TemplateMetadata)
                     {
