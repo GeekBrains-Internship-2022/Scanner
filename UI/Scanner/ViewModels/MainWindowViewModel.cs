@@ -283,8 +283,37 @@ namespace Scanner.ViewModels
             //Templates = _TestData.Templates;
             ObservableCollection<ScannerDataTemplate> ScannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(__ScannerData.GetAll());
             GetFiles();
-            foreach(var d in ScanDocuments)
-                _DBFileDataInDB.Add(d);
+            //foreach(var d in ScanDocuments)
+            //    _DBFileDataInDB.Add(d);
+
+            List<ScannerDataTemplate> scannerDataTemplates = new List<ScannerDataTemplate>();
+            List<TemplateMetadata> templateMetadatas = new List<TemplateMetadata>();
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Серия",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Номер",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "ФИО",
+                Required = true,
+            });
+
+            scannerDataTemplates.Add(new ScannerDataTemplate
+            {
+                DocumentType = "Паспорт",
+                TemplateMetadata = templateMetadatas,
+
+            });
+
+            foreach(var s in scannerDataTemplates)
+                __ScannerData.Add(s);
+
             FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);
 
             ObserverInitialize();
