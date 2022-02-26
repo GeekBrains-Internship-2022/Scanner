@@ -64,22 +64,17 @@ namespace Scanner.ViewModels
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
 
         /// <summary>
-        /// Добавляемое поле в шаблон
+        /// Добавляемое администратором поле в шаблон
         /// </summary>
-        public TemplateMetadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое поле в шаблон
+        public TemplateMetadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое администратором поле в шаблон
 
         /// <summary>
         /// Список подпапок с отсканированными файлами
         /// </summary>
-        public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами
-
-        /// <summary>
-        /// Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
-        /// </summary>
-        public ObservableCollection<DocumentMetadata> DataListSelectedDocument { get; set; } = new();     //Список полей Data, соответствующих выбранному шаблону SelectedTemplate для SelectedDocument
+        public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами        
 
         # region ObservableCollection<DocumentMetadata> Metadatas - Список метаданных
-        private ObservableCollection<DocumentMetadata> _Metadatas = new ObservableCollection<DocumentMetadata>();
+        private ObservableCollection<DocumentMetadata> _Metadatas = new ObservableCollection<DocumentMetadata>();        
         /// <summary>
         /// Список метаданных
         /// </summary>
@@ -94,7 +89,7 @@ namespace Scanner.ViewModels
         #endregion
 
         #region ObservableCollection<DocumentMetadata> ExtraNoRequiredMetadatas - Список дополнительных необязательных метаданных
-        private ObservableCollection<DocumentMetadata> _ExtraNoRequiredMetadatas = new ObservableCollection<DocumentMetadata>();
+        private ObservableCollection<DocumentMetadata> _ExtraNoRequiredMetadatas = new ObservableCollection<DocumentMetadata>();        
         /// <summary>
         /// Список метаданных
         /// </summary>
@@ -104,6 +99,21 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _ExtraNoRequiredMetadatas, value);
+            }
+        }
+        #endregion
+
+        #region DocumentMetadata SelectedExtraNoRequiredMetadata - Выбранное оператором дополнительное необязательное поле метаданных
+        private DocumentMetadata _SelectedExtraNoRequiredMetadata = new DocumentMetadata();
+        /// <summary>
+        /// Список метаданных
+        /// </summary>
+        public DocumentMetadata SelectedExtraNoRequiredMetadata                                         //Выбранное оператором дополнительное необязательное поле метаданных
+        {
+            get => _SelectedExtraNoRequiredMetadata;
+            set
+            {
+                Set(ref _SelectedExtraNoRequiredMetadata, value);
             }
         }
         #endregion
@@ -158,13 +168,12 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedTemplate, value);
-                //DataListSelectedDocument.Clear();
+                
                 Metadatas.Clear();
                 ExtraNoRequiredMetadatas.Clear();
                 if (value != null)
                     foreach(var d in value.TemplateMetadata)
                     {
-                        //DataListSelectedDocument.Add(d.Name);
                         if (d.Required)
                             Metadatas.Add(new DocumentMetadata
                             {
@@ -564,8 +573,10 @@ namespace Scanner.ViewModels
 
         private void AddDataToDocument()
         {
-            TemplateMetadata metadata = new TemplateMetadata();
-            SelectedDocument.Document.Metadata.Add(new DocumentMetadata { Name = metadata.Name,});
+            if(SelectedExtraNoRequiredMetadata.Name != null && SelectedDocument != null)
+                Metadatas.Add(SelectedExtraNoRequiredMetadata);
+            if(SelectedDocument != null)
+                SelectedDocument.Document.Metadata = Metadatas;                     //Перенести в кнопку сохранить
         }
 
         #endregion

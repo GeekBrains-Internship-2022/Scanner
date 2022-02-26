@@ -58,12 +58,13 @@
                     </StatusBar>
 
                     <ctrl:OperatorControlPanel DockPanel.Dock="Right"
-                                                   TemplatesItemSource="{Binding Templates}"
-                                                   SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
-                                                   MetadataItemSource="{Binding Metadatas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                   SaveCommand="{Binding SaveFileCommand}"
-                                                   NextFileCommand="{Binding NextFileCommand}"
-                                                   CBExtraDataItemSource="{Binding ExtraNoRequiredMetadatas}"/>
+                                               TemplatesItemSource="{Binding Templates}"
+                                               SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
+                                               MetadataItemSource="{Binding Metadatas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               SaveCommand="{Binding SaveFileCommand}"
+                                               NextFileCommand="{Binding NextFileCommand}"
+                                               CBExtraDataItemSource="{Binding ExtraNoRequiredMetadatas}"
+                                               CBExtraDataSelectedItem="{Binding SelectedExtraNoRequiredMetadata, Mode=TwoWay}"/>
 
                     <Grid>
 
