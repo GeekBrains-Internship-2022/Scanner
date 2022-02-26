@@ -581,6 +581,45 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region DeleteExtraDataFromDocument - Команда удаления элемента метаднных из списка метаданных документа - заглушка
+
+        private ICommand _DeleteExtraDataFromDocument;
+        public ICommand DeleteExtraDataFromDocument => _DeleteExtraDataFromDocument
+            ??= new LambdaCommand(OnDeleteExtraDataFromDocumentExecuted, CanDeleteExtraDataFromDocumentExecute);
+
+        private void OnDeleteExtraDataFromDocumentExecuted(object p) => DeleteDataFromDocument(p);
+        private bool CanDeleteExtraDataFromDocumentExecute(object p)
+        {
+            bool result = false;
+            if (p is null) result = true;
+            if (p is DocumentMetadata meta)
+            {
+                var v = SelectedTemplate?.TemplateMetadata.FirstOrDefault(t => t.Name == meta.Name);
+                if (v == null) result = true;
+                if (!v.Required)
+                    result = true;
+            }
+
+            return result;
+        }
+
+        private void DeleteDataFromDocument(object p)
+        {
+            if (p is DocumentMetadata meta)
+            {
+                Metadatas.Remove(meta);
+                /*var temp = SelectedTemplateInOP?.TemplateMetadata.FirstOrDefault(o => o.Name == meta.Name);
+                if (temp is null) return;
+                if (!TemplateMetadatas.Contains(temp))
+                {
+                    TemplateMetadatas.Add(temp);
+                }*/
+            }
+            return;
+        }
+
+        #endregion
+
         #region SaveEditTemplateToBD - команда сохранения шаблона в базу - заглушка
 
         private ICommand _SaveEditTemplateToBD;

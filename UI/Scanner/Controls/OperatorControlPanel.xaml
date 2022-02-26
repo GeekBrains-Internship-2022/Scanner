@@ -33,13 +33,13 @@
                                     <TextBox Text="{Binding Path=Data}"
                                              TextWrapping="Wrap"
                                              Width="200"/>
-                                    <Button>
+                                    <Button Command="{Binding DelExtraMetaDataCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}" CommandParameter="{Binding}">
                                         <Button.Content>
                                             <fa:SvgAwesome Icon="Regular_MinusSquare" Width="15"
                                                        Foreground="Red"/>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>
+                                    <!--<CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>-->
                                 </StackPanel>
                             </GroupBox>
                         </DataTemplate>

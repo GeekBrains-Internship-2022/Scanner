@@ -161,6 +161,25 @@ namespace Scanner.Controls
 
         #endregion
 
+        #region DelExtraMetaDataCommand : ICommand - Команда удалить метаданные
+
+        ///<summary>Команда сохранить</summary>
+        public static readonly DependencyProperty DelExtraMetaDataCommandProperty =
+            DependencyProperty.Register(
+                nameof(DelExtraMetaDataCommand),
+                typeof(ICommand),
+                typeof(OperatorControlPanel),
+                new PropertyMetadata(default(ICommand)));
+
+        ///<summary>Команда сохранить</summary>
+        public ICommand DelExtraMetaDataCommand
+        {
+            get => (ICommand)GetValue(DelExtraMetaDataCommandProperty);
+            set => SetValue(DelExtraMetaDataCommandProperty, value);
+        }
+
+        #endregion
+
         public OperatorControlPanel() => InitializeComponent();
     }
 }

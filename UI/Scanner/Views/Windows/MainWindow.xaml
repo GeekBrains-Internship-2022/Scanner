@@ -64,7 +64,8 @@
                                                SaveCommand="{Binding SaveFileCommand}"
                                                NextFileCommand="{Binding NextFileCommand}"
                                                CBExtraDataItemSource="{Binding ExtraNoRequiredMetadatas}"
-                                               CBExtraDataSelectedItem="{Binding SelectedExtraNoRequiredMetadata, Mode=TwoWay}"/>
+                                               CBExtraDataSelectedItem="{Binding SelectedExtraNoRequiredMetadata, Mode=TwoWay}"
+                                               DelExtraMetaDataCommand="{Binding DeleteExtraDataFromDocument}"/>
 
                     <Grid>
 
