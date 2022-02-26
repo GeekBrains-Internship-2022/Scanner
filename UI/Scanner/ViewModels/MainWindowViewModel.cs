@@ -519,29 +519,44 @@ namespace Scanner.ViewModels
                 Directory.CreateDirectory(path);
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
-            var oldPath = doc.FilePath;
 
-            var metadata = new ObservableCollection<DocumentMetadata>();
+            if (doc != null)
+            {
+                var oldPath = doc.FilePath;
+                doc.Document.Metadata = Metadatas;
+                doc.FilePath = s;
+                doc.Indexed = true;
+                doc.Document.IndexingDate = DateTime.Now;
+                File.Copy(oldPath, s);
+                IndexedDocs.Add(doc);
+                ScanDocuments.Remove(doc);
+                FilteredScanDocuments.Remove(doc);
+                SelectedDocument = null;
+                Metadatas.Clear();
 
-            foreach (var m in Metadatas)
-                metadata.Add(new DocumentMetadata { Name = m.Name, Data = m.Data, });
-
-            doc.Document.Metadata = metadata;
-            doc.FilePath = s;
-            File.Copy(oldPath, s);
-            IndexedDocs.Add(doc);
-            ScanDocuments.Remove(doc);
-            FilteredScanDocuments.Remove(doc);
-
-            IsNew = false;
-            Status = "Готов";
+                IsNew = false;
+                Status = "Готов";
+            }
 
             //File.Delete(oldPath);
 
             //SelectedDocument = FilteredScanDocuments.Next                 //Заглушка. Выбор следующего документа при сохранении (похоже нужно сначала отсортировать список)
         }
 
-        private bool CanSaveFileCommandExecute(object p) => true;
+        private bool CanSaveFileCommandExecute(object p)
+        {
+            bool result = false;
+
+            if (Metadatas.Count > 0 && SelectedDocument != null)
+            {
+                var v = Metadatas.FirstOrDefault(m => m.Data == null || m.Data.Length == 0 || m.Data == " ");
+                if (v != null)
+                    result = false;
+                else result = true;
+            }
+
+            return result;
+        }
 
         #endregion
 
@@ -575,8 +590,6 @@ namespace Scanner.ViewModels
         {
             if(SelectedExtraNoRequiredMetadata.Name != null && SelectedDocument != null)
                 Metadatas.Add(SelectedExtraNoRequiredMetadata);
-            if(SelectedDocument != null)
-                SelectedDocument.Document.Metadata = Metadatas;                     //Перенести в кнопку сохранить
         }
 
         #endregion
@@ -595,7 +608,11 @@ namespace Scanner.ViewModels
             if (p is DocumentMetadata meta)
             {
                 var v = SelectedTemplate?.TemplateMetadata.FirstOrDefault(t => t.Name == meta.Name);
-                if (v == null) result = true;
+                if (v == null)
+                {
+                    result = false;
+                    return false;
+                }
                 if (!v.Required)
                     result = true;
             }
