@@ -93,6 +93,21 @@ namespace Scanner.ViewModels
         }
         #endregion
 
+        #region ObservableCollection<DocumentMetadata> ExtraNoRequiredMetadatas - Список дополнительных необязательных метаданных
+        private ObservableCollection<DocumentMetadata> _ExtraNoRequiredMetadatas = new ObservableCollection<DocumentMetadata>();
+        /// <summary>
+        /// Список метаданных
+        /// </summary>
+        public ObservableCollection<DocumentMetadata> ExtraNoRequiredMetadatas                                         //Список дополнительных необязательных метаданных
+        {
+            get => _ExtraNoRequiredMetadatas;
+            set
+            {
+                Set(ref _ExtraNoRequiredMetadatas, value);
+            }
+        }
+        #endregion
+
 
         #region IsConnected : bool - индикатор подключения
 
@@ -145,15 +160,23 @@ namespace Scanner.ViewModels
                 Set(ref _SelectedTemplate, value);
                 //DataListSelectedDocument.Clear();
                 Metadatas.Clear();
-                if(value != null)
+                ExtraNoRequiredMetadatas.Clear();
+                if (value != null)
                     foreach(var d in value.TemplateMetadata)
                     {
                         //DataListSelectedDocument.Add(d.Name);
-                        Metadatas.Add(new DocumentMetadata
-                        {
-                            Name = d.Name,
-                            Data = null,                            
-                        });
+                        if (d.Required)
+                            Metadatas.Add(new DocumentMetadata
+                            {
+                                Name = d.Name,
+                                Data = null,
+                            });
+                        else
+                            ExtraNoRequiredMetadatas.Add(new DocumentMetadata
+                            {
+                                Name = d.Name,
+                                Data = null,
+                            });
                     }
             }
         }

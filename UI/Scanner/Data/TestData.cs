@@ -59,6 +59,16 @@ namespace Scanner.Data
                 Name = "ФИО",
                 Required = true,
             });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата выдачи",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Кем выдан",
+                Required = false,
+            });
 
             testScannerDataTemplates = new ScannerDataTemplate
             {
@@ -95,6 +105,21 @@ namespace Scanner.Data
                 Name = "ФИО матери",
                 Required = true,
             });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата выдачи",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата рождения",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Кем выдано",
+                Required = false,
+            });
 
             testScannerDataTemplates = new ScannerDataTemplate
             {
@@ -130,6 +155,16 @@ namespace Scanner.Data
             {
                 Name = "Наименование УЗ",
                 Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Специальность",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Специализация",
+                Required = false,
             });
 
             testScannerDataTemplates = new ScannerDataTemplate

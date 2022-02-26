@@ -85,40 +85,40 @@ namespace Scanner.Controls
 
         #endregion
 
-        #region CBItemSource : ObservableCollection<string> - коллекция метаданных в выбранном шаблоне
+        #region CBExtraDataItemSource : ObservableCollection<DocumentMetadata> - коллекция метаданных в выбранном шаблоне
 
         ///<summary>коллекция подпапок</summary>
-        public static readonly DependencyProperty CBItemSourceProperty =
+        public static readonly DependencyProperty CBExtraDataItemSourceProperty =
             DependencyProperty.Register(
-                nameof(CBItemSource),
-                typeof(ObservableCollection<string>),
+                nameof(CBExtraDataItemSource),
+                typeof(ObservableCollection<DocumentMetadata>),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<string>)));
+                new PropertyMetadata(default(ObservableCollection<DocumentMetadata>)));
 
         ///<summary>коллекция подпапок</summary>
-        public ObservableCollection<string> CBItemSource
+        public ObservableCollection<DocumentMetadata> CBExtraDataItemSource
         {
-            get => (ObservableCollection<string>)GetValue(CBItemSourceProperty);
-            set => SetValue(CBItemSourceProperty, value);
+            get => (ObservableCollection<DocumentMetadata>)GetValue(CBExtraDataItemSourceProperty);
+            set => SetValue(CBExtraDataItemSourceProperty, value);
         }
 
         #endregion
 
-        #region CBSelectedItem : string - выбранный тип метаданного
+        #region CBExtraDataSelectedItem : DocumentMetadata - выбранный тип метаданного
 
         ///<summary>выбранный объект</summary>
-        public static readonly DependencyProperty CBSelectedItemProperty =
+        public static readonly DependencyProperty CBExtraDataSelectedItemProperty =
             DependencyProperty.Register(
-                nameof(CBSelectedItem),
-                typeof(string),
+                nameof(CBExtraDataSelectedItem),
+                typeof(DocumentMetadata),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(string)));
+                new PropertyMetadata(default(DocumentMetadata)));
 
         ///<summary>выбранный объект</summary>
-        public string CBSelectedItem
+        public DocumentMetadata CBExtraDataSelectedItem
         {
-            get => (string)GetValue(CBSelectedItemProperty);
-            set => SetValue(CBSelectedItemProperty, value);
+            get => (DocumentMetadata)GetValue(CBExtraDataSelectedItemProperty);
+            set => SetValue(CBExtraDataSelectedItemProperty, value);
         }
 
         #endregion

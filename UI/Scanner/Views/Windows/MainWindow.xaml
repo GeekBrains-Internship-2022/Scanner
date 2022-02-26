@@ -63,7 +63,7 @@
                                                    MetadataItemSource="{Binding Metadatas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                    SaveCommand="{Binding SaveFileCommand}"
                                                    NextFileCommand="{Binding NextFileCommand}"
-                                                   CBItemSource="{Binding DataListSelectedDocument}"/>
+                                                   CBExtraDataItemSource="{Binding ExtraNoRequiredMetadatas}"/>
 
                     <Grid>
 
