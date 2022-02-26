@@ -418,7 +418,8 @@ namespace Scanner.ViewModels
         {
             var fileInfo = new FileInfo(file);
             var type = fileInfo.DirectoryName?.Split('\\')[^1];
-            var metadata = Metadatas.Where(t => t.Name == type) as ICollection<DocumentMetadata>;
+            //var metadata = Metadatas.Where(t => t.Name == type) as ICollection<DocumentMetadata>;
+            var metadata = new Collection<DocumentMetadata>();
 
             var document = new Document { DocumentType = type, IndexingDate = DateTime.MinValue, Metadata = metadata };
 
@@ -511,7 +512,7 @@ namespace Scanner.ViewModels
         private void SaveFile()
         {
             var doc = SelectedDocument;
-            SelectedDocument = null;
+            
             var path = _Configuration["Directories:StorageDirectory"];
             path = Path.GetFullPath(path);
 
@@ -522,8 +523,8 @@ namespace Scanner.ViewModels
 
             if (doc != null)
             {
-                var oldPath = doc.FilePath;
-                doc.Document.Metadata = Metadatas;
+                var oldPath = doc.FilePath;                
+                doc.Document.Metadata = new Collection<DocumentMetadata>(Metadatas);
                 doc.FilePath = s;
                 doc.Indexed = true;
                 doc.Document.IndexingDate = DateTime.Now;
@@ -531,6 +532,20 @@ namespace Scanner.ViewModels
                 IndexedDocs.Add(doc);
                 ScanDocuments.Remove(doc);
                 FilteredScanDocuments.Remove(doc);
+                
+                _TestData.FilesDatas.Add(doc);
+
+                var fd = _DBFileDataInDB.Add(new FileData());
+                fd.DocumentName = doc.DocumentName;
+                fd.Document = doc.Document;
+                fd.FilePath = doc.FilePath;
+                fd.DateAdded = doc.DateAdded;
+                fd.Checked = doc.Checked;
+                fd.Indexed = doc.Indexed;
+                fd.Document.DocumentType = doc.Document.DocumentType;
+                fd.Document.Metadata = doc.Document.Metadata.ToArray();
+                //_DBFileDataInDB.Update(fd);
+
                 SelectedDocument = null;
                 Metadatas.Clear();
 
