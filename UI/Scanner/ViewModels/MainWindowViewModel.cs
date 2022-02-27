@@ -523,11 +523,14 @@ namespace Scanner.ViewModels
 
             if (doc != null)
             {
-                var oldPath = doc.FilePath;                
-                doc.Document.Metadata = new Collection<DocumentMetadata>(Metadatas);
+                var oldPath = doc.FilePath;
+                doc.Document.IndexingDate = DateTime.Now;
+                foreach (var m in Metadatas)
+                    m.Document = doc.Document;
+                doc.Document.Metadata = Metadatas;
                 doc.FilePath = s;
                 doc.Indexed = true;
-                doc.Document.IndexingDate = DateTime.Now;
+                
                 File.Copy(oldPath, s);
                 IndexedDocs.Add(doc);
                 ScanDocuments.Remove(doc);
@@ -535,15 +538,17 @@ namespace Scanner.ViewModels
                 
                 _TestData.FilesDatas.Add(doc);
 
+
                 var fd = _DBFileDataInDB.Add(new FileData());
                 fd.DocumentName = doc.DocumentName;
+                fd.Document = doc.Document;
+                fd.Document.DocumentType = doc.Document.DocumentType;
+                fd.Document.Metadata = doc.Document.Metadata;
                 fd.Document = doc.Document;
                 fd.FilePath = doc.FilePath;
                 fd.DateAdded = doc.DateAdded;
                 fd.Checked = doc.Checked;
-                fd.Indexed = doc.Indexed;
-                fd.Document.DocumentType = doc.Document.DocumentType;
-                fd.Document.Metadata = doc.Document.Metadata.ToArray();
+                fd.Indexed = doc.Indexed;                
                 //_DBFileDataInDB.Update(fd);
 
                 SelectedDocument = null;
