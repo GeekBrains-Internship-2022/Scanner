@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="interfaces\ICommand.cs" />
+    <Compile Remove="ViewModels\Models\Metadata.cs" />
+    <Compile Remove="ViewModels\Models\ScanDocument.cs" />
+    <Compile Remove="ViewModels\Models\Template.cs" />
   </ItemGroup>
 
   <ItemGroup>

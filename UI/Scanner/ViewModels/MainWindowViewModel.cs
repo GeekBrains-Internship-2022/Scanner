@@ -538,8 +538,9 @@ namespace Scanner.ViewModels
                 
                 _TestData.FilesDatas.Add(doc);
 
+                _DBFileDataInDB.Add(doc);
 
-                var fd = _DBFileDataInDB.Add(new FileData());
+                var fd = _DBFileDataInDB.Add(doc);
                 fd.DocumentName = doc.DocumentName;
                 fd.Document = doc.Document;
                 fd.Document.DocumentType = doc.Document.DocumentType;
@@ -549,7 +550,7 @@ namespace Scanner.ViewModels
                 fd.DateAdded = doc.DateAdded;
                 fd.Checked = doc.Checked;
                 fd.Indexed = doc.Indexed;                
-                //_DBFileDataInDB.Update(fd);
+                _DBFileDataInDB.Update(fd);
 
                 SelectedDocument = null;
                 Metadatas.Clear();

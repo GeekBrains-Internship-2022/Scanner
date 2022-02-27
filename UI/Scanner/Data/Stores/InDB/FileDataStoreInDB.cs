@@ -22,7 +22,7 @@ namespace Scanner.Data.Stores.InDB
             return Item;
         }
 
-        public void Delete(Guid Id)
+        public void Delete(int Id)
         {
             var item = GetById(Id);
             if (item is null) return;
@@ -35,7 +35,7 @@ namespace Scanner.Data.Stores.InDB
         //_db.Brands.Include(brand => brand.Products).ToDTO();
 
 
-        public FileData GetById(Guid Id) => _db.FileDatas.SingleOrDefault(r => r.Id == Id);
+        public FileData GetById(int Id) => _db.FileDatas.SingleOrDefault(r => r.Id == Id);
 
 
         public void Update(FileData Item)

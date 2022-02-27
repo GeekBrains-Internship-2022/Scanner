@@ -21,7 +21,7 @@ namespace Scanner.Data.Stores.InDB
             return Item;
         }
 
-        public void Delete(Guid Id)
+        public void Delete(int Id)
         {
             var item = GetById(Id);
             if (item is null) return;
@@ -31,7 +31,7 @@ namespace Scanner.Data.Stores.InDB
 
         public IEnumerable<DocumentMetadata> GetAll() => _db.Metadata.ToArray();
 
-        public DocumentMetadata GetById(Guid Id) => _db.Metadata.SingleOrDefault(r => r.Id == Id);
+        public DocumentMetadata GetById(int Id) => _db.Metadata.SingleOrDefault(r => r.Id == Id);
         public void Update(DocumentMetadata Item)
         {
             _db.Entry(Item).State = EntityState.Modified;

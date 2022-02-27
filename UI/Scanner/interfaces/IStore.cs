@@ -9,12 +9,12 @@ namespace Scanner.interfaces
     {
         IEnumerable<T> GetAll();
 
-        T GetById(Guid Id);
+        T GetById(int Id);
 
         T Add(T Item);
 
         void Update(T Item);
 
-        void Delete(Guid Id);
+        void Delete(int Id);
     }
 }
