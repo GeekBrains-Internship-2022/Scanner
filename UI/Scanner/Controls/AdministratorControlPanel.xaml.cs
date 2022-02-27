@@ -31,7 +31,7 @@ namespace Scanner.Controls
 
         #endregion
 
-        #region ItemSource : FileData - Источник
+        /*#region ItemSource : FileData - Источник
 
         ///<summary>источник метаданных</summary>
         public static readonly DependencyProperty ItemSourceProperty =
@@ -44,26 +44,26 @@ namespace Scanner.Controls
         ///<summary>источник метаданных</summary>
         public FileData ItemSource
         {
-            get => (FileData) GetValue(ItemSourceProperty);
+            get => (FileData)GetValue(ItemSourceProperty);
             set => SetValue(ItemSourceProperty, value);
         }
 
-        #endregion
+        #endregion*/
 
-        #region Metadata : ObservableCollection<TemplateMetadata> - Метаданные
+        #region Metadata : ObservableCollection<DocumentMetadata> - Метаданные
 
         ///<summary>Метаданные</summary>
         public static readonly DependencyProperty MetadataProperty =
             DependencyProperty.Register(
                 nameof(Metadata),
-                typeof(ObservableCollection<TemplateMetadata>),
+                typeof(ObservableCollection<DocumentMetadata>),
                 typeof(AdministratorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<TemplateMetadata>)));
+                new PropertyMetadata(default(ObservableCollection<DocumentMetadata>)));
 
         ///<summary>Метаданные</summary>
-        public ObservableCollection<TemplateMetadata> Metadata
+        public ObservableCollection<DocumentMetadata> Metadata
         {
-            get => (ObservableCollection<TemplateMetadata>) GetValue(MetadataProperty);
+            get => (ObservableCollection<DocumentMetadata>) GetValue(MetadataProperty);
             set => SetValue(MetadataProperty, value);
         }
 

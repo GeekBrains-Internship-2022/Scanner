@@ -191,13 +191,32 @@ namespace Scanner.ViewModels
         }
         #endregion
 
-        #region SelectedEditTemplateAdmin : Template - выбранный шаблон для редактирования
+        #region SelectedEditTemplateAdmin : ScannerDataTemplate - выбранный шаблон для редактирования
 
         private ScannerDataTemplate _SelectedEditTemplateAdmin;
         public ScannerDataTemplate SelectedEditTemplateAdmin
         {
             get => _SelectedEditTemplateAdmin;
-            set => Set(ref _SelectedEditTemplateAdmin, value);
+            set
+            {
+                Set(ref _SelectedEditTemplateAdmin, value);
+                RowsSelectedEditTemplateAdmin = new ObservableCollection<TemplateMetadata>(value.TemplateMetadata);
+            }
+        }
+        #endregion
+
+        #region RowsSelectedEditTemplateAdmin : ObservableCollection<TemplateMetadata> - поля выбранного шаблона для редактирования
+
+        private ObservableCollection<TemplateMetadata> _RowsSelectedEditTemplateAdmin;
+        public ObservableCollection<TemplateMetadata> RowsSelectedEditTemplateAdmin
+        {
+            get => _RowsSelectedEditTemplateAdmin;
+            set
+            {
+                Set(ref _RowsSelectedEditTemplateAdmin, value);
+                if(value != null)
+                    SelectedEditTemplateAdmin.TemplateMetadata = value;
+            }
         }
         #endregion
 
@@ -254,7 +273,23 @@ namespace Scanner.ViewModels
         public FileData SelectedIndexedDoc
         {
             get => _SelectedIndexedDoc;
-            set => Set(ref _SelectedIndexedDoc, value);
+            set
+            {
+                Set(ref _SelectedIndexedDoc, value);
+                MetadataSelectedIndexedDoc = new ObservableCollection<DocumentMetadata>(value.Document.Metadata);
+            }
+        }
+
+        #endregion
+
+        #region MetadataSelectedIndexedDoc : ObservableCollection<DocumentMetadata> - список метаданных выбранного индексированныго документа
+
+        private ObservableCollection<DocumentMetadata> _MetadataSelectedIndexedDoc;
+
+        public ObservableCollection<DocumentMetadata> MetadataSelectedIndexedDoc
+        {
+            get => _MetadataSelectedIndexedDoc;
+            set => Set(ref _MetadataSelectedIndexedDoc, value);
         }
 
         #endregion
@@ -538,9 +573,9 @@ namespace Scanner.ViewModels
                 
                 _TestData.FilesDatas.Add(doc);
 
-                _DBFileDataInDB.Add(doc);
+                _DBFileDataInDB.Add(doc);                                   // Запись в связанные файлы не происходит
 
-                var fd = _DBFileDataInDB.Add(doc);
+                /*var fd = _DBFileDataInDB.Add(doc);
                 fd.DocumentName = doc.DocumentName;
                 fd.Document = doc.Document;
                 fd.Document.DocumentType = doc.Document.DocumentType;
@@ -550,7 +585,7 @@ namespace Scanner.ViewModels
                 fd.DateAdded = doc.DateAdded;
                 fd.Checked = doc.Checked;
                 fd.Indexed = doc.Indexed;                
-                _DBFileDataInDB.Update(fd);
+                _DBFileDataInDB.Update(fd);*/
 
                 SelectedDocument = null;
                 Metadatas.Clear();
