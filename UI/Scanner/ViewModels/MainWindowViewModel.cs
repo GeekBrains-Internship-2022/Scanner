@@ -640,11 +640,12 @@ namespace Scanner.ViewModels
             ??= new LambdaCommand(OnAddExtraDataToDocumentExecuted, CanAddExtraDataToDocumentExecute);
 
         private void OnAddExtraDataToDocumentExecuted(object p) => AddDataToDocument();
-        private bool CanAddExtraDataToDocumentExecute(object p) => true;
+        private bool CanAddExtraDataToDocumentExecute(object p) => SelectedExtraNoRequiredMetadata is not null;
 
         private void AddDataToDocument()
         {
-            if(SelectedExtraNoRequiredMetadata.Name != null && SelectedDocument != null)
+            if (SelectedExtraNoRequiredMetadata is null) return;     //  На случай если затупит UI и не сработает условие команды
+            if (SelectedExtraNoRequiredMetadata.Name != null && SelectedDocument != null && !Metadatas.Contains(SelectedExtraNoRequiredMetadata))
                 Metadatas.Add(SelectedExtraNoRequiredMetadata);
         }
 
