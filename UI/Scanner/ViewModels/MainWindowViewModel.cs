@@ -364,7 +364,22 @@ namespace Scanner.ViewModels
 
             GetFiles();
 
-            Templates = _TestData.DataTemplates;
+            var scannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+            if(ScannerDataTemplatesInDB.Count == 0)
+                foreach(var t in _TestData.DataTemplates)
+                {                    
+                    _DBDataTemplateInDB.Add(t);
+                }
+            else
+                foreach (var t in _TestData.DataTemplates)
+                {
+                    if (ScannerDataTemplatesInDB.FirstOrDefault(st => st.DocumentType == t.DocumentType) is null)
+                        _DBDataTemplateInDB.Add(t);
+                }
+
+            //Templates = _TestData.DataTemplates;
+            Templates = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+
             _TestData.FilesDatas = ScanDocuments;
 
             FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);            
@@ -570,7 +585,7 @@ namespace Scanner.ViewModels
                 });
             }
 
-            var fileInDB = _DBFileDataInDB.Add(file);                                   // Запись в связанные файлы не происходит
+            var fileInDB = _DBFileDataInDB.Add(file);
 
             IndexedDocs.Add(fileInDB);
             ScanDocuments.Remove(file);
