@@ -19,13 +19,10 @@ namespace Scanner.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Document>()
-            //.HasMany(c => c.Metadata);
-
-            //modelBuilder.Entity<DocumentMetadata>()
-            //    .HasOne(p => p.Metadata)
-            //    .WithMany(b => b.Posts)
-            //    .HasForeignKey(p => p.BlogForeignKey);
+            modelBuilder.Entity<Document>()
+                .HasMany(c => c.Metadata)
+                .WithOne(d => d.Document)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

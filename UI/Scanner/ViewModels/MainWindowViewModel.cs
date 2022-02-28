@@ -57,7 +57,9 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список проиндексированных файлов
         /// </summary>
-        public ObservableCollection<FileData> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
+        public ObservableCollection<FileData> IndexedDocs { get; set; }            //Список проиндексированных файлов
+
+        //public ObservableCollection<FileData> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
 
         /// <summary>
         /// Список проверенных файлов
@@ -277,7 +279,8 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedIndexedDoc, value);
-                MetadataSelectedIndexedDoc = new ObservableCollection<DocumentMetadata>(value.Document.Metadata);
+                if(value is not null)
+                    MetadataSelectedIndexedDoc = new ObservableCollection<DocumentMetadata>(value.Document.Metadata);
             }
         }
 
@@ -353,8 +356,10 @@ namespace Scanner.ViewModels
 
             _TestData = new TestData();
 
-            ObservableCollection<ScannerDataTemplate> ScannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
-            ObservableCollection<FileData> FileDatasInDB = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll());
+            IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed));
+
+            var ScannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+            var FileDatasInDB = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll());
 
             GetFiles();
 
@@ -558,41 +563,36 @@ namespace Scanner.ViewModels
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
 
-            if (file != null)
-            {
-                var oldPath = file.FilePath;
-                file.Document.IndexingDate = DateTime.Now;
-                file.FilePath = s;
-                file.Indexed = true;
-                File.Copy(oldPath, s);
+            if (file is null) return;
+
+            var oldPath = file.FilePath;
+            file.Document.IndexingDate = DateTime.Now;
+            file.FilePath = s;
+            file.Indexed = true;
+            File.Copy(oldPath, s);
                 
-                _TestData.FilesDatas.Add(file);
+            _TestData.FilesDatas.Add(file);
 
-                List<DocumentMetadata> metaList = new List<DocumentMetadata>();
-                var docInDB = _DBDocumentInDB.Add(file.Document);
-                foreach(var m in Metadatas)
+            foreach (var m in Metadatas)
+            {
+                file.Document.Metadata.Add(new DocumentMetadata
                 {
-                    metaList.Add(new DocumentMetadata {
-                        Document = docInDB,
-                        Name = m.Name,
-                        Data = m.Data,
-                    });                    
-                }
-                docInDB.Metadata = metaList.ToArray();
-                file.Document = docInDB;
-
-                var fileInDB = _DBFileDataInDB.Add(file);                                   // Запись в связанные файлы не происходит
-
-                IndexedDocs.Add(fileInDB);
-                ScanDocuments.Remove(file);
-                FilteredScanDocuments.Remove(file);
-
-                SelectedDocument = null;
-                Metadatas.Clear();
-
-                IsNew = false;
-                Status = "Готов";
+                    Name = m.Name,
+                    Data = m.Data,
+                });
             }
+
+            var fileInDB = _DBFileDataInDB.Add(file);                                   // Запись в связанные файлы не происходит
+
+            IndexedDocs.Add(fileInDB);
+            ScanDocuments.Remove(file);
+            FilteredScanDocuments.Remove(file);
+
+            SelectedDocument = null;
+            Metadatas.Clear();
+
+            IsNew = false;
+            Status = "Готов";
 
             //File.Delete(oldPath);
 
@@ -786,10 +786,12 @@ namespace Scanner.ViewModels
 
         private void OnAdminReworkCommandExecuted(object p)
         {
-            var doc = SelectedIndexedDoc;
+            var doc = _DBFileDataInDB.GetById(SelectedIndexedDoc.Id);
+            doc.Indexed = false;
             doc.DocumentName = "(Доработать)" + doc.DocumentName;
             SelectedIndexedDoc = null;
             IndexedDocs.Remove(doc);
+            _DBFileDataInDB.Update(doc);
             ScanDocuments.Add(doc);
         }
 
