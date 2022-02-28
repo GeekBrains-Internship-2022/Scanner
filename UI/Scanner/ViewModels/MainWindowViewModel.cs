@@ -33,8 +33,10 @@ namespace Scanner.ViewModels
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
         private readonly TestData _TestData;
-
         
+        public ObservableCollection<ScannerDataTemplate> _scannerDataTemplatesInDB;
+
+
         /// <summary>
         /// Список отсканированных документов
         /// </summary>
@@ -358,14 +360,13 @@ namespace Scanner.ViewModels
             _TestData = new TestData();
 
             IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed));
-
-            var ScannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+            
             var FileDatasInDB = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll());
 
             GetFiles();
 
-            var scannerDataTemplates = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
-            if(ScannerDataTemplatesInDB.Count == 0)
+            _scannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+            if(_scannerDataTemplatesInDB.Count == 0)
                 foreach(var t in _TestData.DataTemplates)
                 {                    
                     _DBDataTemplateInDB.Add(t);
@@ -373,7 +374,7 @@ namespace Scanner.ViewModels
             else
                 foreach (var t in _TestData.DataTemplates)
                 {
-                    if (ScannerDataTemplatesInDB.FirstOrDefault(st => st.DocumentType == t.DocumentType) is null)
+                    if (_scannerDataTemplatesInDB.FirstOrDefault(st => st.DocumentType == t.DocumentType) is null)
                         _DBDataTemplateInDB.Add(t);
                 }
 
@@ -744,7 +745,7 @@ namespace Scanner.ViewModels
         private void CreateTemplate()
         {
             ScannerDataTemplate template = new ScannerDataTemplate { DocumentType = "Новый шаблон", };
-            Templates.Add(template);
+            SelectedEditTemplateAdmin = template;
         }
 
         #endregion
