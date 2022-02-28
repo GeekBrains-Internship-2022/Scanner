@@ -24,8 +24,9 @@ namespace Scanner.ViewModels
     {
         private readonly IStore<FileData> _DBFileDataInDB;
         private readonly IStore<ScannerDataTemplate> _DBDataTemplateInDB;
-        private readonly IStore<DocumentMetadata> _DBdocumentMetadataInDB;
-        private readonly IStore<TemplateMetadata> _DBtemplateMetadataInDB;
+        private readonly IStore<DocumentMetadata> _DBDocumentMetadataInDB;
+        private readonly IStore<TemplateMetadata> _DBTemplateMetadataInDB;
+        private readonly IStore<Document> _DBDocumentInDB;
         private readonly ILogger<MainWindowViewModel> _Logger;
         private readonly IConfiguration _Configuration;
         private readonly IObserverService _Observer;
@@ -332,6 +333,7 @@ namespace Scanner.ViewModels
             IStore<ScannerDataTemplate> __ScannerData,
             IStore<DocumentMetadata> __DocumentMetadataDB,
             IStore<TemplateMetadata> __TemplateMetadata,
+            IStore<Document> __Document,
             ILogger<MainWindowViewModel> __logger,
             IConfiguration __configuration,
             IObserverService __observer,
@@ -340,8 +342,9 @@ namespace Scanner.ViewModels
         {
             _DBFileDataInDB = __filedata;                       // Подлючение к базе FileData - хранение информации о файлах
             _DBDataTemplateInDB = __ScannerData;                // Подключение к базе ScannerDataTemplate - хранение шаблонов
-            _DBdocumentMetadataInDB = __DocumentMetadataDB;     // Подключение к базе DocumentMetadata - храненние метаданных документов
-            _DBtemplateMetadataInDB = __TemplateMetadata;       // Подключение к базе TemplateMetadata  - хранение названий полей в шаблоне
+            _DBDocumentMetadataInDB = __DocumentMetadataDB;     // Подключение к базе DocumentMetadata - храненние метаданных документов
+            _DBTemplateMetadataInDB = __TemplateMetadata;       // Подключение к базе TemplateMetadata  - хранение названий полей в шаблоне
+            _DBDocumentInDB = __Document;                       // Подключение к базе Document - хранение документов
             _Logger = __logger;
             _Configuration = __configuration;
             _Observer = __observer;
@@ -452,8 +455,7 @@ namespace Scanner.ViewModels
         private FileData GetDocumentByPath(string file)
         {
             var fileInfo = new FileInfo(file);
-            var type = fileInfo.DirectoryName?.Split('\\')[^1];
-            //var metadata = Metadatas.Where(t => t.Name == type) as ICollection<DocumentMetadata>;
+            var type = fileInfo.DirectoryName?.Split('\\')[^1];            
             var metadata = new Collection<DocumentMetadata>();
 
             var document = new Document { DocumentType = type, IndexingDate = DateTime.MinValue, Metadata = metadata };
@@ -546,7 +548,7 @@ namespace Scanner.ViewModels
         /// </summary>
         private void SaveFile()
         {
-            var doc = SelectedDocument;
+            var file = SelectedDocument;
             
             var path = _Configuration["Directories:StorageDirectory"];
             path = Path.GetFullPath(path);
@@ -556,36 +558,34 @@ namespace Scanner.ViewModels
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
 
-            if (doc != null)
+            if (file != null)
             {
-                var oldPath = doc.FilePath;
-                doc.Document.IndexingDate = DateTime.Now;
-                foreach (var m in Metadatas)
-                    m.Document = doc.Document;
-                doc.Document.Metadata = Metadatas;
-                doc.FilePath = s;
-                doc.Indexed = true;
-                
+                var oldPath = file.FilePath;
+                file.Document.IndexingDate = DateTime.Now;
+                file.FilePath = s;
+                file.Indexed = true;
                 File.Copy(oldPath, s);
-                IndexedDocs.Add(doc);
-                ScanDocuments.Remove(doc);
-                FilteredScanDocuments.Remove(doc);
                 
-                _TestData.FilesDatas.Add(doc);
+                _TestData.FilesDatas.Add(file);
 
-                _DBFileDataInDB.Add(doc);                                   // Запись в связанные файлы не происходит
+                List<DocumentMetadata> metaList = new List<DocumentMetadata>();
+                var docInDB = _DBDocumentInDB.Add(file.Document);
+                foreach(var m in Metadatas)
+                {
+                    metaList.Add(new DocumentMetadata {
+                        Document = docInDB,
+                        Name = m.Name,
+                        Data = m.Data,
+                    });                    
+                }
+                docInDB.Metadata = metaList.ToArray();
+                file.Document = docInDB;
 
-                /*var fd = _DBFileDataInDB.Add(doc);
-                fd.DocumentName = doc.DocumentName;
-                fd.Document = doc.Document;
-                fd.Document.DocumentType = doc.Document.DocumentType;
-                fd.Document.Metadata = doc.Document.Metadata;
-                fd.Document = doc.Document;
-                fd.FilePath = doc.FilePath;
-                fd.DateAdded = doc.DateAdded;
-                fd.Checked = doc.Checked;
-                fd.Indexed = doc.Indexed;                
-                _DBFileDataInDB.Update(fd);*/
+                var fileInDB = _DBFileDataInDB.Add(file);                                   // Запись в связанные файлы не происходит
+
+                IndexedDocs.Add(fileInDB);
+                ScanDocuments.Remove(file);
+                FilteredScanDocuments.Remove(file);
 
                 SelectedDocument = null;
                 Metadatas.Clear();

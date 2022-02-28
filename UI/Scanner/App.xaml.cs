@@ -57,6 +57,7 @@ namespace Scanner
             services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();
             // TemplateMetadataInDB : IStore<TemplateMetadata>
             services.AddSingleton<IStore<TemplateMetadata>, TemplateMetadataInDB>();
+            services.AddSingleton<IStore<Document>, DocumentStoreInDB>();
             services.AddTransient<ScannerDbInitializer>();
 
             //services.AddSingleton<MainWindowViewModel>();
