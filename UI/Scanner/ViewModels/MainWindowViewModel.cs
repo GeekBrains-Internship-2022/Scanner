@@ -34,33 +34,32 @@ namespace Scanner.ViewModels
         private readonly IRabbitMQService _RabbitMQService;
         private readonly TestData _TestData;
 
+        
         /// <summary>
         /// Список отсканированных документов
         /// </summary>
-        public ObservableCollection<FileData> ScanDocuments { get; set; } = new();          //Список отсканированных документов
+        public ObservableCollection<FileData> ScanDocuments { get; set; }                                //Список отсканированных документов
 
         /// <summary>
         /// Список отфильтрованных отсканированных документов
         /// </summary>
-        public ObservableCollection<FileData> FilteredScanDocuments { get; set; } = new();  //Список отфильтрованных отсканированных документов
-
+        public ObservableCollection<FileData> FilteredScanDocuments { get; set; } = new();                //Список отфильтрованных отсканированных документов
+        
         /// <summary>
         /// Список шаблонов
         /// </summary>
-        public ObservableCollection<ScannerDataTemplate> Templates { get; set; }                  //Список шаблонов
+        public ObservableCollection<ScannerDataTemplate> Templates { get; set; }                         //Список шаблонов
 
         /// <summary>
         /// Список найденных шаблонов по типу выбранного отсканированного документа
         /// </summary>
-        public ObservableCollection<ScannerDataTemplate> FindTemplates { get; set; } = new();              //Список найденных шаблонов по типу выбранного отсканированного документа
+        public ObservableCollection<ScannerDataTemplate> FindTemplates { get; set; } = new();           //Список найденных шаблонов по типу выбранного отсканированного документа
 
         /// <summary>
         /// Список проиндексированных файлов
         /// </summary>
-        public ObservableCollection<FileData> IndexedDocs { get; set; }            //Список проиндексированных файлов
-
-        //public ObservableCollection<FileData> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
-
+        public ObservableCollection<FileData> IndexedDocs { get; set; }                                 //Список проиндексированных файлов
+        
         /// <summary>
         /// Список проверенных файлов
         /// </summary>
@@ -354,6 +353,8 @@ namespace Scanner.ViewModels
             _FileService = __fileService;
             _RabbitMQService = __rabbitMQService;
 
+            ScanDocuments = new();
+            
             _TestData = new TestData();
 
             IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed));
@@ -365,21 +366,8 @@ namespace Scanner.ViewModels
 
             Templates = _TestData.DataTemplates;
             _TestData.FilesDatas = ScanDocuments;
-            
 
-            /*if (!ScannerDataTemplatesInDB.Contains(testScannerDataTemplates))
-                if (ScannerDataTemplatesInDB.First(t => t.DocumentType.ToLower() == testScannerDataTemplates.DocumentType.ToLower()) is null)
-                    ScannerDataTemplatesInDB.Add(testScannerDataTemplates);
-                else if(ScannerDataTemplatesInDB.First(t => t.DocumentType.ToLower() == testScannerDataTemplates.DocumentType.ToLower()).TemplateMetadata.Count != testScannerDataTemplates.TemplateMetadata.Count)
-                {
-                    var v = ScannerDataTemplatesInDB.First(t => t.DocumentType.ToLower() == testScannerDataTemplates.DocumentType.ToLower());
-                    testScannerDataTemplates.DocumentType = testScannerDataTemplates.DocumentType + DateTime.Now.ToShortDateString();
-                    ScannerDataTemplatesInDB.Add(testScannerDataTemplates);
-                    _DBDataTemplateInDB.Add(testScannerDataTemplates);
-                }*/
-                
-
-            FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);
+            FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);            
 
             ObserverInitialize();
         }
@@ -793,6 +781,7 @@ namespace Scanner.ViewModels
             IndexedDocs.Remove(doc);
             _DBFileDataInDB.Update(doc);
             ScanDocuments.Add(doc);
+            FilteredScanDocuments.Add(doc);
         }
 
         private bool CanAdminReworkCommandExecute(object p) => SelectedIndexedDoc is not null;
