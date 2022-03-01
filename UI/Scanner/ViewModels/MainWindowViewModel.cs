@@ -216,7 +216,8 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedEditTemplateAdmin, value);
-                RowsSelectedEditTemplateAdmin = new ObservableCollection<TemplateMetadata>(value.TemplateMetadata);
+                if(value != null)
+                    RowsSelectedEditTemplateAdmin = new ObservableCollection<TemplateMetadata>(value.TemplateMetadata);
             }
         }
         #endregion
@@ -810,8 +811,10 @@ namespace Scanner.ViewModels
             if (SelectedEditTemplateAdmin != null)
                 if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.DocumentType}?", "Удалить",
                         MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                    //_TestData.Templates.Remove(SelectedEditTemplateAdmin);
-                    return;
+                {
+                    _DBDataTemplateInDB.Delete(SelectedEditTemplateAdmin.Id);
+                    Templates.Remove(SelectedEditTemplateAdmin);
+                }    
         }
 
         #endregion
