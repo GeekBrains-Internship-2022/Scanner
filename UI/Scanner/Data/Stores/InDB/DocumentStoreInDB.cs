@@ -1,23 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Scanner.interfaces;
 using Scanner.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scanner.Data.Stores.InDB
 {
-    internal class DocumentMetadataInDB : IStore<DocumentMetadata>
+    class DocumentStoreInDB : IStore<Document>
     {
-
         private readonly ScannerDB _db;
-        public DocumentMetadataInDB(ScannerDB db) => _db = db;
-        public DocumentMetadata Add(DocumentMetadata Item)
+
+        public DocumentStoreInDB(ScannerDB dB) => _db = dB;
+
+        public Document Add(Document Item)
         {
             //_db.Entry(Item).State = EntityState.Added;
-            _db.Metadata.Add(Item);
+            _db.Documents.Add(Item);
             _db.SaveChanges();
             return Item;
         }
@@ -31,10 +29,11 @@ namespace Scanner.Data.Stores.InDB
             _db.SaveChanges();
         }
 
-        public IEnumerable<DocumentMetadata> GetAll() => _db.Metadata.ToArray();
+        public IEnumerable<Document> GetAll() => _db.Documents.Include(d => d.Metadata).ToArray();
 
-        public DocumentMetadata GetById(int Id) => _db.Metadata.SingleOrDefault(r => r.Id == Id);
-        public void Update(DocumentMetadata Item)
+        public Document GetById(int Id) => _db.Documents.SingleOrDefault(d => d.Id == Id);
+
+        public void Update(Document Item)
         {
             //_db.Entry(Item).State = EntityState.Modified;
             _db.Update(Item);

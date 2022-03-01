@@ -22,10 +22,10 @@
             <ComboBox Height="20" SelectedIndex="0" IsEditable="True" IsTextSearchEnabled="True"
                   SelectedItem="{Binding SelectedTemplate, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}, Mode=TwoWay}"
                   ItemsSource="{Binding TemplatesItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
-                  DisplayMemberPath="Name"/>
+                  DisplayMemberPath="DocumentType"/>
 
             <GroupBox Header="Основные" Margin="5 0">
-                <ItemsControl ItemsSource="{Binding SelectedTemplate.Metadata, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
+                <ItemsControl ItemsSource="{Binding MetadataItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <GroupBox Header="{Binding Path=Name}" Style="{StaticResource gbData}">
@@ -33,13 +33,13 @@
                                     <TextBox Text="{Binding Path=Data}"
                                              TextWrapping="Wrap"
                                              Width="200"/>
-                                    <Button>
+                                    <Button Command="{Binding DelExtraMetaDataCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}" CommandParameter="{Binding}">
                                         <Button.Content>
                                             <fa:SvgAwesome Icon="Regular_MinusSquare" Width="15"
                                                        Foreground="Red"/>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>
+                                    <!--<CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>-->
                                 </StackPanel>
                             </GroupBox>
                         </DataTemplate>
@@ -50,8 +50,9 @@
             <GroupBox Header="Дополнительные данные">
                 <StackPanel Orientation="Horizontal" Margin="4">
                     <ComboBox Width="200" IsEditable="True" IsTextSearchEnabled="True"
-                              ItemsSource="{Binding CBItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
-                              SelectedItem="{Binding CBSelectedItem, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}">
+                              ItemsSource="{Binding CBExtraDataItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
+                              SelectedItem="{Binding CBExtraDataSelectedItem, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
+                              DisplayMemberPath="Name">
                         
                     </ComboBox>
                     <Button Padding="4" Command="{Binding AddExtraDataToDocument}">

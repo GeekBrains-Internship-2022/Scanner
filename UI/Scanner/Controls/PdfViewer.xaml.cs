@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.MoonPdf.Wpf;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,20 +15,20 @@ namespace Scanner.Controls
 {
     public partial class PdfViewer : UserControl, INotifyPropertyChanged
     {
-        #region ItemSource : ObservableCollection<ScanDocument> - коллекция документов
+        #region ItemSource : ObservableCollection<FileData> - коллекция документов
 
         ///<summary>выбранный документ</summary>
         public static readonly DependencyProperty ItemSourceProperty =
             DependencyProperty.Register(
                 nameof(ItemSource),
-                typeof(ObservableCollection<ScanDocument>),
+                typeof(ObservableCollection<FileData>),
                 typeof(PdfViewer),
-                new PropertyMetadata(default(ObservableCollection<ScanDocument>)));
+                new PropertyMetadata(default(ObservableCollection<FileData>)));
 
         ///<summary>выбранный документ</summary>
-        public ObservableCollection<ScanDocument> ItemSource
+        public ObservableCollection<FileData> ItemSource
         {
-            get => (ObservableCollection<ScanDocument>)GetValue(ItemSourceProperty);
+            get => (ObservableCollection<FileData>)GetValue(ItemSourceProperty);
             set => SetValue(ItemSourceProperty, value);
         }
 
@@ -52,20 +53,20 @@ namespace Scanner.Controls
 
         #endregion
 
-        #region SelectedItem : ScanDocument - выбранный объект
+        #region SelectedItem : FileData - выбранный объект
 
         ///<summary>выбранный объект</summary>
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register(
                 nameof(SelectedItem),
-                typeof(ScanDocument),
+                typeof(FileData),
                 typeof(PdfViewer),
-                new PropertyMetadata(default(ScanDocument)));
+                new PropertyMetadata(default(FileData)));
 
         ///<summary>выбранный объект</summary>
-        public ScanDocument SelectedItem
+        public FileData SelectedItem
         {
-            get => (ScanDocument)GetValue(SelectedItemProperty);
+            get => (FileData)GetValue(SelectedItemProperty);
             set => SetValue(SelectedItemProperty, value);
         }
 
@@ -90,11 +91,11 @@ namespace Scanner.Controls
 
         #endregion
 
-        #region InternalSelectedItem : ScanDocument - выбранный объект
+        #region InternalSelectedItem : FileData - выбранный объект
         //  TODO: решить вопрос с костылями
-        private ScanDocument _InternalSelectedItem;
+        private FileData _InternalSelectedItem;
 
-        public ScanDocument InternalSelectedItem
+        public FileData InternalSelectedItem
         {
             get => _InternalSelectedItem;
             set
@@ -107,14 +108,18 @@ namespace Scanner.Controls
 
         #endregion
 
-        private void PdfView(ScanDocument document)
+        private void PdfView(FileData document)
         {
             if (document is null)
                 return;
 
+#if DEBUG
+            if (!File.Exists(document.FilePath)) return;
+#endif
+
             try
             {
-                MoonPdfPanel.OpenFile(document.Path);
+                MoonPdfPanel.OpenFile(document.FilePath);
                 MoonPdfPanel.PageRowDisplay = PageRowDisplayType.ContinuousPageRows;
             }
             catch (Exception)

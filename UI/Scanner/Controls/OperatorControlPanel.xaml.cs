@@ -9,116 +9,116 @@ namespace Scanner.Controls
 {
     public partial class OperatorControlPanel : UserControl
     {
-        #region TemplatesItemSource : ObservableCollection<Template> - Шаблоны
+        #region TemplatesItemSource : ObservableCollection<ScannerDataTemplate> - Шаблоны
 
         ///<summary>Шаблоны</summary>
         public static readonly DependencyProperty TemplatesItemSourceProperty =
             DependencyProperty.Register(
                 nameof(TemplatesItemSource),
-                typeof(ObservableCollection<Template>),
+                typeof(ObservableCollection<ScannerDataTemplate>),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<Template>)));
+                new PropertyMetadata(default(ObservableCollection<ScannerDataTemplate>)));
 
         ///<summary>Шаблоны</summary>
-        public ObservableCollection<Template> TemplatesItemSource
+        public ObservableCollection<ScannerDataTemplate> TemplatesItemSource
         {
-            get => (ObservableCollection<Template>) GetValue(TemplatesItemSourceProperty);
+            get => (ObservableCollection<ScannerDataTemplate>) GetValue(TemplatesItemSourceProperty);
             set => SetValue(TemplatesItemSourceProperty, value);
         }
 
         #endregion
 
-        #region SelectedTemplate : Template - Выбранный шаблон
+        #region SelectedTemplate : ScannerDataTemplate - Выбранный шаблон
 
         ///<summary>Выбранный шаблон</summary>
         public static readonly DependencyProperty SelectedTemplateProperty =
             DependencyProperty.Register(
                 nameof(SelectedTemplate),
-                typeof(Template),
+                typeof(ScannerDataTemplate),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(Template)));
+                new PropertyMetadata(default(ScannerDataTemplate)));
 
         ///<summary>Выбранный шаблон</summary>
-        public Template SelectedTemplate
+        public ScannerDataTemplate SelectedTemplate
         {
-            get => (Template) GetValue(SelectedTemplateProperty);
+            get => (ScannerDataTemplate) GetValue(SelectedTemplateProperty);
             set => SetValue(SelectedTemplateProperty, value);
         }
 
         #endregion
 
-        #region MetadataItemSource : ObservableCollection<Metadata> - Метаданные
+        #region MetadataItemSource : ObservableCollection<DocumentMetadata> - Метаданные
 
         ///<summary>Метаданные</summary>
         public static readonly DependencyProperty MetadataItemSourceProperty =
             DependencyProperty.Register(
                 nameof(MetadataItemSource),
-                typeof(ObservableCollection<Metadata>),
+                typeof(ObservableCollection<DocumentMetadata>),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<Metadata>)));
+                new PropertyMetadata(default(ObservableCollection<DocumentMetadata>)));
 
         ///<summary>Метаданные</summary>
-        public ObservableCollection<Metadata> MetadataItemSource
+        public ObservableCollection<DocumentMetadata> MetadataItemSource
         {
-            get => (ObservableCollection<Metadata>) GetValue(MetadataItemSourceProperty);
+            get => (ObservableCollection<DocumentMetadata>) GetValue(MetadataItemSourceProperty);
             set => SetValue(MetadataItemSourceProperty, value);
         }
 
         #endregion
 
-        #region SelectedMetadata : Metadata - Выбранные метаданные
+        #region SelectedMetadata : DocumentMetadata - Выбранные метаданные
 
         ///<summary>Выбранные метаданные</summary>
         public static readonly DependencyProperty SelectedMetadataProperty =
             DependencyProperty.Register(
                 nameof(SelectedMetadata),
-                typeof(Metadata),
+                typeof(DocumentMetadata),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(Metadata)));
+                new PropertyMetadata(default(DocumentMetadata)));
 
         ///<summary>Выбранные метаданные</summary>
-        public Metadata SelectedMetadata
+        public DocumentMetadata SelectedMetadata
         {
-            get => (Metadata) GetValue(SelectedMetadataProperty);
+            get => (DocumentMetadata) GetValue(SelectedMetadataProperty);
             set => SetValue(SelectedMetadataProperty, value);
         }
 
         #endregion
 
-        #region CBItemSource : ObservableCollection<string> - коллекция метаданных в выбранном шаблоне
+        #region CBExtraDataItemSource : ObservableCollection<DocumentMetadata> - коллекция метаданных в выбранном шаблоне
 
         ///<summary>коллекция подпапок</summary>
-        public static readonly DependencyProperty CBItemSourceProperty =
+        public static readonly DependencyProperty CBExtraDataItemSourceProperty =
             DependencyProperty.Register(
-                nameof(CBItemSource),
-                typeof(ObservableCollection<string>),
+                nameof(CBExtraDataItemSource),
+                typeof(ObservableCollection<DocumentMetadata>),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ObservableCollection<string>)));
+                new PropertyMetadata(default(ObservableCollection<DocumentMetadata>)));
 
         ///<summary>коллекция подпапок</summary>
-        public ObservableCollection<string> CBItemSource
+        public ObservableCollection<DocumentMetadata> CBExtraDataItemSource
         {
-            get => (ObservableCollection<string>)GetValue(CBItemSourceProperty);
-            set => SetValue(CBItemSourceProperty, value);
+            get => (ObservableCollection<DocumentMetadata>)GetValue(CBExtraDataItemSourceProperty);
+            set => SetValue(CBExtraDataItemSourceProperty, value);
         }
 
         #endregion
 
-        #region CBSelectedItem : string - выбранный тип метаданного
+        #region CBExtraDataSelectedItem : DocumentMetadata - выбранный тип метаданного
 
         ///<summary>выбранный объект</summary>
-        public static readonly DependencyProperty CBSelectedItemProperty =
+        public static readonly DependencyProperty CBExtraDataSelectedItemProperty =
             DependencyProperty.Register(
-                nameof(CBSelectedItem),
-                typeof(string),
+                nameof(CBExtraDataSelectedItem),
+                typeof(DocumentMetadata),
                 typeof(OperatorControlPanel),
-                new PropertyMetadata(default(string)));
+                new PropertyMetadata(default(DocumentMetadata)));
 
         ///<summary>выбранный объект</summary>
-        public string CBSelectedItem
+        public DocumentMetadata CBExtraDataSelectedItem
         {
-            get => (string)GetValue(CBSelectedItemProperty);
-            set => SetValue(CBSelectedItemProperty, value);
+            get => (DocumentMetadata)GetValue(CBExtraDataSelectedItemProperty);
+            set => SetValue(CBExtraDataSelectedItemProperty, value);
         }
 
         #endregion
@@ -157,6 +157,25 @@ namespace Scanner.Controls
         {
             get => (ICommand) GetValue(NextFileCommandProperty);
             set => SetValue(NextFileCommandProperty, value);
+        }
+
+        #endregion
+
+        #region DelExtraMetaDataCommand : ICommand - Команда удалить метаданные
+
+        ///<summary>Команда сохранить</summary>
+        public static readonly DependencyProperty DelExtraMetaDataCommandProperty =
+            DependencyProperty.Register(
+                nameof(DelExtraMetaDataCommand),
+                typeof(ICommand),
+                typeof(OperatorControlPanel),
+                new PropertyMetadata(default(ICommand)));
+
+        ///<summary>Команда сохранить</summary>
+        public ICommand DelExtraMetaDataCommand
+        {
+            get => (ICommand)GetValue(DelExtraMetaDataCommandProperty);
+            set => SetValue(DelExtraMetaDataCommandProperty, value);
         }
 
         #endregion

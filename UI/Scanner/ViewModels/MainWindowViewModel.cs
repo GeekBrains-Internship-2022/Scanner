@@ -6,10 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
 using Scanner.Data;
 using Scanner.Infrastructure.Commands;
 using Scanner.interfaces;
@@ -24,24 +22,105 @@ namespace Scanner.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
+        private readonly IStore<FileData> _DBFileDataInDB;
+        private readonly IStore<ScannerDataTemplate> _DBDataTemplateInDB;
+        private readonly IStore<DocumentMetadata> _DBDocumentMetadataInDB;
+        private readonly IStore<TemplateMetadata> _DBTemplateMetadataInDB;
+        private readonly IStore<Document> _DBDocumentInDB;
         private readonly ILogger<MainWindowViewModel> _Logger;
         private readonly IConfiguration _Configuration;
-
         private readonly IObserverService _Observer;
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
-        private readonly TestData _TestData = new TestData();
+        private readonly TestData _TestData;
+        
+        public ObservableCollection<ScannerDataTemplate> _scannerDataTemplatesInDB;
 
-        public ObservableCollection<ScanDocument> ScanDocuments { get; set; } = new();          //Список отсканированных документов
-        public ObservableCollection<ScanDocument> FilteredScanDocuments { get; set; } = new();  //Список отфильтрованных отсканированных документов
-        public ObservableCollection<Template> Templates { get; set; } = new();                  //Список шаблонов
-        public ObservableCollection<Template> FindTemplates { get; set; } = new();              //Список найденных шаблонов по типу выбранного отсканированного документа
-        public ObservableCollection<Metadata> Metadatas { get; set; } = new();                  //Список метаданных
-        public ObservableCollection<ScanDocument> IndexedDocs { get; set; } = new();            //Список проиндексированных файлов
+
+        /// <summary>
+        /// Список отсканированных документов
+        /// </summary>
+        public ObservableCollection<FileData> ScanDocuments { get; set; }                                //Список отсканированных документов
+
+        /// <summary>
+        /// Список отфильтрованных отсканированных документов
+        /// </summary>
+        public ObservableCollection<FileData> FilteredScanDocuments { get; set; } = new();                //Список отфильтрованных отсканированных документов
+        
+        /// <summary>
+        /// Список шаблонов
+        /// </summary>
+        public ObservableCollection<ScannerDataTemplate> Templates { get; set; }                         //Список шаблонов
+
+        /// <summary>
+        /// Список найденных шаблонов по типу выбранного отсканированного документа
+        /// </summary>
+        public ObservableCollection<ScannerDataTemplate> FindTemplates { get; set; } = new();           //Список найденных шаблонов по типу выбранного отсканированного документа
+
+        /// <summary>
+        /// Список проиндексированных файлов
+        /// </summary>
+        public ObservableCollection<FileData> IndexedDocs { get; set; }                                 //Список проиндексированных файлов
+        
+        /// <summary>
+        /// Список проверенных файлов
+        /// </summary>
         public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
-        public Metadata ExtraDataTemplate { get; set; } = new();                                //Добавляемое поле в шаблон
-        public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами
-        public ObservableCollection<string> DataListSelectedDocument { get; set; } = new();     //Список полей Data в выбранном шаблоне SelectedTemplate для SelectedDocument
+
+        /// <summary>
+        /// Добавляемое администратором поле в шаблон
+        /// </summary>
+        public TemplateMetadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое администратором поле в шаблон
+
+        /// <summary>
+        /// Список подпапок с отсканированными файлами
+        /// </summary>
+        public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами        
+
+        # region ObservableCollection<DocumentMetadata> Metadatas - Список метаданных
+        private ObservableCollection<DocumentMetadata> _Metadatas = new ObservableCollection<DocumentMetadata>();        
+        /// <summary>
+        /// Список метаданных
+        /// </summary>
+        public ObservableCollection<DocumentMetadata> Metadatas                                         //Список метаданных
+        {
+            get => _Metadatas;
+            set
+            {
+                Set(ref _Metadatas, value);
+            }
+        }
+        #endregion
+
+        #region ObservableCollection<DocumentMetadata> ExtraNoRequiredMetadatas - Список дополнительных необязательных метаданных
+        private ObservableCollection<DocumentMetadata> _ExtraNoRequiredMetadatas = new ObservableCollection<DocumentMetadata>();        
+        /// <summary>
+        /// Список метаданных
+        /// </summary>
+        public ObservableCollection<DocumentMetadata> ExtraNoRequiredMetadatas                                         //Список дополнительных необязательных метаданных
+        {
+            get => _ExtraNoRequiredMetadatas;
+            set
+            {
+                Set(ref _ExtraNoRequiredMetadatas, value);
+            }
+        }
+        #endregion
+
+        #region DocumentMetadata SelectedExtraNoRequiredMetadata - Выбранное оператором дополнительное необязательное поле метаданных
+        private DocumentMetadata _SelectedExtraNoRequiredMetadata = new DocumentMetadata();
+        /// <summary>
+        /// Список метаданных
+        /// </summary>
+        public DocumentMetadata SelectedExtraNoRequiredMetadata                                         //Выбранное оператором дополнительное необязательное поле метаданных
+        {
+            get => _SelectedExtraNoRequiredMetadata;
+            set
+            {
+                Set(ref _SelectedExtraNoRequiredMetadata, value);
+            }
+        }
+        #endregion
 
 
         #region IsConnected : bool - индикатор подключения
@@ -56,59 +135,117 @@ namespace Scanner.ViewModels
 
         #endregion        
 
-        #region SelectedDocument : ScanDocument - выбранный документ
+        #region SelectedDocument : FileData - выбранный документ
 
-        private ScanDocument _SelectedDocument;
+        private FileData _SelectedDocument;
 
-        public ScanDocument SelectedDocument
+        public FileData SelectedDocument
         {
             get => _SelectedDocument;
             set
             {
                 Set(ref _SelectedDocument, value);
-                foreach(var t in Templates)
+                if (SelectedDocument is null) return;
+
+                if (SelectedDocument.Indexed)
                 {
-                    if (value != null)
-                        SelectedTemplate = Templates.FirstOrDefault(t => t.Name.ToLower().Contains(value.Type.ToLower()));
-                        //if(value.Type.ToLower().Contains(t.Name.ToLower()))
-                        //{
-                        //    SelectedTemplate = t;
-                        //    return;
-                        //}
-                        //else
-                        //{
-                        //    SelectedTemplate = null;
-                        //}
-                }                    
+                    SelectedTemplate =
+                        Templates.FirstOrDefault(t => t.DocumentType == SelectedDocument.Document.DocumentType);
+                    Metadatas = new ObservableCollection<DocumentMetadata>(SelectedDocument.Document.Metadata);
+                    return;
+                }
+
+                if (Templates != null)
+                    SelectedTemplate = Templates.FirstOrDefault(t =>
+                        t.DocumentType.ToLower().Contains(value.Document.DocumentType.ToLower()));
+                //foreach(var t in Templates)
+                //{
+                //    if (value != null)
+                //        SelectedTemplate = Templates.FirstOrDefault(t => t.DocumentType.ToLower().Contains(value.Document.DocumentType.ToLower()));
+                //if(value.Type.ToLower().Contains(t.Name.ToLower()))
+                //{
+                //    SelectedTemplate = t;
+                //    return;
+                //}
+                //else
+                //{
+                //    SelectedTemplate = null;
+                //}
+                //}                    
             }
         }
         #endregion
 
         #region SelectedTemplate : Template - выбранный шаблон для SelectedDocument
-        private Template _SelectedTemplate;
-        public Template SelectedTemplate
+        private ScannerDataTemplate _SelectedTemplate;
+        public ScannerDataTemplate SelectedTemplate
         {
             get => _SelectedTemplate;
             set
             {
                 Set(ref _SelectedTemplate, value);
-                DataListSelectedDocument.Clear();
-                if(value != null)
-                    foreach(var d in value.Metadata)
+                
+                Metadatas.Clear();
+                ExtraNoRequiredMetadatas.Clear();
+                if (value != null)
+                    foreach(var d in value.TemplateMetadata)
                     {
-                        DataListSelectedDocument.Add(d.Name);
+                        if (d.Required)
+                            Metadatas.Add(new DocumentMetadata
+                            {
+                                Name = d.Name,
+                                Data = null,
+                            });
+                        else
+                            ExtraNoRequiredMetadatas.Add(new DocumentMetadata
+                            {
+                                Name = d.Name,
+                                Data = null,
+                            });
                     }
             }
         }
         #endregion
 
-        #region SelectedEditTemplateAdmin : Template - выбранный шаблон для редактирования
+        #region SelectedEditTemplateAdmin : ScannerDataTemplate - выбранный шаблон для редактирования
 
-        private Template _SelectedEditTemplateAdmin;
-        public Template SelectedEditTemplateAdmin
+        private ScannerDataTemplate _SelectedEditTemplateAdmin;
+        public ScannerDataTemplate SelectedEditTemplateAdmin
         {
             get => _SelectedEditTemplateAdmin;
-            set => Set(ref _SelectedEditTemplateAdmin, value);
+            set
+            {
+                Set(ref _SelectedEditTemplateAdmin, value);
+                RowsSelectedEditTemplateAdmin = new ObservableCollection<TemplateMetadata>(value.TemplateMetadata);
+            }
+        }
+        #endregion
+
+        #region RowsSelectedEditTemplateAdmin : ObservableCollection<TemplateMetadata> - поля выбранного шаблона для редактирования
+
+        private ObservableCollection<TemplateMetadata> _RowsSelectedEditTemplateAdmin;
+        public ObservableCollection<TemplateMetadata> RowsSelectedEditTemplateAdmin
+        {
+            get => _RowsSelectedEditTemplateAdmin;
+            set
+            {
+                Set(ref _RowsSelectedEditTemplateAdmin, value);
+                if(value != null)
+                    SelectedEditTemplateAdmin.TemplateMetadata = value;
+            }
+        }
+        #endregion
+
+        #region RowSelectedEditTemplateAdmin : TemplateMetadata - выбранное поле выбранного шаблона для редактирования
+
+        private TemplateMetadata _RowSelectedEditTemplateAdmin;
+        public TemplateMetadata RowSelectedEditTemplateAdmin
+        {
+            get => _RowSelectedEditTemplateAdmin;
+            set
+            {
+                Set(ref _RowSelectedEditTemplateAdmin, value);                
+            }
         }
         #endregion
 
@@ -158,14 +295,31 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region SelectedIndexedDoc : ScanDocument - выбранный индексированный документ
+        #region SelectedIndexedDoc : FileData - выбранный индексированный документ
 
-        private ScanDocument _SelectedIndexedDoc;
+        private FileData _SelectedIndexedDoc;
 
-        public ScanDocument SelectedIndexedDoc
+        public FileData SelectedIndexedDoc
         {
             get => _SelectedIndexedDoc;
-            set => Set(ref _SelectedIndexedDoc, value);
+            set
+            {
+                Set(ref _SelectedIndexedDoc, value);
+                if(value is not null)
+                    MetadataSelectedIndexedDoc = new ObservableCollection<DocumentMetadata>(value.Document.Metadata);
+            }
+        }
+
+        #endregion
+
+        #region MetadataSelectedIndexedDoc : ObservableCollection<DocumentMetadata> - список метаданных выбранного индексированныго документа
+
+        private ObservableCollection<DocumentMetadata> _MetadataSelectedIndexedDoc;
+
+        public ObservableCollection<DocumentMetadata> MetadataSelectedIndexedDoc
+        {
+            get => _MetadataSelectedIndexedDoc;
+            set => Set(ref _MetadataSelectedIndexedDoc, value);
         }
 
         #endregion
@@ -195,7 +349,7 @@ namespace Scanner.ViewModels
 
                     foreach (var d in ScanDocuments)                            //Сортировка по типу
                     {
-                        if (value.ToLower() == d.Type.ToLower())
+                        if (value.ToLower() == d.Document.DocumentType.ToLower())
                             FilteredScanDocuments.Add(d);
                     }
                 }
@@ -204,18 +358,63 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IConfiguration configuration,
-            IObserverService observer, IFileService fileService, IRabbitMQService rabbitMQService)
+        public MainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
+            IStore<DocumentMetadata> __DocumentMetadataDB, IStore<TemplateMetadata> __TemplateMetadata,
+            IStore<Document> __Document, ILogger<MainWindowViewModel> __logger,
+            IConfiguration __configuration, IObserverService __observer,
+            IFileService __fileService, IRabbitMQService __rabbitMQService)
         {
-            _Logger = logger;
-            _Configuration = configuration;
-            _Observer = observer;
-            _FileService = fileService;
-            _RabbitMQService = rabbitMQService;
+            _DBFileDataInDB = __filedata;                       // Подлючение к базе FileData - хранение информации о файлах
+            _DBDataTemplateInDB = __ScannerData;                // Подключение к базе ScannerDataTemplate - хранение шаблонов
+            _DBDocumentMetadataInDB = __DocumentMetadataDB;     // Подключение к базе DocumentMetadata - храненние метаданных документов
+            _DBTemplateMetadataInDB = __TemplateMetadata;       // Подключение к базе TemplateMetadata  - хранение названий полей в шаблоне
+            _DBDocumentInDB = __Document;                       // Подключение к базе Document - хранение документов
+            _Logger = __logger;
+            _Configuration = __configuration;
+            _Observer = __observer;
+            _FileService = __fileService;
+            _RabbitMQService = __rabbitMQService;
 
-            Templates = _TestData.Templates;
+            ScanDocuments = new();
+
+            _TestData = new TestData();
+
+            IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed && !i.OnRework));
+            var removedItem = new List<FileData>();
+            foreach (var indexedDoc in IndexedDocs)
+            {
+                if(File.Exists(indexedDoc.FilePath))
+                    continue;
+
+                _DBFileDataInDB.Delete(indexedDoc.Id);
+                removedItem.Add(indexedDoc);
+            }
+
+            if (removedItem.Any())
+                foreach (var fileData in removedItem)
+                    IndexedDocs.Remove(fileData);
+            
             GetFiles();
-            FilteredScanDocuments = new ObservableCollection<ScanDocument>(ScanDocuments);
+
+            _scannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+            if (_scannerDataTemplatesInDB.Count == 0)
+                foreach (var t in _TestData.DataTemplates)
+                {
+                    _DBDataTemplateInDB.Add(t);
+                }
+            else
+                foreach (var t in _TestData.DataTemplates)
+                {
+                    if (_scannerDataTemplatesInDB.FirstOrDefault(st => st.DocumentType == t.DocumentType) is null)
+                        _DBDataTemplateInDB.Add(t);
+                }
+
+            //Templates = _TestData.DataTemplates;
+            Templates = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
+
+            //_TestData.FilesDatas = ScanDocuments;
+
+            FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);            
 
             ObserverInitialize();
         }
@@ -233,20 +432,20 @@ namespace Scanner.ViewModels
 
         private void OnRenamedNotify(string oldPath, string currentPath)
         {
-            var document = ScanDocuments.FirstOrDefault(d => d.Path == oldPath);
+            var document = ScanDocuments.FirstOrDefault(d => d.FilePath == oldPath);
 
             if (document is null)
                 return;
 
             var fileName = new FileInfo(currentPath).Name;
 
-            document.Name = fileName;
-            document.Path = currentPath;
+            document.DocumentName = fileName;
+            document.FilePath = currentPath;
         }
 
         private void OnCreatedNotify(string message)
         {
-            var document = ScanDocuments.FirstOrDefault(d => d.Path == message);
+            var document = ScanDocuments.FirstOrDefault(d => d.FilePath == message);
 
             if (ScanDocuments.Contains(document))
                 throw new DuplicateNameException(message);
@@ -260,7 +459,7 @@ namespace Scanner.ViewModels
 
         private void OnDeletedNotify(string message)
         {
-            var document = ScanDocuments.FirstOrDefault(d => d.Path == message);
+            var document = ScanDocuments.FirstOrDefault(d => d.FilePath == message);
 
             if (document is null)
                 return;
@@ -286,26 +485,30 @@ namespace Scanner.ViewModels
             {
                 files.AddRange(Directory.GetFiles(dir));
                 string[] str = dir.Split('\\');
-                SubFolders.Add(dir.Split('\\')[str.Length - 1]);
+                SubFolders.Add(dir.Split('\\')[str.Length - 1]);    // Получение списка подпапок, содержащихся в горячей папке
             }
 
             foreach (var file in files)
-                ScanDocuments.Add(GetDocumentByPath(file));
+                ScanDocuments.Add(GetDocumentByPath(file));         // Получение списка отсканированных документов
         }
 
-        private ScanDocument GetDocumentByPath(string file)
+        private FileData GetDocumentByPath(string file)
         {
             var fileInfo = new FileInfo(file);
-            var type = fileInfo.DirectoryName?.Split('\\')[^1];
-            var metadata = Templates.FirstOrDefault(t => t.Name == type);
+            var type = fileInfo.DirectoryName?.Split('\\')[^1];            
+            var metadata = new Collection<DocumentMetadata>();
 
-            return new ScanDocument
+            var document = new Document { DocumentType = type, IndexingDate = DateTime.MinValue, Metadata = metadata };
+
+            return new FileData
             {
-                Name = fileInfo.Name,
-                Date = fileInfo.CreationTime,
-                Path = file,
-                Type = type,
-                Metadata = metadata?.Metadata
+                DocumentName = fileInfo.Name,
+                FilePath = file,
+                Description = "",
+                DateAdded = fileInfo.CreationTime,
+                Indexed = false,
+                Checked = false,
+                Document = document,
             };
         }
 
@@ -341,6 +544,23 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region OpenTestBDCommand - команда открыть настройки 
+
+        private ICommand _OpenTestBDCommand;
+
+        public ICommand OpenTestBDCommand => _OpenTestBDCommand
+            ??= new LambdaCommand(OnOpenTestBDCommandExecuted, CanOpenTestBDCommandExecute);
+
+        private void OnOpenTestBDCommandExecuted(object p)
+        {
+            var testBDWindow = new testDB();
+            testBDWindow.ShowDialog();
+        }
+
+        private bool CanOpenTestBDCommandExecute(object p) => true;
+
+        #endregion
+
         #region CloseAppCommand - команда закрыть приложение
 
         private ICommand _CloseAppCommand;
@@ -362,10 +582,34 @@ namespace Scanner.ViewModels
 
         private void OnSaveFileCommandExecuted(object p) => SaveFile();
 
+
+        /// <summary>
+        /// Сохранение файла
+        /// </summary>
         private void SaveFile()
         {
-            var doc = SelectedDocument;
-            SelectedDocument = null;
+            var file = SelectedDocument;
+
+            if (file is null) return;
+
+            if (file.Indexed)
+            {
+                if (file.DocumentName.Contains("(Доработать)"))
+                    file.DocumentName = file.DocumentName.Replace("(Доработать)", string.Empty);
+
+                if (file.OnRework)
+                    file.OnRework = false;
+
+                _DBFileDataInDB.Update(file);
+                IndexedDocs.Add(file);
+                ScanDocuments.Remove(file);
+
+                SelectedDocument = null;
+                Metadatas.Clear();
+                FilteredScanDocuments.Remove(file);
+                return;
+            }
+            
             var path = _Configuration["Directories:StorageDirectory"];
             path = Path.GetFullPath(path);
 
@@ -373,19 +617,32 @@ namespace Scanner.ViewModels
                 Directory.CreateDirectory(path);
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
-            var oldPath = doc.Path;
 
-            var metadata = new ObservableCollection<Metadata>();
-
-            foreach (var m in SelectedTemplate.Metadata)
-                metadata.Add(new Metadata { Name = m.Name, Data = m.Data, Required = m.Required });
-
-            doc.Metadata = metadata;
-            doc.Path = s;
+            var oldPath = file.FilePath;
+            file.Document.IndexingDate = DateTime.Now;
+            file.FilePath = s;
+            file.Indexed = true;
             File.Copy(oldPath, s);
-            IndexedDocs.Add(doc);
-            ScanDocuments.Remove(doc);
-            FilteredScanDocuments.Remove(doc);
+                
+            //_TestData.FilesDatas.Add(file);
+
+            foreach (var m in Metadatas)
+            {
+                file.Document.Metadata.Add(new DocumentMetadata
+                {
+                    Name = m.Name,
+                    Data = m.Data,
+                });
+            }
+
+            var fileInDB = _DBFileDataInDB.Add(file);
+
+            IndexedDocs.Add(fileInDB);
+            ScanDocuments.Remove(file);
+            FilteredScanDocuments.Remove(file);
+
+            SelectedDocument = null;
+            Metadatas.Clear();
 
             IsNew = false;
             Status = "Готов";
@@ -395,7 +652,20 @@ namespace Scanner.ViewModels
             //SelectedDocument = FilteredScanDocuments.Next                 //Заглушка. Выбор следующего документа при сохранении (похоже нужно сначала отсортировать список)
         }
 
-        private bool CanSaveFileCommandExecute(object p) => true;
+        private bool CanSaveFileCommandExecute(object p)
+        {
+            bool result = false;
+
+            if (Metadatas.Count > 0 && SelectedDocument != null)
+            {
+                var v = Metadatas.FirstOrDefault(m => m.Data == null || m.Data.Length == 0 || m.Data == " ");
+                if (v != null)
+                    result = false;
+                else result = true;
+            }
+
+            return result;
+        }
 
         #endregion
 
@@ -410,8 +680,24 @@ namespace Scanner.ViewModels
 
         private void AddExtraMetadata()
         {
-            ExtraDataTemplate = new Metadata { Name = NameExtraDataTemplate, Required = true };
-            SelectedEditTemplateAdmin.Metadata.Add(ExtraDataTemplate);
+            ExtraDataTemplate = new TemplateMetadata { Name = NameExtraDataTemplate, Required = false };
+            SelectedEditTemplateAdmin.TemplateMetadata.Add(ExtraDataTemplate);
+        }
+
+        #endregion
+
+        #region DeleteExtraMetadataTemplate - Команда удаления поля в редактируемом шаблоне
+
+        private ICommand _DeleteExtraMetadataTemplate;
+        public ICommand DeleteExtraMetadataTemplate => _DeleteExtraMetadataTemplate
+            ??= new LambdaCommand(OnDeleteExtraMetadataTemplateExecuted, CanDeleteExtraMetadataTemplateExecute);
+
+        private void OnDeleteExtraMetadataTemplateExecuted(object p) => DeleteExtraMetadata();
+        private bool CanDeleteExtraMetadataTemplateExecute(object p) => true;        
+
+        private void DeleteExtraMetadata()
+        {
+            RowsSelectedEditTemplateAdmin.Remove(RowSelectedEditTemplateAdmin);
         }
 
         #endregion
@@ -423,12 +709,56 @@ namespace Scanner.ViewModels
             ??= new LambdaCommand(OnAddExtraDataToDocumentExecuted, CanAddExtraDataToDocumentExecute);
 
         private void OnAddExtraDataToDocumentExecuted(object p) => AddDataToDocument();
-        private bool CanAddExtraDataToDocumentExecute(object p) => true;
+        private bool CanAddExtraDataToDocumentExecute(object p) => SelectedExtraNoRequiredMetadata is not null;
 
         private void AddDataToDocument()
         {
-            Metadata metadata = new Metadata();
-            SelectedDocument.Metadata.Add(metadata);
+            if (SelectedExtraNoRequiredMetadata is null) return;     //  На случай если затупит UI и не сработает условие команды
+            if (SelectedExtraNoRequiredMetadata.Name != null && SelectedDocument != null && !Metadatas.Contains(SelectedExtraNoRequiredMetadata))
+                Metadatas.Add(SelectedExtraNoRequiredMetadata);
+        }
+
+        #endregion
+
+        #region DeleteExtraDataFromDocument - Команда удаления элемента метаднных из списка метаданных документа - заглушка
+
+        private ICommand _DeleteExtraDataFromDocument;
+        public ICommand DeleteExtraDataFromDocument => _DeleteExtraDataFromDocument
+            ??= new LambdaCommand(OnDeleteExtraDataFromDocumentExecuted, CanDeleteExtraDataFromDocumentExecute);
+
+        private void OnDeleteExtraDataFromDocumentExecuted(object p) => DeleteDataFromDocument(p);
+        private bool CanDeleteExtraDataFromDocumentExecute(object p)
+        {
+            bool result = false;
+            if (p is null) result = true;
+            if (p is DocumentMetadata meta)
+            {
+                var v = SelectedTemplate?.TemplateMetadata.FirstOrDefault(t => t.Name == meta.Name);
+                if (v == null)
+                {
+                    result = false;
+                    return false;
+                }
+                if (!v.Required)
+                    result = true;
+            }
+
+            return result;
+        }
+
+        private void DeleteDataFromDocument(object p)
+        {
+            if (p is DocumentMetadata meta)
+            {
+                Metadatas.Remove(meta);
+                /*var temp = SelectedTemplateInOP?.TemplateMetadata.FirstOrDefault(o => o.Name == meta.Name);
+                if (temp is null) return;
+                if (!TemplateMetadatas.Contains(temp))
+                {
+                    TemplateMetadatas.Add(temp);
+                }*/
+            }
+            return;
         }
 
         #endregion
@@ -444,7 +774,14 @@ namespace Scanner.ViewModels
 
         private void SaveEditTemplate()
         {
-            _TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
+            ScannerDataTemplate dataTemplate = new ScannerDataTemplate();
+            dataTemplate = SelectedEditTemplateAdmin;
+            dataTemplate.TemplateMetadata = RowsSelectedEditTemplateAdmin;
+            if (Templates.Contains(dataTemplate))
+                _DBDataTemplateInDB.Update(dataTemplate);
+            else
+                _DBDataTemplateInDB.Add(dataTemplate);
+            //_TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
         }
 
         #endregion RemoveTemplateFromBD - команда удаления шаблона из базы - заглушка
@@ -460,9 +797,11 @@ namespace Scanner.ViewModels
 
         private void RemoveTemplate()
         {
-            if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.Name}?", "Удалить",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                _TestData.Templates.Remove(SelectedEditTemplateAdmin);
+            if (SelectedEditTemplateAdmin != null)
+                if (MessageBox.Show($"Вы уверены что хотите удалить {SelectedEditTemplateAdmin.DocumentType}?", "Удалить",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    //_TestData.Templates.Remove(SelectedEditTemplateAdmin);
+                    return;
         }
 
         #endregion
@@ -477,8 +816,8 @@ namespace Scanner.ViewModels
 
         private void CreateTemplate()
         {
-            Template template = new Template { Name = "Новый шаблон", Metadata = new ObservableCollection<Metadata>() };
-            Templates.Add(template);
+            ScannerDataTemplate template = new ScannerDataTemplate { DocumentType = "Новый шаблон", };
+            SelectedEditTemplateAdmin = template;
         }
 
         #endregion
@@ -508,7 +847,8 @@ namespace Scanner.ViewModels
 
         private void OnAdminFinishCommandExecuted(object p)
         {
-
+            if (SelectedIndexedDoc is null) return;
+            _RabbitMQService.Publish(SelectedIndexedDoc);
         }
 
         private bool CanAdminFinishCommandExecute(object p) => SelectedIndexedDoc is not null;
@@ -523,11 +863,15 @@ namespace Scanner.ViewModels
 
         private void OnAdminReworkCommandExecuted(object p)
         {
-            var doc = SelectedIndexedDoc;
-            doc.Name = "(Доработать)" + doc.Name;
+            var doc = _DBFileDataInDB.GetById(SelectedIndexedDoc.Id);
+            //doc.Indexed = false;
+            doc.DocumentName = "(Доработать)" + doc.DocumentName;
+            doc.OnRework = true;
             SelectedIndexedDoc = null;
             IndexedDocs.Remove(doc);
+            _DBFileDataInDB.Update(doc);
             ScanDocuments.Add(doc);
+            FilteredScanDocuments.Add(doc);
         }
 
         private bool CanAdminReworkCommandExecute(object p) => SelectedIndexedDoc is not null;

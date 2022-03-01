@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="interfaces\ICommand.cs" />
+    <Compile Remove="ViewModels\Models\Metadata.cs" />
+    <Compile Remove="ViewModels\Models\ScanDocument.cs" />
+    <Compile Remove="ViewModels\Models\Template.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,8 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Cube.Pdf.Pdfium" Version="6.0.2" />
     <PackageReference Include="FontAwesome5" Version="2.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.13" />

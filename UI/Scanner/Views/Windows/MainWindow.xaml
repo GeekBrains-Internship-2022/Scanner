@@ -27,6 +27,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Меню">
                 <MenuItem Header="Настройки" Command="{Binding OpenSettingsCommand}"/>
+                <MenuItem Header="Тест БД" Command="{Binding OpenTestBDCommand}"/>
                 <Separator/>
                 <MenuItem Header="Выход" Command="{Binding CloseAppCommand}"/>
             </MenuItem>
@@ -57,11 +58,14 @@
                     </StatusBar>
 
                     <ctrl:OperatorControlPanel DockPanel.Dock="Right"
-                                                   TemplatesItemSource="{Binding Templates}"
-                                                   SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
-                                                   SaveCommand="{Binding SaveFileCommand}"
-                                                   NextFileCommand="{Binding NextFileCommand}"
-                                                   CBItemSource="{Binding DataListSelectedDocument}"/>
+                                               TemplatesItemSource="{Binding Templates}"
+                                               SelectedTemplate="{Binding SelectedTemplate, Mode=TwoWay}"
+                                               MetadataItemSource="{Binding Metadatas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               SaveCommand="{Binding SaveFileCommand}"
+                                               NextFileCommand="{Binding NextFileCommand}"
+                                               CBExtraDataItemSource="{Binding ExtraNoRequiredMetadatas}"
+                                               CBExtraDataSelectedItem="{Binding SelectedExtraNoRequiredMetadata, Mode=TwoWay}"
+                                               DelExtraMetaDataCommand="{Binding DeleteExtraDataFromDocument}"/>
 
                     <Grid>
 
@@ -83,10 +87,9 @@
                     <TabItem Header="Рецензирование">
                         <DockPanel DockPanel.Dock="Right" HorizontalAlignment="Stretch">
 
-                            <ctrl:AdministratorControlPanel DockPanel.Dock="Right"
-                                                            ItemSource="{Binding SelectedIndexedDoc}"
-                                                            Metadata="{Binding SelectedIndexedDoc.Metadata}"
-                                                            DocumentType="{Binding SelectedIndexedDoc.Type}"
+                            <ctrl:AdministratorControlPanel DockPanel.Dock="Right"                                                            
+                                                            Metadata="{Binding MetadataSelectedIndexedDoc, UpdateSourceTrigger=PropertyChanged}"
+                                                            DocumentType="{Binding SelectedIndexedDoc.Document.DocumentType}"
                                                             ReworkCommand="{Binding AdminReworkCommand}"
                                                             FinishCommand="{Binding AdminFinishCommand}"/>
 
@@ -95,7 +98,7 @@
                                             SelectedItem="{Binding SelectedIndexedDoc, Mode=TwoWay}"/>
                         </DockPanel>
                     </TabItem>
-                    <TabItem Header="Шаблоны">
+                    <TabItem Header="Шаблоны" Height="20" VerticalAlignment="Top">
                         <DockPanel>
                             <DockPanel DockPanel.Dock="Left">
                                 <TextBox Text="Фильтр для поиска шаблона" DockPanel.Dock="Top"/>
@@ -107,7 +110,7 @@
                                          SelectedItem="{Binding SelectedEditTemplateAdmin}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Name}"/>
+                                            <TextBlock Text="{Binding Path=DocumentType}"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
@@ -116,15 +119,23 @@
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal" Margin="4">
                                         <TextBlock Text="Название шаблона:"/>
-                                        <TextBox Text="{Binding SelectedEditTemplateAdmin.Name}" Margin="2,0"/>
+                                        <TextBox Text="{Binding SelectedEditTemplateAdmin.DocumentType}" Margin="2,0"/>
                                     </StackPanel>
-                                    <ListBox Margin="4" ItemsSource="{Binding SelectedEditTemplateAdmin.Metadata}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox Margin="4"
+                                             ItemsSource="{Binding RowsSelectedEditTemplateAdmin, UpdateSourceTrigger=PropertyChanged}"
+                                             SelectedItem="{Binding RowSelectedEditTemplateAdmin}"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <GroupBox Header="{Binding Path=Name}">
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBox Text="{Binding Path=Name}"/>
-                                                        <Button Content="-"/>
+                                                        <Button Command="{Binding DeleteExtraMetadataTemplate}">
+                                                            <Button.Content>
+                                                                <TextBlock Text="-"/>
+                                                            </Button.Content>
+                                                        </Button>
                                                         <TextBlock Text="Обязательное поле" Margin="2,0"/>
                                                         <CheckBox IsChecked="{Binding Path=Required}"/>
                                                     </StackPanel>

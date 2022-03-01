@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Scanner.interfaces;
 using Scanner.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scanner.Data.Stores.InDB
 {
@@ -17,16 +14,18 @@ namespace Scanner.Data.Stores.InDB
 
         public FileData Add(FileData Item)
         {
-            _db.Entry(Item).State = EntityState.Added;
+            //_db.Entry(Item).State = EntityState.Added;    //  С этим связи не работают
+            _db.FileDatas.Add(Item);
             _db.SaveChanges();
             return Item;
         }
 
-        public void Delete(Guid Id)
+        public void Delete(int Id)
         {
             var item = GetById(Id);
             if (item is null) return;
-            _db.Entry(item).State = EntityState.Deleted;
+            //_db.Entry(item).State = EntityState.Deleted;
+            _db.Remove(item);
             _db.SaveChanges();
         }
 
@@ -35,12 +34,13 @@ namespace Scanner.Data.Stores.InDB
         //_db.Brands.Include(brand => brand.Products).ToDTO();
 
 
-        public FileData GetById(Guid Id) => _db.FileDatas.SingleOrDefault(r => r.Id == Id);
+        public FileData GetById(int Id) => _db.FileDatas.SingleOrDefault(r => r.Id == Id);
 
 
         public void Update(FileData Item)
         {
-            _db.Entry(Item).State = EntityState.Modified;
+            //_db.Entry(Item).State = EntityState.Modified;
+            _db.Update(Item);
             _db.SaveChanges();
         }
     }

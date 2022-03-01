@@ -13,91 +13,172 @@ namespace Scanner.Data
     internal class TestData
     {
         private static Random _Rand = new();
-        public ObservableCollection<Template> Templates { get; set; }
+        
+        /// <summary>
+        /// Тестовый список шаблонов
+        /// </summary>
+        public ObservableCollection<ScannerDataTemplate> DataTemplates { get; set; }
 
-        public ObservableCollection<Document> Documents { get; set; }
+        /// <summary>
+        ///  Тестовый список метаданных документов
+        /// </summary>
+        public ObservableCollection<DocumentMetadata> DocumentMetadatas { get; set; }
 
-        public ObservableCollection<FileData> Files { get; set; }
+        /// <summary>
+        /// Тестовый список файлов
+        /// </summary>
+        public ObservableCollection<FileData> FilesDatas { get; set; }
+
+        /// <summary>
+        /// Тестовый список наменований полей в шаблонах
+        /// </summary>
+        public ObservableCollection<TemplateMetadata> TemplateMetadatas { get; set; }
 
         public TestData()
         {
-            Templates = new ObservableCollection<Template>
+            DataTemplates = new ObservableCollection<ScannerDataTemplate>();
+            DocumentMetadatas = new ObservableCollection<DocumentMetadata>();
+            FilesDatas = new ObservableCollection<FileData>();
+            TemplateMetadatas = new ObservableCollection<TemplateMetadata>();
+
+            #region Тестовые данные - шаблоны
+            ScannerDataTemplate testScannerDataTemplates = new ScannerDataTemplate();
+            List<TemplateMetadata> templateMetadatas = new List<TemplateMetadata>();
+            templateMetadatas.Add(new TemplateMetadata
             {
-                new Template()
-                {
-                    Name = "Паспорт",
-                    Metadata = new ObservableCollection<Metadata>
-                    {
-                        new Metadata
-                        {
-                            Name = "Номер",
-                            Data = "1234567890",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "ФИО",
-                            Data = "Иванов Иван Иванович",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "Дата выдачи",
-                            Data = "01.01.0001",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "Прописка",
-                            Data = "Кремль",
-                            Required = true,
-                        },
-                    }
-                },
-                new Template()
-                {
-                    Name = "Свидетельство",
-                    Metadata = new ObservableCollection<Metadata>
-                    {
-                        new Metadata
-                        {
-                            Name = "Номер",
-                            Data = "1234567890",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "ФИО",
-                            Data = "Петров Петр Петрович",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "Дата выдачи",
-                            Data = "01.01.0001",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "Дата рождения",
-                            Data = "1000 г. до н.э.",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "ФИО отца",
-                            Data = "Петров Петро Петрович",
-                            Required = true,
-                        },
-                        new Metadata
-                        {
-                            Name = "ФИО матери",
-                            Data = "Александрова Александра Александровна",
-                            Required = true,
-                        },
-                    }
-                },
+                Name = "Серия",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Номер",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "ФИО",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата выдачи",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Кем выдан",
+                Required = false,
+            });
+
+            testScannerDataTemplates = new ScannerDataTemplate
+            {
+                DocumentType = "Паспорт",
+                TemplateMetadata = templateMetadatas,
+
             };
+            DataTemplates.Add(testScannerDataTemplates);
+
+            testScannerDataTemplates = new ScannerDataTemplate();
+            templateMetadatas = new List<TemplateMetadata>();
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Серия",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Номер",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "ФИО",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "ФИО отца",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "ФИО матери",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата выдачи",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата рождения",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Кем выдано",
+                Required = false,
+            });
+
+            testScannerDataTemplates = new ScannerDataTemplate
+            {
+                DocumentType = "Свидетельство",
+                TemplateMetadata = templateMetadatas,
+
+            };
+            DataTemplates.Add(testScannerDataTemplates);
+
+            testScannerDataTemplates = new ScannerDataTemplate();
+            templateMetadatas = new List<TemplateMetadata>();
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Серия",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Номер",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "ФИО",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Дата выдачи",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Наименование УЗ",
+                Required = true,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Специальность",
+                Required = false,
+            });
+            templateMetadatas.Add(new TemplateMetadata
+            {
+                Name = "Специализация",
+                Required = false,
+            });
+
+            testScannerDataTemplates = new ScannerDataTemplate
+            {
+                DocumentType = "Диплом",
+                TemplateMetadata = templateMetadatas,
+
+            };
+            DataTemplates.Add(testScannerDataTemplates);
+
+
+            #endregion
+
+            
 
             //Documents = new ObservableCollection<Document>(Enumerable.Range(1, 10).Select(d =>
             //    new Document
@@ -114,7 +195,7 @@ namespace Scanner.Data
             //        ).ToList()
             //    }));
 
-            Files = new ObservableCollection<FileData>();
+            //Files = new ObservableCollection<FileData>();
         }
     }
 }

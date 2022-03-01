@@ -7,10 +7,10 @@ namespace Scanner.Models
     public class Template : OnPropertyChangedClass
     {
         private string _name;        
-        private ObservableCollection<Metadata> _metadata;
+        private ObservableCollection<TemplateMetadata> _templateMetadata;
 
         public string Name { get => _name; set => _name = value; }
 
-        public ObservableCollection<Metadata> Metadata { get => _metadata; set => _metadata = value; }        
+        public ObservableCollection<TemplateMetadata> TemplateMetadata { get => _templateMetadata; set => _templateMetadata = value; }        
     }
 }

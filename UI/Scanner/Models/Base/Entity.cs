@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Scanner.Models.Base
@@ -7,7 +6,7 @@ namespace Scanner.Models.Base
     public abstract class Entity
     {
         
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scanner.Data;
 
-namespace Scanner.Data.Migrations
+namespace Scanner.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    partial class ScannerDBModelSnapshot : ModelSnapshot
+    [Migration("20220227095111_ChangeGuidToInt")]
+    partial class ChangeGuidToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -18,9 +20,9 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.Document", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DocumentType")
                         .HasMaxLength(25)
@@ -36,15 +38,15 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.DocumentMetadata", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Data")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -58,9 +60,9 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.FileData", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Checked")
                         .HasColumnType("INTEGER");
@@ -71,8 +73,8 @@ namespace Scanner.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("TEXT");
@@ -92,9 +94,9 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.ScannerDataTemplate", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DocumentType")
                         .IsRequired()
@@ -111,9 +113,9 @@ namespace Scanner.Data.Migrations
 
             modelBuilder.Entity("Scanner.Models.TemplateMetadata", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -121,8 +123,8 @@ namespace Scanner.Data.Migrations
                     b.Property<bool>("Required")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("ScannerDataTemplateId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("ScannerDataTemplateId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

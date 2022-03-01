@@ -10,7 +10,6 @@ using Scanner.Data;
 using Scanner.Data.Stores.InDB;
 using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
-using Microsoft.EntityFrameworkCore;
 using Scanner.Models;
 using Scanner.Service;
 using Scanner.Service.RabbitMQ;
@@ -58,6 +57,7 @@ namespace Scanner
             services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();
             // TemplateMetadataInDB : IStore<TemplateMetadata>
             services.AddSingleton<IStore<TemplateMetadata>, TemplateMetadataInDB>();
+            services.AddSingleton<IStore<Document>, DocumentStoreInDB>();
             services.AddTransient<ScannerDbInitializer>();
 
             //services.AddSingleton<MainWindowViewModel>();

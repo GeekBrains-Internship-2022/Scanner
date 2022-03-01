@@ -2,7 +2,7 @@
 
 namespace Scanner.ViewModels.Models
 {
-    class SettingsModel : OnPropertyChangedClass
+    class SettingsModel : Entity
     {
 
         public class Rootobject
