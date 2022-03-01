@@ -25,6 +25,7 @@ namespace Scanner.ViewModels
         private readonly IObserverService _Observer;
         private readonly IStore<DocumentMetadata> _DBdocumentMetadata;
         private readonly IStore<TemplateMetadata> _DBtemplateMetadata;
+        private readonly IStore<Document> _DBdocumentInDB;
         private readonly IFileService _FileService;
         private readonly IRabbitMQService _RabbitMQService;
 
@@ -445,7 +446,7 @@ namespace Scanner.ViewModels
         #endregion
         public NewMainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
             ILogger<NewMainWindowViewModel> __logger, IObserverService __Observer, IStore<DocumentMetadata> __DocumentMetadataDB,
-            IStore<TemplateMetadata> __TemplateMetadata,
+            IStore<TemplateMetadata> __TemplateMetadata, IStore<Document> __DocumentInDB,
             IFileService __FileService, IRabbitMQService __RabbitMQService)
         {
             _DBFileDataInDB = __filedata;
@@ -454,6 +455,7 @@ namespace Scanner.ViewModels
             _Observer = __Observer;
             _DBdocumentMetadata = __DocumentMetadataDB;
             _DBtemplateMetadata = __TemplateMetadata;
+            _DBdocumentInDB = __DocumentInDB;
             _FileService = __FileService;
             _RabbitMQService = __RabbitMQService;
 
@@ -493,7 +495,11 @@ namespace Scanner.ViewModels
 
             //ObserverInitialize();
 #if DEBUG
-            TestDataInit();
+            if (FileDatas.Count == 0)
+            {
+                TestDataInit();
+            }
+            
 #endif
         }
 
@@ -595,35 +601,43 @@ namespace Scanner.ViewModels
             List<FileData> fileDatas = new List<FileData>();
             List<ScannerDataTemplate> scannerDataTemplates = new List<ScannerDataTemplate>();
 
-            var doc = new Document {
+            var doc = _DBdocumentInDB.Add(new Document {
                 DocumentType = "Паспорт",
                 IndexingDate = DateTime.Now,
-            };
-            var meta1 = new DocumentMetadata
+            });
+
+            var meta1 = _DBdocumentMetadata.Add(new DocumentMetadata
             {
                 Document = doc,
                 Name = "ФИО",
                 Data = "Пупкин Василий Петрович"
-            };
-            var meta2 = new DocumentMetadata
+            });
+            var meta2 = _DBdocumentMetadata.Add(new DocumentMetadata
             {
                 Document = doc,
                 Name = "Выдан",
                 Data = "01.01.0000",
-            };
+            });
             doc.Metadata = new List<DocumentMetadata> { meta1,meta2}.ToArray();
             //doc.Metadata.Add(meta1);
             //doc.Metadata.Add(meta2);
-
-
-            fileDatas.Add(new FileData
+            var file = new FileData
             {
-                 DateAdded = DateTime.Now,
-                  DocumentName = "Паспорт васи",
-                   FilePath = "D:\\github.com\\GeekBrains-Internship-2022\\Scanner\\UI\\Scanner\\bin\\Debug\\net5.0-windows\\Documents\\Диплом\\Диплом1.pdf",
-                    Document = doc,
-                     Indexed=false,
-            });
+                DateAdded = DateTime.Now,
+                DocumentName = "Паспорт васи",
+                FilePath = "D:\\github.com\\GeekBrains-Internship-2022\\Scanner\\UI\\Scanner\\bin\\Debug\\net5.0-windows\\Documents\\Диплом\\Диплом1.pdf",
+                Document = doc,
+                Indexed = false,
+            };
+            fileDatas.Add(_DBFileDataInDB.Add(file));
+            //var doc1 = new Document();
+
+            //var file2 = new FileData
+            //{
+            //    DocumentName = "тест",
+            //    Document = doc1,
+            //};
+            //fileDatas.Add(_DBFileDataInDB.Add(file2));
             fileDatas.Add(new FileData
             {
                 DateAdded = DateTime.Now,
