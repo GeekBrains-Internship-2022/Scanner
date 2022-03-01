@@ -379,7 +379,7 @@ namespace Scanner.ViewModels
 
             _TestData = new TestData();
 
-            IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed && !i.OnRework));
+            IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed && !i.OnRework && !i.Checked));
             var removedItem = new List<FileData>();
             foreach (var indexedDoc in IndexedDocs)
             {
@@ -395,6 +395,8 @@ namespace Scanner.ViewModels
                     IndexedDocs.Remove(fileData);
             
             GetFiles();
+            foreach (var fileData in _DBFileDataInDB.GetAll().Where(i => !i.Checked && i.OnRework))
+                ScanDocuments.Add(fileData);
 
             _scannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
             if (_scannerDataTemplatesInDB.Count == 0)
@@ -857,6 +859,12 @@ namespace Scanner.ViewModels
         {
             if (SelectedIndexedDoc is null) return;
             _RabbitMQService.Publish(SelectedIndexedDoc);
+
+            var doc = SelectedIndexedDoc;
+            doc.Checked = true;
+
+            _DBFileDataInDB.Update(doc);
+            IndexedDocs.Remove(doc);
         }
 
         private bool CanAdminFinishCommandExecute(object p) => SelectedIndexedDoc is not null;
