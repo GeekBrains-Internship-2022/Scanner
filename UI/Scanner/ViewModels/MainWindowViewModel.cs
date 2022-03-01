@@ -777,11 +777,19 @@ namespace Scanner.ViewModels
             ScannerDataTemplate dataTemplate = new ScannerDataTemplate();
             dataTemplate = SelectedEditTemplateAdmin;
             dataTemplate.TemplateMetadata = RowsSelectedEditTemplateAdmin;
+            
             if (Templates.Contains(dataTemplate))
                 _DBDataTemplateInDB.Update(dataTemplate);
             else
-                _DBDataTemplateInDB.Add(dataTemplate);
-            //_TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
+            {
+                if (Templates.FirstOrDefault(t => t.DocumentType == dataTemplate.DocumentType) == null)
+                {
+                    _DBDataTemplateInDB.Add(dataTemplate);
+                    Templates.Add(dataTemplate);
+                }
+                else
+                    MessageBox.Show("Имя шаблона должно быть уникальным!!!");
+            }
         }
 
         #endregion RemoveTemplateFromBD - команда удаления шаблона из базы - заглушка
