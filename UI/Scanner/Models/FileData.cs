@@ -37,5 +37,7 @@ namespace Scanner.Models
         /// Шаблон данных
         /// </summary>
         public Document Document { get; set; }
+
+        public bool OnRework { get; set; }
     }
 }

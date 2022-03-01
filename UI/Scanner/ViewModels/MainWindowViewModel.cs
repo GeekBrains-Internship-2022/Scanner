@@ -366,7 +366,7 @@ namespace Scanner.ViewModels
 
             _TestData = new TestData();
 
-            IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed));
+            IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed && !i.OnRework));
             var removedItem = new List<FileData>();
             foreach (var indexedDoc in IndexedDocs)
             {
@@ -583,6 +583,10 @@ namespace Scanner.ViewModels
             {
                 if (file.DocumentName.Contains("(Доработать)"))
                     file.DocumentName = file.DocumentName.Replace("(Доработать)", string.Empty);
+
+                if (file.OnRework)
+                    file.OnRework = false;
+
                 _DBFileDataInDB.Update(file);
                 IndexedDocs.Add(file);
                 ScanDocuments.Remove(file);
@@ -826,6 +830,7 @@ namespace Scanner.ViewModels
             var doc = _DBFileDataInDB.GetById(SelectedIndexedDoc.Id);
             //doc.Indexed = false;
             doc.DocumentName = "(Доработать)" + doc.DocumentName;
+            doc.OnRework = true;
             SelectedIndexedDoc = null;
             IndexedDocs.Remove(doc);
             _DBFileDataInDB.Update(doc);
