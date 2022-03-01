@@ -4,6 +4,6 @@ namespace Scanner.interfaces.RabbitMQ
 {
     public interface IRabbitMQService
     {
-        void Publish(Document document);
+        void Publish(FileData fileData);
     }
 }

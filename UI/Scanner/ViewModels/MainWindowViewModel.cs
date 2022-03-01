@@ -145,21 +145,33 @@ namespace Scanner.ViewModels
             set
             {
                 Set(ref _SelectedDocument, value);
+                if (SelectedDocument is null) return;
+
+                if (SelectedDocument.Indexed)
+                {
+                    SelectedTemplate =
+                        Templates.FirstOrDefault(t => t.DocumentType == SelectedDocument.Document.DocumentType);
+                    Metadatas = new ObservableCollection<DocumentMetadata>(SelectedDocument.Document.Metadata);
+                    return;
+                }
+
                 if (Templates != null)
-                    foreach(var t in Templates)
-                    {
-                        if (value != null)
-                            SelectedTemplate = Templates.FirstOrDefault(t => t.DocumentType.ToLower().Contains(value.Document.DocumentType.ToLower()));
-                            //if(value.Type.ToLower().Contains(t.Name.ToLower()))
-                            //{
-                            //    SelectedTemplate = t;
-                            //    return;
-                            //}
-                            //else
-                            //{
-                            //    SelectedTemplate = null;
-                            //}
-                    }                    
+                    SelectedTemplate = Templates.FirstOrDefault(t =>
+                        t.DocumentType.ToLower().Contains(value.Document.DocumentType.ToLower()));
+                //foreach(var t in Templates)
+                //{
+                //    if (value != null)
+                //        SelectedTemplate = Templates.FirstOrDefault(t => t.DocumentType.ToLower().Contains(value.Document.DocumentType.ToLower()));
+                //if(value.Type.ToLower().Contains(t.Name.ToLower()))
+                //{
+                //    SelectedTemplate = t;
+                //    return;
+                //}
+                //else
+                //{
+                //    SelectedTemplate = null;
+                //}
+                //}                    
             }
         }
         #endregion
@@ -333,16 +345,11 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(IStore<FileData> __filedata,
-            IStore<ScannerDataTemplate> __ScannerData,
-            IStore<DocumentMetadata> __DocumentMetadataDB,
-            IStore<TemplateMetadata> __TemplateMetadata,
-            IStore<Document> __Document,
-            ILogger<MainWindowViewModel> __logger,
-            IConfiguration __configuration,
-            IObserverService __observer,
-            IFileService __fileService,
-            IRabbitMQService __rabbitMQService)
+        public MainWindowViewModel(IStore<FileData> __filedata, IStore<ScannerDataTemplate> __ScannerData,
+            IStore<DocumentMetadata> __DocumentMetadataDB, IStore<TemplateMetadata> __TemplateMetadata,
+            IStore<Document> __Document, ILogger<MainWindowViewModel> __logger,
+            IConfiguration __configuration, IObserverService __observer,
+            IFileService __fileService, IRabbitMQService __rabbitMQService)
         {
             _DBFileDataInDB = __filedata;                       // Подлючение к базе FileData - хранение информации о файлах
             _DBDataTemplateInDB = __ScannerData;                // Подключение к базе ScannerDataTemplate - хранение шаблонов
@@ -356,19 +363,30 @@ namespace Scanner.ViewModels
             _RabbitMQService = __rabbitMQService;
 
             ScanDocuments = new();
-            
+
             _TestData = new TestData();
 
             IndexedDocs = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll().Where(i => i.Indexed));
-            
-            var FileDatasInDB = new ObservableCollection<FileData>(_DBFileDataInDB.GetAll());
+            var removedItem = new List<FileData>();
+            foreach (var indexedDoc in IndexedDocs)
+            {
+                if(File.Exists(indexedDoc.FilePath))
+                    continue;
 
+                _DBFileDataInDB.Delete(indexedDoc.Id);
+                removedItem.Add(indexedDoc);
+            }
+
+            if (removedItem.Any())
+                foreach (var fileData in removedItem)
+                    IndexedDocs.Remove(fileData);
+            
             GetFiles();
 
             _scannerDataTemplatesInDB = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
-            if(_scannerDataTemplatesInDB.Count == 0)
-                foreach(var t in _TestData.DataTemplates)
-                {                    
+            if (_scannerDataTemplatesInDB.Count == 0)
+                foreach (var t in _TestData.DataTemplates)
+                {
                     _DBDataTemplateInDB.Add(t);
                 }
             else
@@ -381,7 +399,7 @@ namespace Scanner.ViewModels
             //Templates = _TestData.DataTemplates;
             Templates = new ObservableCollection<ScannerDataTemplate>(_DBDataTemplateInDB.GetAll());
 
-            _TestData.FilesDatas = ScanDocuments;
+            //_TestData.FilesDatas = ScanDocuments;
 
             FilteredScanDocuments = new ObservableCollection<FileData>(ScanDocuments);            
 
@@ -558,6 +576,22 @@ namespace Scanner.ViewModels
         private void SaveFile()
         {
             var file = SelectedDocument;
+
+            if (file is null) return;
+
+            if (file.Indexed)
+            {
+                if (file.DocumentName.Contains("(Доработать)"))
+                    file.DocumentName = file.DocumentName.Replace("(Доработать)", string.Empty);
+                _DBFileDataInDB.Update(file);
+                IndexedDocs.Add(file);
+                ScanDocuments.Remove(file);
+
+                SelectedDocument = null;
+                Metadatas.Clear();
+                FilteredScanDocuments.Remove(file);
+                return;
+            }
             
             var path = _Configuration["Directories:StorageDirectory"];
             path = Path.GetFullPath(path);
@@ -567,15 +601,13 @@ namespace Scanner.ViewModels
 
             var s = Path.Combine(path, Guid.NewGuid().ToString("N") + ".pdf");
 
-            if (file is null) return;
-
             var oldPath = file.FilePath;
             file.Document.IndexingDate = DateTime.Now;
             file.FilePath = s;
             file.Indexed = true;
             File.Copy(oldPath, s);
                 
-            _TestData.FilesDatas.Add(file);
+            //_TestData.FilesDatas.Add(file);
 
             foreach (var m in Metadatas)
             {
@@ -775,7 +807,8 @@ namespace Scanner.ViewModels
 
         private void OnAdminFinishCommandExecuted(object p)
         {
-
+            if (SelectedIndexedDoc is null) return;
+            _RabbitMQService.Publish(SelectedIndexedDoc);
         }
 
         private bool CanAdminFinishCommandExecute(object p) => SelectedIndexedDoc is not null;
@@ -791,7 +824,7 @@ namespace Scanner.ViewModels
         private void OnAdminReworkCommandExecuted(object p)
         {
             var doc = _DBFileDataInDB.GetById(SelectedIndexedDoc.Id);
-            doc.Indexed = false;
+            //doc.Indexed = false;
             doc.DocumentName = "(Доработать)" + doc.DocumentName;
             SelectedIndexedDoc = null;
             IndexedDocs.Remove(doc);

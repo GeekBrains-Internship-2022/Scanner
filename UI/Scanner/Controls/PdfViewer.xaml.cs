@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.MoonPdf.Wpf;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -111,6 +112,10 @@ namespace Scanner.Controls
         {
             if (document is null)
                 return;
+
+#if DEBUG
+            if (!File.Exists(document.FilePath)) return;
+#endif
 
             try
             {
