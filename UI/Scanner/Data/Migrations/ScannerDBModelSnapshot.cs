@@ -2,17 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scanner.Data;
 
-namespace Scanner.Migrations
+namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220227095111_ChangeGuidToInt")]
-    partial class ChangeGuidToInt
+    partial class ScannerDBModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,6 +83,9 @@ namespace Scanner.Migrations
                     b.Property<bool>("Indexed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("OnRework")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DocumentId");
@@ -137,7 +138,8 @@ namespace Scanner.Migrations
                 {
                     b.HasOne("Scanner.Models.Document", "Document")
                         .WithMany("Metadata")
-                        .HasForeignKey("DocumentId");
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Document");
                 });

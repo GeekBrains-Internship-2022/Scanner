@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Scanner.Migrations
+namespace Scanner.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,7 +11,8 @@ namespace Scanner.Migrations
                 name: "DataTemplates",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     DocumentType = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
@@ -23,7 +24,8 @@ namespace Scanner.Migrations
                 name: "Documents",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     DocumentType = table.Column<string>(type: "TEXT", maxLength: 25, nullable: true),
                     IndexingDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -36,8 +38,9 @@ namespace Scanner.Migrations
                 name: "TemplateMetadata",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ScannerDataTemplateId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ScannerDataTemplateId = table.Column<int>(type: "INTEGER", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Required = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
@@ -56,14 +59,16 @@ namespace Scanner.Migrations
                 name: "FileDatas",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     FilePath = table.Column<string>(type: "TEXT", nullable: true),
                     DocumentName = table.Column<string>(type: "TEXT", nullable: true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     DateAdded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Indexed = table.Column<bool>(type: "INTEGER", nullable: false),
                     Checked = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DocumentId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    DocumentId = table.Column<int>(type: "INTEGER", nullable: true),
+                    OnRework = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -80,8 +85,9 @@ namespace Scanner.Migrations
                 name: "Metadata",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    DocumentId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DocumentId = table.Column<int>(type: "INTEGER", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Data = table.Column<string>(type: "TEXT", nullable: true)
                 },

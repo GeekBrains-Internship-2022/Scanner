@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scanner.Data;
 
-namespace Scanner.Migrations
+namespace Scanner.Data.Migrations
 {
     [DbContext(typeof(ScannerDB))]
-    [Migration("20220224171256_Initial")]
-    partial class Initial
+    [Migration("20220301155519_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,9 +20,9 @@ namespace Scanner.Migrations
 
             modelBuilder.Entity("Scanner.Models.Document", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DocumentType")
                         .HasMaxLength(25)
@@ -38,15 +38,15 @@ namespace Scanner.Migrations
 
             modelBuilder.Entity("Scanner.Models.DocumentMetadata", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Data")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -60,9 +60,9 @@ namespace Scanner.Migrations
 
             modelBuilder.Entity("Scanner.Models.FileData", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("Checked")
                         .HasColumnType("INTEGER");
@@ -73,8 +73,8 @@ namespace Scanner.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("DocumentId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("TEXT");
@@ -83,6 +83,9 @@ namespace Scanner.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Indexed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("OnRework")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -94,9 +97,9 @@ namespace Scanner.Migrations
 
             modelBuilder.Entity("Scanner.Models.ScannerDataTemplate", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DocumentType")
                         .IsRequired()
@@ -113,9 +116,9 @@ namespace Scanner.Migrations
 
             modelBuilder.Entity("Scanner.Models.TemplateMetadata", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -123,8 +126,8 @@ namespace Scanner.Migrations
                     b.Property<bool>("Required")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("ScannerDataTemplateId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("ScannerDataTemplateId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -137,7 +140,8 @@ namespace Scanner.Migrations
                 {
                     b.HasOne("Scanner.Models.Document", "Document")
                         .WithMany("Metadata")
-                        .HasForeignKey("DocumentId");
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Document");
                 });
