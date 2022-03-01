@@ -121,13 +121,21 @@
                                         <TextBlock Text="Название шаблона:"/>
                                         <TextBox Text="{Binding SelectedEditTemplateAdmin.DocumentType}" Margin="2,0"/>
                                     </StackPanel>
-                                    <ListBox Margin="4" ItemsSource="{Binding RowsSelectedEditTemplateAdmin, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox Margin="4"
+                                             ItemsSource="{Binding RowsSelectedEditTemplateAdmin, UpdateSourceTrigger=PropertyChanged}"
+                                             SelectedItem="{Binding RowSelectedEditTemplateAdmin}"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <GroupBox Header="{Binding Path=Name}">
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBox Text="{Binding Path=Name}"/>
-                                                        <Button Content="-"/>
+                                                        <Button Command="{Binding DeleteExtraMetadataTemplate}">
+                                                            <Button.Content>
+                                                                <TextBlock Text="-"/>
+                                                            </Button.Content>
+                                                        </Button>
                                                         <TextBlock Text="Обязательное поле" Margin="2,0"/>
                                                         <CheckBox IsChecked="{Binding Path=Required}"/>
                                                     </StackPanel>

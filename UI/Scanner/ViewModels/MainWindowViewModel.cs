@@ -236,6 +236,19 @@ namespace Scanner.ViewModels
         }
         #endregion
 
+        #region RowSelectedEditTemplateAdmin : TemplateMetadata - выбранное поле выбранного шаблона для редактирования
+
+        private TemplateMetadata _RowSelectedEditTemplateAdmin;
+        public TemplateMetadata RowSelectedEditTemplateAdmin
+        {
+            get => _RowSelectedEditTemplateAdmin;
+            set
+            {
+                Set(ref _RowSelectedEditTemplateAdmin, value);                
+            }
+        }
+        #endregion
+
         #region NameExtraDataTemplate : Metadata - дополнительное поле данных для добавления в шаблон
 
         private string _NameExtraDataTemplate;
@@ -673,6 +686,22 @@ namespace Scanner.ViewModels
 
         #endregion
 
+        #region DeleteExtraMetadataTemplate - Команда удаления поля в редактируемом шаблоне
+
+        private ICommand _DeleteExtraMetadataTemplate;
+        public ICommand DeleteExtraMetadataTemplate => _DeleteExtraMetadataTemplate
+            ??= new LambdaCommand(OnDeleteExtraMetadataTemplateExecuted, CanDeleteExtraMetadataTemplateExecute);
+
+        private void OnDeleteExtraMetadataTemplateExecuted(object p) => DeleteExtraMetadata();
+        private bool CanDeleteExtraMetadataTemplateExecute(object p) => true;        
+
+        private void DeleteExtraMetadata()
+        {
+            RowsSelectedEditTemplateAdmin.Remove(RowSelectedEditTemplateAdmin);
+        }
+
+        #endregion
+
         #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ - заглушка
 
         private ICommand _AddExtraDataToDocument;
@@ -745,6 +774,13 @@ namespace Scanner.ViewModels
 
         private void SaveEditTemplate()
         {
+            ScannerDataTemplate dataTemplate = new ScannerDataTemplate();
+            dataTemplate = SelectedEditTemplateAdmin;
+            dataTemplate.TemplateMetadata = RowsSelectedEditTemplateAdmin;
+            if (Templates.Contains(dataTemplate))
+                _DBDataTemplateInDB.Update(dataTemplate);
+            else
+                _DBDataTemplateInDB.Add(dataTemplate);
             //_TestData.Templates.Add(SelectedEditTemplateAdmin);          //Необходимо сделать провеку на уже имеющийся шаблон, если есть, то предложить переименовать, если нет, то сохраняем
         }
 
