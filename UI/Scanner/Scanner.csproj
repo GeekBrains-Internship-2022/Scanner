@@ -7,16 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="interfaces\ICommand.cs" />
+    <Compile Remove="ViewModels\Models\Metadata.cs" />
+    <Compile Remove="ViewModels\Models\ScanDocument.cs" />
+    <Compile Remove="ViewModels\Models\Template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Views\Windows\Letter2.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Converters\" />
-    <Folder Include="Controls\" />
+    <Folder Include="Data\Migrations\" />
+    <Folder Include="Documents\Паспорт\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cube.Pdf.Pdfium" Version="6.0.2" />
     <PackageReference Include="FontAwesome5" Version="2.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.13" />
@@ -30,6 +36,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NSystem.Data.MoonPdf.Wpf" Version="2021.9.15" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
@@ -44,7 +52,34 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Образец.pdf">
+    <None Update="Documents\Диплом\Диплом1.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Диплом\Диплом2.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Диплом\Диплом3.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Договор\Образец.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Паспорт\Паспорт.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Паспорт\Паспорт2.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Паспорт\Паспорт3.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Свидетельство\Свидетельство1.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Свидетельство\Свидетельство2.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\Свидетельство\Свидетельство3.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

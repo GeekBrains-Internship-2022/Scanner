@@ -1,68 +1,24 @@
 ﻿using Microsoft.Extensions.Logging;
-
+using Scanner.Infrastructure;
 using Scanner.interfaces;
 using Scanner.Models;
 
 using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Scanner.Service
 {
-    public class FileDataBuilder : IFileDataBuilder
-    {
-        private readonly FileData _Data = new();
-
-        public IFileDataBuilder Path(string path)
-        {
-            _Data.FilePath = path;
-            return this;
-        }
-
-        public IFileDataBuilder Name(string name)
-        {
-            _Data.DocumentName = name;
-            return this;
-        }
-
-        public IFileDataBuilder Description(string description)
-        {
-            _Data.Description = description;
-            return this;
-        }
-
-        public IFileDataBuilder Time(DateTime time)
-        {
-            _Data.DateAdded = time;
-            return this;
-        }
-
-        public IFileDataBuilder IsIndexed(bool isIndexed)
-        {
-            _Data.Indexed = isIndexed;
-            return this;
-        }
-
-        public IFileDataBuilder Document(Document document)
-        {
-            _Data.Document = document;
-            return this;
-        }
-
-        public FileData Build() => _Data;
-    }
-
     public class FileService : IFileService
     {
         private readonly ILogger<IFileService> _Logger;
-        private readonly string _DestPath;
+        private readonly IConfiguration _Configuration;
         private readonly string _FileExtension = ".pdf";
 
-        public FileService(ILogger<IFileService> logger, string destPath)
+        public FileService(ILogger<IFileService> logger, IConfiguration configuration)
         {
             _Logger = logger;
-            if (string.IsNullOrEmpty(destPath))
-                destPath = ".\\scanfiles";
-            _DestPath = Path.GetFullPath(destPath);
+            _Configuration = configuration;
         }
 
         public void Move(string sourceFileName, string fileName)
@@ -73,14 +29,16 @@ namespace Scanner.Service
                 throw new FileNotFoundException();
             }
 
-            var path = Path.Combine(_DestPath, fileName + _FileExtension);
+            var storage = _Configuration["Directories:StorageDirectory"];
+            var newFileName = Path.Combine(storage, fileName + _FileExtension);
+            //var path = Path.Combine(_DestPath, fileName + _FileExtension);
 
             try
             {
-                if (!Directory.Exists(_DestPath))
-                    Directory.CreateDirectory(_DestPath);   //  TODO: пока нет UI, потом удалить
+                if (!Directory.Exists(storage))
+                    Directory.CreateDirectory(storage);   //  TODO: пока нет UI, потом удалить
 
-                File.Move(sourceFileName, path);
+                File.Move(sourceFileName, newFileName);
             }
             catch (IOException e)
             {
@@ -94,13 +52,7 @@ namespace Scanner.Service
             }
         }
 
-        public FileData CreateFileData(string path, string documentType)
-        {
-            var data = new FileDataBuilder();
-
-            return data.Path(path)
-                .Document(new Document { DocumentType = documentType })
-                .Build();
-        }
+        public FileData CreateFileData(string path, string documentType) => new FileData
+            {FilePath = path, Document = new Document {DocumentType = documentType}};
     }
 }

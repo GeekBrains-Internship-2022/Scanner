@@ -21,17 +21,17 @@ namespace Scanner.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DocumentType = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
+                    DocumentType = table.Column<string>(type: "TEXT", maxLength: 25, nullable: true),
                     IndexingDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -40,9 +40,9 @@ namespace Scanner.Data.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ScannerDataTemplateId = table.Column<int>(type: "INTEGER", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Required = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ScannerDataTemplateId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Required = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,47 +56,48 @@ namespace Scanner.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DocumentMetadata",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Data = table.Column<string>(type: "TEXT", nullable: true),
-                    DocumentId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DocumentMetadata", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DocumentMetadata_Document_DocumentId",
-                        column: x => x.DocumentId,
-                        principalTable: "Document",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FileDatas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Guid = table.Column<Guid>(type: "TEXT", nullable: false),
                     FilePath = table.Column<string>(type: "TEXT", nullable: true),
                     DocumentName = table.Column<string>(type: "TEXT", nullable: true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     DateAdded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Indexed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DocumentId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Checked = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DocumentId = table.Column<int>(type: "INTEGER", nullable: true),
+                    OnRework = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileDatas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileDatas_Document_DocumentId",
+                        name: "FK_FileDatas_Documents_DocumentId",
                         column: x => x.DocumentId,
-                        principalTable: "Document",
+                        principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Metadata",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DocumentId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Data = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Metadata", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Metadata_Documents_DocumentId",
+                        column: x => x.DocumentId,
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -108,13 +109,13 @@ namespace Scanner.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DocumentMetadata_DocumentId",
-                table: "DocumentMetadata",
+                name: "IX_FileDatas_DocumentId",
+                table: "FileDatas",
                 column: "DocumentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileDatas_DocumentId",
-                table: "FileDatas",
+                name: "IX_Metadata_DocumentId",
+                table: "Metadata",
                 column: "DocumentId");
 
             migrationBuilder.CreateIndex(
@@ -126,16 +127,16 @@ namespace Scanner.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DocumentMetadata");
+                name: "FileDatas");
 
             migrationBuilder.DropTable(
-                name: "FileDatas");
+                name: "Metadata");
 
             migrationBuilder.DropTable(
                 name: "TemplateMetadata");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "DataTemplates");

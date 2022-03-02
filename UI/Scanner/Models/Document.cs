@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scanner.Models
 {
@@ -10,7 +11,7 @@ namespace Scanner.Models
         /// <summary>
         /// Тип документа
         /// </summary>
-        [Required,MaxLength(25)]
+        [MaxLength(25)]
         public string DocumentType { get; set; }
         /// <summary>
         /// Дата индексирования документа
@@ -19,6 +20,6 @@ namespace Scanner.Models
         /// <summary>
         /// Перечисление метаданных документа
         /// </summary>
-        public ICollection<DocumentMetadata> Metadata { get; set; }        
+        public ICollection<DocumentMetadata> Metadata { get; set; }
     }
 }

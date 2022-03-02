@@ -1,23 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Windows;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Scanner.Service;
-
-using System;
-using System.Windows;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using Scanner.Data;
+using Scanner.Data.Stores.InDB;
 using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
-using Scanner.Service.RabbitMQ;
-using Serilog;
-using Scanner.Data;
-using Microsoft.EntityFrameworkCore;
-using Scanner.interfaces;
 using Scanner.Models;
-using Scanner.Data.Stores.InDB;
+using Scanner.Service;
+using Scanner.Service.RabbitMQ;
 using Scanner.ViewModels;
+
+using Serilog;
 
 namespace Scanner
 {
@@ -41,48 +39,25 @@ namespace Scanner
 
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            services.AddSingleton<ObserverService>();                   //  Сервис мониторинга каталога
+            services.AddSingleton<IObserverService, ObserverService>();                 //  Сервис мониторинга каталога
+            services.AddSingleton<IFileService, FileService>();                         //  Сервис файлов нужен ли он вообще ?
+            services.AddSingleton<IRabbitMQService, RabbitMQService>();                 //  Сервис кролика
+            services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();           //  Сервис постоянного подключения кролика
 
-            //  Сервис файлов
-            services.AddSingleton<IFileService, FileService>(sp =>
-            {
-                var logger = sp.GetRequiredService<ILogger<IFileService>>();
-                var destPath = host.Configuration["FileService:DestinationPath"];
-
-                return new FileService(logger, destPath);
-            });
-
-            #region Сервис кролика
-
-            services.AddSingleton<IRabbitMQService>(sp =>
-            {
-                var connection = sp.GetRequiredService<IRabbitMQConnection>();
-                var logger = sp.GetRequiredService<ILogger<RabbitMQService>>();
-                var queueName = host.Configuration["RabbitMQ:Queue"];
-
-                return new RabbitMQService(connection, logger, queueName);
-            });
-
-            services.AddSingleton<IRabbitMQConnection>(sp =>
-            {
-                var logger = sp.GetRequiredService<ILogger<RabbitMQConnection>>();
-                var factory = new ConnectionFactory
-                {
-                    Uri = new Uri(host.Configuration["RabbitMQ:Uri"]),
-                    UserName = host.Configuration["RabbitMQ:Login"],
-                    Password = host.Configuration["RabbitMQ:Password"]
-                };
-
-                return new RabbitMQConnection(factory, logger);
-            });
-
-            #endregion 
             services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<SettingsWindowViewModel>();
+            services.AddSingleton<ViewModelTestDB>();
+            services.AddSingleton<NewMainWindowViewModel>(); 
 
             var path = host.Configuration.GetConnectionString("Default");
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
             services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
             services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();
+            //DocumentMetadataInDB: IStore<DocumentMetadata>
+            services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();
+            // TemplateMetadataInDB : IStore<TemplateMetadata>
+            services.AddSingleton<IStore<TemplateMetadata>, TemplateMetadataInDB>();
+            services.AddSingleton<IStore<Document>, DocumentStoreInDB>();
             services.AddTransient<ScannerDbInitializer>();
 
             //services.AddSingleton<MainWindowViewModel>();

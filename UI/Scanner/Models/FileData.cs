@@ -1,18 +1,14 @@
 ﻿using Scanner.Models.Base;
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scanner.Models
 {
 
-    public class FileData: Entity
+    public class FileData : Entity
     {
-        /// <summary>
-        /// Уникальный идентификатор файла в БД
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Guid { get; } = Guid.NewGuid();
         /// <summary>
         /// Путь к файлу
         /// </summary>
@@ -34,8 +30,14 @@ namespace Scanner.Models
         /// </summary>
         public bool Indexed { get; set; }
         /// <summary>
+        /// Файл был проверен администратором
+        /// </summary>
+        public bool Checked {get;set;}
+        /// <summary>
         /// Шаблон данных
         /// </summary>
         public Document Document { get; set; }
+
+        public bool OnRework { get; set; }
     }
 }

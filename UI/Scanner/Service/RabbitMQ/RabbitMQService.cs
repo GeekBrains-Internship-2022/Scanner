@@ -1,12 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 using RabbitMQ.Client;
 
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Models;
+using Scanner.Models.DTO;
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Scanner.Service.RabbitMQ
 {
@@ -14,40 +19,64 @@ namespace Scanner.Service.RabbitMQ
     {
         private readonly IRabbitMQConnection _Connection;
         private readonly ILogger<RabbitMQService> _Logger;
-        private readonly string _QueueName;
+        private readonly IConfiguration _Configuration;
 
-        public RabbitMQService(IRabbitMQConnection connection, ILogger<RabbitMQService> logger, string queueName)
+        public RabbitMQService(IRabbitMQConnection connection, ILogger<RabbitMQService> logger, IConfiguration configuration)
         {
             _Connection = connection;
             _Logger = logger;
-            _QueueName = queueName;
+            _Configuration = configuration;
         }
 
-        public void Publish(Document document)
+        public void Publish(FileData fileData, int templateId)
         {
             if (!_Connection.IsConnected)
                 _Connection.TryConnect();
 
+            var queueName = _Configuration["RabbitMQ:Queue"];
+            var exchangeName = _Configuration["RabbitMQ:Exchange"];
+            var routingKey = _Configuration["RabbitMQ:RoutingKey"];
+
             using var channel = _Connection.CreateModel();
             _Logger.LogInformation(
-                $"Declaring RabbitMQ exchange to publish:\nId:\t{document.Id}\nDocument Type:\t{document.DocumentType}");
+                $"Declaring RabbitMQ exchange to publish:\nId:\t{fileData.Id}\nDocument Type:\t{fileData.Document.DocumentType}");
 
-            channel.QueueDeclare(queue: _QueueName,
+            channel.ExchangeDeclare(exchange: exchangeName,
+                type: "direct",
+                durable: true);
+
+            channel.QueueDeclare(queue: queueName,
                 arguments: null,
                 durable: true,
                 exclusive: false,
                 autoDelete: false);
 
+            channel.QueueBind(queue: queueName,
+                exchange: exchangeName,
+                routingKey: routingKey);
 
-            var doc = JsonSerializer.Serialize(document);
+            var docType = fileData.Document.DocumentType;
+            var data = fileData.Document.Metadata.ToLookup(n => n.Name, d => d.Data)
+                .ToDictionary(k => k.Key, d => (IEnumerable<string>)d);
+
+            var dto = new RabbitDTO
+            {
+                DocumentType = docType,
+                OutputTemplateId = templateId,
+                Data = data
+            };
+
+            var doc = JsonSerializer.Serialize(dto);
             var body = Encoding.UTF8.GetBytes(doc);
 
-            _Logger.LogInformation($"Publish to {_QueueName} queue");
+            _Logger.LogInformation($"Publish to {queueName} queue");
 
-            channel.BasicPublish(exchange: "",
-                routingKey: "",
-                basicProperties: null,
-                body: body);
+            channel.BasicPublish(exchange: exchangeName,
+                    routingKey: routingKey,
+                    basicProperties: null,
+                    body: body);
         }
+
+        public async Task PublishAsync(FileData fileData, int templateId) => await Task.Run(() => Publish(fileData, templateId));
     }
 }

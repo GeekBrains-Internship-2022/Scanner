@@ -9,6 +9,20 @@ namespace Scanner.Data
 
         public DbSet<FileData> FileDatas { get; set; }
 
+        public DbSet<Document> Documents { get; set; }
+
+        public DbSet<DocumentMetadata> Metadata { get; set; }
+
+        public DbSet<TemplateMetadata> TemplateMetadata { get; set; }
+
         public ScannerDB(DbContextOptions<ScannerDB> opt) : base(opt) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Document>()
+                .HasMany(c => c.Metadata)
+                .WithOne(d => d.Document)
+                .OnDelete(DeleteBehavior.ClientCascade);
+        }
     }
 }
