@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 
 using RabbitMQ.Client;
 
@@ -8,6 +10,7 @@ using Scanner.Models;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Scanner.Models.DTO;
 using Scanner.Service.Mapping.DTO;
 
 namespace Scanner.Service.RabbitMQ
@@ -25,7 +28,7 @@ namespace Scanner.Service.RabbitMQ
             _Configuration = configuration;
         }
 
-        public void Publish(FileData fileData)
+        public void Publish(FileData fileData, int templateId)
         {
             if (!_Connection.IsConnected)
                 _Connection.TryConnect();
@@ -42,7 +45,18 @@ namespace Scanner.Service.RabbitMQ
                 exclusive: false,
                 autoDelete: false);
 
-            var doc = JsonSerializer.Serialize(fileData.ToDTO());
+            var docType = fileData.Document.DocumentType;
+            var data = fileData.Document.Metadata.ToLookup(n => n.Name, d => d.Data)
+                .ToDictionary(k => k.Key, d => (IEnumerable<string>) d);
+
+            var dto = new RabbitDTO
+            {
+                DocumentType = docType,
+                OutputTemplateId = templateId,
+                Data = data
+            };
+
+            var doc = JsonSerializer.Serialize(dto);
             var body = Encoding.UTF8.GetBytes(doc);
 
             _Logger.LogInformation($"Publish to {queueName} queue");
