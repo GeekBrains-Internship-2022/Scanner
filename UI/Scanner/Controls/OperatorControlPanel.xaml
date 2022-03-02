@@ -65,9 +65,7 @@
             </GroupBox>
             <StackPanel>
                 <Button Content="Сохранить" Command="{Binding SaveCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
-                    Margin="5 2"/>
-                <Button Content="Следующий документ" Command="{Binding NextFileCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
-                    Margin="5 2"/>
+                    Margin="5 2"/>                
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
