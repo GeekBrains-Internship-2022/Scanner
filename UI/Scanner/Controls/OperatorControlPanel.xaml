@@ -6,6 +6,15 @@
              xmlns:l="clr-namespace:Scanner.Controls"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}" x:Key="ButtonStyle">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
         <StackPanel>
@@ -33,7 +42,8 @@
                                     <TextBox Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"
                                              TextWrapping="Wrap"
                                              Width="200"/>
-                                    <Button Command="{Binding DelExtraMetaDataCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}" CommandParameter="{Binding}">
+                                    <Button Command="{Binding DelExtraMetaDataCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}" 
+                                            CommandParameter="{Binding}" Style="{StaticResource ButtonStyle}">
                                         <Button.Content>
                                             <fa:SvgAwesome Icon="Regular_MinusSquare" Width="15"
                                                        Foreground="Red"/>
