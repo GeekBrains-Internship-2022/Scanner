@@ -116,7 +116,9 @@
                                 </ListBox>
                             </DockPanel>
                             <Border BorderBrush="Black" BorderThickness="1" >
-                                <StackPanel Orientation="Vertical">
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                              VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal" Margin="4">
                                         <TextBlock Text="Название шаблона:"/>
                                         <TextBox Text="{Binding SelectedEditTemplateAdmin.DocumentType}" Margin="2,0"/>
@@ -154,6 +156,7 @@
                                     </StackPanel>
                                     <Button Content="Сохранить" Command="{Binding SaveEditTemplateToBD}" HorizontalAlignment="Left" Width="200"/>
                                 </StackPanel>
+                                </ScrollViewer>
                             </Border>
                         </DockPanel>
                     </TabItem>
