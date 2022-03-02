@@ -695,12 +695,14 @@ namespace Scanner.ViewModels
         public ICommand DeleteExtraMetadataTemplate => _DeleteExtraMetadataTemplate
             ??= new LambdaCommand(OnDeleteExtraMetadataTemplateExecuted, CanDeleteExtraMetadataTemplateExecute);
 
-        private void OnDeleteExtraMetadataTemplateExecuted(object p) => DeleteExtraMetadata();
+        private void OnDeleteExtraMetadataTemplateExecuted(object p) => DeleteExtraMetadata(p);
         private bool CanDeleteExtraMetadataTemplateExecute(object p) => true;        
 
-        private void DeleteExtraMetadata()
+        private void DeleteExtraMetadata(object p)
         {
-            RowsSelectedEditTemplateAdmin.Remove(RowSelectedEditTemplateAdmin);
+            if(p is TemplateMetadata tm)
+                RowsSelectedEditTemplateAdmin.Remove(tm);
+            //RowsSelectedEditTemplateAdmin.Remove(RowSelectedEditTemplateAdmin);
         }
 
         #endregion
