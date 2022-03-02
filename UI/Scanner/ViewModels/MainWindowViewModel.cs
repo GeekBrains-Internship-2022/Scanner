@@ -863,7 +863,7 @@ namespace Scanner.ViewModels
         private void OnAdminFinishCommandExecuted(object p)
         {
             if (SelectedIndexedDoc is null) return;
-            _RabbitMQService.Publish(SelectedIndexedDoc, SelectedTemplate.Id);
+            _RabbitMQService.PublishAsync(SelectedIndexedDoc, SelectedTemplate.Id);
 
             var doc = SelectedIndexedDoc;
             doc.Checked = true;
