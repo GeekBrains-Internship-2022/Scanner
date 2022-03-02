@@ -48,7 +48,7 @@ namespace Scanner.Service.RabbitMQ
             _Logger.LogInformation($"Publish to {queueName} queue");
 
             channel.BasicPublish(exchange: "",
-                routingKey: "",
+                routingKey: queueName,
                 basicProperties: null,
                 body: body);
         }
