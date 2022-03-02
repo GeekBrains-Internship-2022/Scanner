@@ -30,7 +30,7 @@
                         <DataTemplate>
                             <GroupBox Header="{Binding Path=Name}" Style="{StaticResource gbData}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBox Text="{Binding Path=Data}"
+                                    <TextBox Text="{Binding Path=Data, UpdateSourceTrigger=PropertyChanged}"
                                              TextWrapping="Wrap"
                                              Width="200"/>
                                     <Button Command="{Binding DelExtraMetaDataCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}" CommandParameter="{Binding}">
