@@ -8,7 +8,5 @@ namespace Scanner.ViewModels
 
         public ViewModelTestDB TestDBWindowModel => App.Services.GetRequiredService<ViewModelTestDB>();
         public SettingsWindowViewModel SettingsWindowModel => App.Services.GetRequiredService<SettingsWindowViewModel>();
-
-        public NewMainWindowViewModel NewMainWindowModel => App.Services.GetRequiredService<NewMainWindowViewModel>();
     }
 }

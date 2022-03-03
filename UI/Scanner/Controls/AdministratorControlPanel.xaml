@@ -9,7 +9,6 @@
                   HorizontalScrollBarVisibility="Disabled">
         
         <StackPanel>
-
             <StackPanel.Resources>
                 <Style TargetType="GroupBox" x:Key="gbData">
                     <Setter Property="BorderThickness" Value="0"/>

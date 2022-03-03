@@ -48,8 +48,7 @@
                                             <fa:SvgAwesome Icon="Regular_MinusSquare" Width="15"
                                                        Foreground="Red"/>
                                         </Button.Content>
-                                    </Button>
-                                    <!--<CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>-->
+                                    </Button>                                    
                                 </StackPanel>
                             </GroupBox>
                         </DataTemplate>

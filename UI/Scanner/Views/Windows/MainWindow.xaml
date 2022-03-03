@@ -3,27 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:mpp="clr-namespace:System.Data.MoonPdf.Wpf;assembly=NSystem.Data.MoonPdf.Wpf"
-        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:ctrl="clr-namespace:Scanner.Controls"
-        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:local="clr-namespace:Scanner"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         mc:Ignorable="d"
-        Title="MainWindow" Width="1328" Height="480">
-
-    <!--<behaviors:Interaction.Triggers>
-        <behaviors:EventTrigger EventName="Loaded">
-            <behaviors:InvokeCommandAction Command="{Binding GetFilesCommand}"/>
-        </behaviors:EventTrigger>
-    </behaviors:Interaction.Triggers>-->
-
-    <Window.Resources>
-        <!--<AlternationConverter x:Key="AlternationConverter"/>-->
-    </Window.Resources>
-
+        Title="MainWindow" Width="1328" Height="900">
+    
     <DockPanel>
-
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Меню">
                 <MenuItem Header="Настройки" Command="{Binding OpenSettingsCommand}"/>
@@ -34,7 +19,6 @@
         </Menu>
 
         <TabControl>
-
             <TabItem Name="tbiIndex" Header="Оператор" HorizontalContentAlignment="Stretch">
                 <DockPanel>
                     <StatusBar DockPanel.Dock="Bottom">
@@ -53,7 +37,6 @@
                                 </Style>
                             </Ellipse.Style>
                         </Ellipse>
-
                         <TextBlock Text="{Binding Status}"/>
                     </StatusBar>
 
@@ -72,11 +55,7 @@
                         <ctrl:PdfViewer ItemSource="{Binding FilteredScanDocuments, UpdateSourceTrigger=PropertyChanged}"
                                         SelectedItem="{Binding SelectedDocument, Mode=TwoWay}"
                                         CBItemSource="{Binding SubFolders}"
-                                        CBSelectedItem="{Binding SelectedFilterItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <!-- #endregion -->
-
-                        <!--<Image Name="imgDocument"/>-->
+                                        CBSelectedItem="{Binding SelectedFilterItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>                        
                     </Grid>
 
                 </DockPanel>

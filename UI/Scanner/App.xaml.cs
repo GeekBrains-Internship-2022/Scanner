@@ -46,31 +46,16 @@ namespace Scanner
 
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<SettingsWindowViewModel>();
-            services.AddSingleton<ViewModelTestDB>();
-            services.AddSingleton<NewMainWindowViewModel>(); 
+            services.AddSingleton<ViewModelTestDB>();            
 
             var path = host.Configuration.GetConnectionString("Default");
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
             services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
-            services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();
-            //DocumentMetadataInDB: IStore<DocumentMetadata>
-            services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();
-            // TemplateMetadataInDB : IStore<TemplateMetadata>
+            services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();            
+            services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();           
             services.AddSingleton<IStore<TemplateMetadata>, TemplateMetadataInDB>();
             services.AddSingleton<IStore<Document>, DocumentStoreInDB>();
             services.AddTransient<ScannerDbInitializer>();
-
-            //services.AddSingleton<MainWindowViewModel>();
-            //services.AddSingleton<ITaskbarIcon, TaskBarNotifyIcon>();
-            //services.AddSingleton<ProgramData>();
-            //services.AddTransient<IMailService, SmtpMailService>();
-            //services.AddSingleton<IEncryptorService, Rfc2898Encryptor>();
-            //string sql_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|Database1.mdf;Integrated Security=True";
-            //services.AddDbContext<MailSenderDB>(opt => opt.UseSqlite("Filename=MySupperDataBase.db"));
-            //services.AddSingleton<IStore<Recipient>, RecipientsStoreInDB>();
-            //services.AddSingleton<IStore<Message>, MessagesStoreInDB>();
-            //services.AddSingleton<IStore<Sender>, SenderStoreInDB>();
-            //services.AddTransient<MailSenderDBInitializer>();
         }
 
         protected override void OnStartup(StartupEventArgs e)

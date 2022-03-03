@@ -14,7 +14,6 @@ using Scanner.interfaces;
 using Scanner.interfaces.RabbitMQ;
 using Scanner.Models;
 using Scanner.ViewModels.Base;
-using Scanner.ViewModels.Models;
 using Scanner.Views.Windows;
 
 
@@ -65,17 +64,17 @@ namespace Scanner.ViewModels
         /// <summary>
         /// Список проверенных файлов
         /// </summary>
-        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();               //Список проверенных файлов
+        public ObservableCollection<Document> VerifiedDocs { get; set; } = new();                       //Список проверенных файлов
 
         /// <summary>
         /// Добавляемое администратором поле в шаблон
         /// </summary>
-        public TemplateMetadata ExtraDataTemplate { get; set; } = new();                        //Добавляемое администратором поле в шаблон
+        public TemplateMetadata ExtraDataTemplate { get; set; } = new();                                //Добавляемое администратором поле в шаблон
 
         /// <summary>
         /// Список подпапок с отсканированными файлами
         /// </summary>
-        public ObservableCollection<string> SubFolders { get; set; } = new();                   //Список подпапок с отсканированными файлами        
+        public ObservableCollection<string> SubFolders { get; set; } = new();                           //Список подпапок с отсканированными файлами        
 
         # region ObservableCollection<DocumentMetadata> Metadatas - Список метаданных
         private ObservableCollection<DocumentMetadata> _Metadatas = new ObservableCollection<DocumentMetadata>();        
@@ -577,7 +576,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region SaveFileCommand - Команда сохранения файла после индексирования - заглушка
+        #region SaveFileCommand - Команда сохранения файла после индексирования
 
         private ICommand _SaveFileCommand;
         public ICommand SaveFileCommand => _SaveFileCommand
@@ -707,7 +706,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ - заглушка
+        #region AddExtraDataToDocument - Команда добавления поля Data в редактируемый документ
 
         private ICommand _AddExtraDataToDocument;
         public ICommand AddExtraDataToDocument => _AddExtraDataToDocument
@@ -725,7 +724,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region DeleteExtraDataFromDocument - Команда удаления элемента метаднных из списка метаданных документа - заглушка
+        #region DeleteExtraDataFromDocument - Команда удаления элемента метаднных из списка метаданных документа
 
         private ICommand _DeleteExtraDataFromDocument;
         public ICommand DeleteExtraDataFromDocument => _DeleteExtraDataFromDocument
@@ -768,7 +767,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region SaveEditTemplateToBD - команда сохранения шаблона в базу - заглушка
+        #region SaveEditTemplateToBD - команда сохранения шаблона в базу
 
         private ICommand _SaveEditTemplateToBD;
         public ICommand SaveEditTemplateToBD => _SaveEditTemplateToBD
@@ -821,7 +820,7 @@ namespace Scanner.ViewModels
 
         #endregion
 
-        #region CreateNewTemplate - команда создания нового шаблона - заглушка
+        #region CreateNewTemplate - команда создания нового шаблона
 
         private ICommand _CreateNewTemplate;
         public ICommand CreateNewTemplate => _CreateNewTemplate
@@ -835,25 +834,9 @@ namespace Scanner.ViewModels
             SelectedEditTemplateAdmin = template;
         }
 
-        #endregion
+        #endregion        
 
-        #region NextFileCommand - Команда выбора следующего файла - заглушка
-
-        private ICommand _NextFileCommand;
-        public ICommand NextFileCommand => _NextFileCommand
-            ??= new LambdaCommand(OnNextFileCommandExecuted, CanNextFileCommandExecute);
-
-        private void OnNextFileCommandExecuted(object p) => NextFile();
-        private bool CanNextFileCommandExecute(object p) => true;
-
-        private void NextFile()
-        {
-
-        }
-
-        #endregion
-
-        #region AdminFinishCommand - Команда завершения обработки - заглушка
+        #region AdminFinishCommand - Команда завершения обработки
 
         private ICommand _AdminFinishCommand;
 

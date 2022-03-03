@@ -16,7 +16,6 @@ namespace Scanner.Data.Stores.InDB
         public DocumentMetadataInDB(ScannerDB db) => _db = db;
         public DocumentMetadata Add(DocumentMetadata Item)
         {
-            //_db.Entry(Item).State = EntityState.Added;
             _db.Metadata.Add(Item);
             _db.SaveChanges();
             return Item;
@@ -25,8 +24,7 @@ namespace Scanner.Data.Stores.InDB
         public void Delete(int Id)
         {
             var item = GetById(Id);
-            if (item is null) return;
-            //_db.Entry(item).State = EntityState.Deleted;
+            if (item is null) return;            
             _db.Remove(item);
             _db.SaveChanges();
         }
@@ -36,7 +34,6 @@ namespace Scanner.Data.Stores.InDB
         public DocumentMetadata GetById(int Id) => _db.Metadata.SingleOrDefault(r => r.Id == Id);
         public void Update(DocumentMetadata Item)
         {
-            //_db.Entry(Item).State = EntityState.Modified;
             _db.Update(Item);
             _db.SaveChanges();
         }

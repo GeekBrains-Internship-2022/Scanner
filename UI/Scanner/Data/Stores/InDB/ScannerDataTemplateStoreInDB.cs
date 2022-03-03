@@ -17,7 +17,6 @@ namespace Scanner.Data.Stores.InDB
 
         public ScannerDataTemplate Add(ScannerDataTemplate Item)
         {
-            //_db.Entry(Item).State = EntityState.Added;            
             _db.DataTemplates.Add(Item);
             _db.SaveChanges();
             return Item;
@@ -26,20 +25,17 @@ namespace Scanner.Data.Stores.InDB
         public void Delete(int Id)
         {
             var item = GetById(Id);
-            if (item is null) return;            
-            //_db.Entry(item).State = EntityState.Deleted;
+            if (item is null) return;
             _db.Remove(item);
             _db.SaveChanges();
         }
 
         public IEnumerable<ScannerDataTemplate> GetAll() => _db.DataTemplates.Include(fd => fd.TemplateMetadata).ToArray();
 
-
         public ScannerDataTemplate GetById(int Id) => _db.DataTemplates.SingleOrDefault(r => r.Id == Id);
 
         public void Update(ScannerDataTemplate Item)
-        {
-            //_db.Entry(Item).State = EntityState.Modified;            
+        {      
             _db.Update(Item);
             _db.SaveChanges();
         }
