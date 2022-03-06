@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using System.Linq;
+
 namespace Scanner.Data
 {
-    class ScannerDbInitializer
+    internal class ScannerDbInitializer
     {
         private readonly ScannerDB _db;
 
@@ -11,6 +13,12 @@ namespace Scanner.Data
         public void Initialize()
         {
             _db.Database.Migrate();
+#if DEBUG
+            if (!_db.DataTemplates.Any())
+                    _db.DataTemplates.AddRange(TestData.DataTemplates);
+
+            _db.SaveChanges();
+#endif
         }
     }
 }

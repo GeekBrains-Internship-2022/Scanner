@@ -1,13 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using Scanner.Models;
+
+using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using Scanner.Models;
-using Scanner.ViewModels.Models;
 
 namespace Scanner.Controls
 {
-    public partial class OperatorControlPanel : UserControl
+    public partial class OperatorControlPanel
     {
         #region TemplatesItemSource : ObservableCollection<ScannerDataTemplate> - Шаблоны
 
@@ -141,26 +140,7 @@ namespace Scanner.Controls
         }
 
         #endregion
-
-        #region NextFileCommand : ICommand - Команда следующий документ
-
-        ///<summary>Команда следующий документ</summary>
-        public static readonly DependencyProperty NextFileCommandProperty =
-            DependencyProperty.Register(
-                nameof(NextFileCommand),
-                typeof(ICommand),
-                typeof(OperatorControlPanel),
-                new PropertyMetadata(default(ICommand)));
-
-        ///<summary>Команда следующий документ</summary>
-        public ICommand NextFileCommand
-        {
-            get => (ICommand) GetValue(NextFileCommandProperty);
-            set => SetValue(NextFileCommandProperty, value);
-        }
-
-        #endregion
-
+        
         #region DelExtraMetaDataCommand : ICommand - Команда удалить метаданные
 
         ///<summary>Команда сохранить</summary>

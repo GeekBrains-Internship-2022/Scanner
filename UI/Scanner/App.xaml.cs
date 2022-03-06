@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 using Microsoft.EntityFrameworkCore;
@@ -40,21 +41,16 @@ namespace Scanner
         private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
             services.AddSingleton<IObserverService, ObserverService>();                 //  Сервис мониторинга каталога
-            services.AddSingleton<IFileService, FileService>();                         //  Сервис файлов нужен ли он вообще ?
             services.AddSingleton<IRabbitMQService, RabbitMQService>();                 //  Сервис кролика
             services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();           //  Сервис постоянного подключения кролика
 
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<SettingsWindowViewModel>();
-            services.AddSingleton<ViewModelTestDB>();            
+            services.AddSingleton<ViewModelTestDB>();
 
             var path = host.Configuration.GetConnectionString("Default");
             services.AddDbContext<ScannerDB>(opt => opt.UseSqlite(path));
-            services.AddSingleton<IStore<FileData>, FileDataStoreInDB>();
-            services.AddSingleton<IStore<ScannerDataTemplate>, ScannerDataTemplateStoreInDB>();            
-            services.AddSingleton<IStore<DocumentMetadata>, DocumentMetadataInDB>();           
-            services.AddSingleton<IStore<TemplateMetadata>, TemplateMetadataInDB>();
-            services.AddSingleton<IStore<Document>, DocumentStoreInDB>();
+            services.AddScoped(typeof(IStore<>), typeof(DbStore<>));                    //  Хранилище
             services.AddTransient<ScannerDbInitializer>();
         }
 

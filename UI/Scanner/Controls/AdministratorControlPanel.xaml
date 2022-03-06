@@ -33,7 +33,6 @@
                                                        Foreground="Red"/>
                                         </Button.Content>
                                     </Button>
-                                    <CheckBox IsChecked="{Binding Path=Required}" Margin="5 0"/>
                                 </StackPanel>
                             </GroupBox>
                         </DataTemplate>

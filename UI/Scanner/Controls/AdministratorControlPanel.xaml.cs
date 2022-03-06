@@ -3,13 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Scanner.Models;
-using Scanner.ViewModels.Models;
 
 namespace Scanner.Controls
 {
-    /// <summary>
-    /// Логика взаимодействия для AdministratorControlPanel.xaml
-    /// </summary>
     public partial class AdministratorControlPanel : UserControl
     {
         #region DocumentType : string - Тип документа
@@ -30,26 +26,7 @@ namespace Scanner.Controls
         }
 
         #endregion
-
-        /*#region ItemSource : FileData - Источник
-
-        ///<summary>источник метаданных</summary>
-        public static readonly DependencyProperty ItemSourceProperty =
-            DependencyProperty.Register(
-                nameof(ItemSource),
-                typeof(FileData),
-                typeof(AdministratorControlPanel),
-                new PropertyMetadata(default(FileData)));
-
-        ///<summary>источник метаданных</summary>
-        public FileData ItemSource
-        {
-            get => (FileData)GetValue(ItemSourceProperty);
-            set => SetValue(ItemSourceProperty, value);
-        }
-
-        #endregion*/
-
+        
         #region Metadata : ObservableCollection<DocumentMetadata> - Метаданные
 
         ///<summary>Метаданные</summary>

@@ -15,10 +15,11 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
+    
         <StackPanel>
-
             <StackPanel.Resources>
                 <Style TargetType="GroupBox" x:Key="gbData">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -48,7 +49,7 @@
                                             <fa:SvgAwesome Icon="Regular_MinusSquare" Width="15"
                                                        Foreground="Red"/>
                                         </Button.Content>
-                                    </Button>                                    
+                                    </Button>
                                 </StackPanel>
                             </GroupBox>
                         </DataTemplate>
@@ -62,8 +63,8 @@
                               ItemsSource="{Binding CBExtraDataItemSource, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
                               SelectedItem="{Binding CBExtraDataSelectedItem, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
                               DisplayMemberPath="Name">
-                        
                     </ComboBox>
+
                     <Button Padding="4" Command="{Binding AddExtraDataToDocument}">
                         <Button.Content>
                             <fa:SvgAwesome Icon="Regular_PlusSquare" Width="15"
@@ -73,8 +74,10 @@
                 </StackPanel>
             </GroupBox>
             <StackPanel>
+                
                 <Button Content="Сохранить" Command="{Binding SaveCommand, RelativeSource={RelativeSource AncestorType=l:OperatorControlPanel}}"
-                    Margin="5 2"/>                
+                        Margin="5 2"/>
+
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
